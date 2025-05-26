@@ -1,7 +1,7 @@
 /************************************************
  * MAIN HTML ENTRY POINT
  ************************************************/
-//Heloooo// jadifdaiufdisdfdafdfdadf
+//Heloooo// i am yoooo
 function doGet(e) {
   return HtmlService.createTemplateFromFile('index').evaluate();
 }
