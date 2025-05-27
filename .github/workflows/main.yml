@@ -1,37 +1,79 @@
-name: Deploy to Google Apps Script
+name: Deploy to Google Apps Script (OAuth2)
 
 on:
   push:
     branches:
-      - main  # Adjust if needed
+      - main  # Or any other branch you want to deploy from
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4 # Using latest major version
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18.x' # Using LTS version of Node.js
 
       - name: Install clasp
-        run: npm install -g @google/clasp
+        run: npm install -g @google/clasp # Or pin to a specific version e.g., @google/clasp@2.4.2
 
-      - name: Write .clasprc.json
+      - name: Create .clasprc.json (User Credentials)
         run: |
-          echo '${{ secrets.CLASPRC_JSON }}' > ~/.clasprc.json
+          echo '{
+            "token": {
+              "access_token": "${{ secrets.ACCESS_TOKEN }}",
+              "refresh_token": "${{ secrets.REFRESH_TOKEN }}",
+              "scope": "https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/script.deployments https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/service.management",
+              "token_type": "Bearer",
+              "expiry_date": 3600000
+            },
+            "oauth2ClientSettings": {
+              "clientId": "${{ secrets.CLIENT_ID }}",
+              "clientSecret": "${{ secrets.CLIENT_SECRET }}",
+              "redirectUri": "http://localhost"
+            },
+            "isLocalCreds": false
+          }' > ~/.clasprc.json
+        # Note: The expiry_date is a placeholder; clasp should use the refresh_token.
+        # Added common scopes, adjust if necessary.
 
-      - name: Write .clasp.json
+      - name: Create .clasp.json (Project Config)
         run: |
           echo '{
             "scriptId": "${{ secrets.SCRIPT_ID }}",
-            "rootDir": "./"
+            "rootDir": "./src"
           }' > .clasp.json
+        # IMPORTANT: Adjust "rootDir" if your Apps Script files are not in a subdirectory named "src".
+        # If they are at the root of your repository, use "./".
 
       - name: Push to Google Apps Script
         run: clasp push --force
+        # This command pushes your code. It does NOT create a new deployment version.
 
+      # --- Optional: Create a new version and deploy ---
+      # If you need to create a versioned deployment (e.g., for a web app or API),
+      # uncomment and configure the following steps. You'll need a deployment ID.
+      #
+      # - name: Create new version
+      #   run: |
+      #     VERSION_DESCRIPTION="Automated deploy by GitHub Actions $(date)"
+      #     clasp version "$VERSION_DESCRIPTION"
+      #
+      # - name: Deploy to specific deployment ID
+      #   run: |
+      #     # Get your DEPLOYMENT_ID from the Apps Script editor
+      #     # or by running 'clasp deployments' locally.
+      #     DEPLOYMENT_ID="YOUR_DEPLOYMENT_ID_HERE"
+      #     clasp deploy --deploymentId "$DEPLOYMENT_ID" --description "Automated deployment"
+      #
+      # --- End Optional Deployment Steps ---
+
+      - name: Clean up credentials (optional)
+        if: always() # Ensures this step runs even if previous steps fail
+        run: |
+          rm -f ~/.clasprc.json
+          rm -f .clasp.json
