@@ -3,7 +3,7 @@ name: Deploy to Google Apps Script
 on:
   push:
     branches:
-      - main
+      - main  # or your default branch
 
 jobs:
   deploy:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -21,25 +21,11 @@ jobs:
       - name: Install clasp
         run: npm install -g @google/clasp
 
-      - name: Create .clasprc.json for clasp auth
-        run: |
-          cat <<EOF > ~/.clasprc.json
-          {
-            "token": {
-              "access_token": "${{ secrets.ACCESS_TOKEN }}",
-              "refresh_token": "${{ secrets.REFRESH_TOKEN }}",
-              "scope": "https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/script.deployments",
-              "token_type": "Bearer",
-              "expiry_date": 3600
-            },
-            "oauth2ClientSettings": {
-              "clientId": "${{ secrets.CLIENT_ID }}",
-              "clientSecret": "${{ secrets.CLIENT_SECRET }}",
-              "redirectUri": "http://localhost"
-            },
-            "isLocalCreds": false
-          }
-          EOF
+      - name: Write service account credentials to file
+        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service-account.json
+
+      - name: Authenticate clasp with service account
+        run: clasp login --creds service-account.json
 
       - name: Set up .clasp.json
         run: |
@@ -48,6 +34,6 @@ jobs:
             "rootDir": "./"
           }' > .clasp.json
 
-      - name: Push to Apps Script
+      - name: Deploy to Google Apps Script
         run: clasp push --force
 
