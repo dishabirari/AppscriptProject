@@ -1,79 +1,66 @@
-name: Deploy to Google Apps Script (OAuth2)
+name: Deploy Google Apps Script
 
 on:
   push:
     branches:
-      - main  # Or any other branch you want to deploy from
+      - main # Trigger this workflow when code is pushed to the 'main' branch
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read' # Required for checkout
+      id-token: 'write' # REQUIRED for Workload Identity Federation (to get an OIDC token)
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Using latest major version
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x' # Using LTS version of Node.js
+          node-version: '20' # Or your preferred Node.js version (e.g., '18', '20')
+          cache: 'npm' # Cache npm dependencies for faster builds
 
       - name: Install clasp
-        run: npm install -g @google/clasp # Or pin to a specific version e.g., @google/clasp@2.4.2
+        run: npm install -g @google/clasp
 
-      - name: Create .clasprc.json (User Credentials)
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+      - name: Set clasp project (optional, if .clasp.json not in root)
+        # This ensures clasp knows which project to work with.
+        # You might not need this if your local .clasp.json is pushed and correct.
+        # However, it's safer for CI/CD environments.
         run: |
-          echo '{
-            "token": {
-              "access_token": "${{ secrets.ACCESS_TOKEN }}",
-              "refresh_token": "${{ secrets.REFRESH_TOKEN }}",
-              "scope": "https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/script.deployments https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/service.management",
-              "token_type": "Bearer",
-              "expiry_date": 3600000
-            },
-            "oauth2ClientSettings": {
-              "clientId": "${{ secrets.CLIENT_ID }}",
-              "clientSecret": "${{ secrets.CLIENT_SECRET }}",
-              "redirectUri": "http://localhost"
-            },
-            "isLocalCreds": false
-          }' > ~/.clasprc.json
-        # Note: The expiry_date is a placeholder; clasp should use the refresh_token.
-        # Added common scopes, adjust if necessary.
+          # Ensure .clasp.json exists for clasp to work with the project
+          # The 'google-github-actions/auth' will set ADC, which clasp uses
+          # We just need to tell clasp which script project ID to target
+          echo "{\"scriptId\":\"${{ secrets.APPS_SCRIPT_PROJECT_ID }}\"}" > .clasp.json
 
-      - name: Create .clasp.json (Project Config)
-        run: |
-          echo '{
-            "scriptId": "${{ secrets.SCRIPT_ID }}",
-            "rootDir": "./src"
-          }' > .clasp.json
-        # IMPORTANT: Adjust "rootDir" if your Apps Script files are not in a subdirectory named "src".
-        # If they are at the root of your repository, use "./".
 
-      - name: Push to Google Apps Script
-        run: clasp push --force
-        # This command pushes your code. It does NOT create a new deployment version.
+      - name: Push Apps Script code to Google
+        run: clasp push # clasp will use ADC set by 'auth' action and project ID from .clasp.json
 
-      # --- Optional: Create a new version and deploy ---
-      # If you need to create a versioned deployment (e.g., for a web app or API),
-      # uncomment and configure the following steps. You'll need a deployment ID.
-      #
-      # - name: Create new version
-      #   run: |
-      #     VERSION_DESCRIPTION="Automated deploy by GitHub Actions $(date)"
-      #     clasp version "$VERSION_DESCRIPTION"
-      #
-      # - name: Deploy to specific deployment ID
-      #   run: |
-      #     # Get your DEPLOYMENT_ID from the Apps Script editor
-      #     # or by running 'clasp deployments' locally.
-      #     DEPLOYMENT_ID="YOUR_DEPLOYMENT_ID_HERE"
-      #     clasp deploy --deploymentId "$DEPLOYMENT_ID" --description "Automated deployment"
-      #
-      # --- End Optional Deployment Steps ---
+      - name: Create new Apps Script Deployment
+        # This creates a new versioned deployment every time the workflow runs.
+        # Recommended for clear deployment history.
+        run: clasp deploy --description "Deployed via GitHub Actions: ${{ github.sha }}" # --versionNumber <optional_version_number>
 
-      - name: Clean up credentials (optional)
-        if: always() # Ensures this step runs even if previous steps fail
-        run: |
-          rm -f ~/.clasprc.json
-          rm -f .clasp.json
+      # Optional: Update an existing web app/API executable deployment
+      # If you have a fixed deployment ID (e.g., for a web app URL)
+      # - name: Update existing Apps Script Deployment
+      #   run: clasp deploy --deploymentId <YOUR_EXISTING_DEPLOYMENT_ID> --description "Updated via GitHub Actions: ${{ github.sha }}"
+
+      # Optional: Run a specific Apps Script function after deployment (e.g., for tests)
+      # - name: Run Apps Script Function
+      #   run: clasp run 'myTestFunction'
+      #   env:
+      #     CLASP_RUN_FUNCTION_ARG1: 'value for arg1'
+      #     CLASP_RUN_FUNCTION_ARG2: 'value for arg2'
