@@ -1,5 +1,5 @@
 {
-  "scriptId": "1KWxao15Q8kYyCyfcCgKl47JTYRt-cqrZQ0NAzktrTBT8-cFRMk9DuyEJ",
+  "scriptId": "${{ secrets.APPS_SCRIPT_PROJECT_ID }}",
   "rootDir": "",
   "scriptExtensions": [".js", ".gs"],
   "htmlExtensions": [".html"],
