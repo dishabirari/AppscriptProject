@@ -51,23 +51,19 @@ jobs:
           }' > .clasp.json
 
       - name: Generate .clasprc.json
-        shell: bash
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
-      
-          JSON_CONTENT=$(jq -n --arg at "$ACCESS_TOKEN" '{
-            token: {
-              access_token: $at,
-              scope: "https://www.googleapis.com/auth/cloud-platform",
-              token_type: "Bearer",
-              expiry_date: 9999999999999,
-              id_token: ""
+          cat <<EOF > ~/.clasprc.json
+          {
+            "token": {
+              "access_token": "$ACCESS_TOKEN",
+              "scope": "https://www.googleapis.com/auth/cloud-platform",
+              "token_type": "Bearer",
+              "expiry_date": 9999999999999,
+              "id_token": ""
             }
-          }')
-      
-          echo "$JSON_CONTENT" > ~/.clasprc.json
-
-
+          }
+          EOF
 
       - name: Push to Google Apps Script
-        run: clasp push --force
+        run: clasp push
