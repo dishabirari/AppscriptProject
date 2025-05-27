@@ -34,15 +34,18 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
-      - name: Set clasp project (optional, if .clasp.json not in root)
-        # This ensures clasp knows which project to work with.
-        # You might not need this if your local .clasp.json is pushed and correct.
-        # However, it's safer for CI/CD environments.
-        run: |
-          # Ensure .clasp.json exists for clasp to work with the project
-          # The 'google-github-actions/auth' will set ADC, which clasp uses
-          # We just need to tell clasp which script project ID to target
-          echo "{\"scriptId\":\"${{ secrets.APPS_SCRIPT_PROJECT_ID }}\"}" > .clasp.json
+
+      - name: Create new Apps Script Deployment
+        # This creates a new versioned deployment every time the workflow runs.
+        # Recommended for clear deployment history.
+        run: clasp deploy --description "Deployed via GitHub Actions: ${{ github.sha }}"
+        # If you need to specify a version number, uncomment the line below and modify.
+        # run: clasp deploy --versionNumber <optional_version_number> --description "Deployed via GitHub Actions: ${{ github.sha }}"
+
+      # Optional: Update an existing web app/API executable deployment
+      # If you have a fixed deployment ID (e.g., for a web app URL)
+      # - name: Update existing Apps Script Deployment
+      #   run: clasp deploy --deploymentId <YOUR_EXISTING_DEPLOYMENT_ID> --description "Updated via GitHub Actions: ${{ github.sha }}"
 
 
       - name: Push Apps Script code to Google
@@ -51,7 +54,7 @@ jobs:
       - name: Create new Apps Script Deployment
         # This creates a new versioned deployment every time the workflow runs.
         # Recommended for clear deployment history.
-        run: clasp deploy --description "Deployed via GitHub Actions: ${{ github.sha }}" # --versionNumber <optional_version_number>
+       run: clasp deploy --description "Deployed via GitHub Actions: ${{ github.sha }}" # --versionNumber <optional_version_number>
 
       # Optional: Update an existing web app/API executable deployment
       # If you have a fixed deployment ID (e.g., for a web app URL)
