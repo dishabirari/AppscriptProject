@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20' # Or your preferred Node.js version (e.g., '18', '20')
-          cache: 'npm' # Cache npm dependencies for faster builds
+      
 
       - name: Install clasp
         run: npm install -g @google/clasp
