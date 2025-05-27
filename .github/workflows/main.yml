@@ -3,7 +3,7 @@ name: Deploy to Google Apps Script
 on:
   push:
     branches:
-      - main  # Change this to your default branch if different
+      - main
 
 jobs:
   deploy:
@@ -23,7 +23,8 @@ jobs:
 
       - name: Create .clasprc.json for clasp auth
         run: |
-          echo '{
+          cat <<EOF > ~/.clasprc.json
+          {
             "token": {
               "access_token": "${{ secrets.ACCESS_TOKEN }}",
               "refresh_token": "${{ secrets.REFRESH_TOKEN }}",
@@ -37,7 +38,8 @@ jobs:
               "redirectUri": "http://localhost"
             },
             "isLocalCreds": false
-          }' > ~/.clasprc.json
+          }
+          EOF
 
       - name: Set up .clasp.json
         run: |
@@ -48,3 +50,4 @@ jobs:
 
       - name: Push to Apps Script
         run: clasp push --force
+
