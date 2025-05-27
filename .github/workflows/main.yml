@@ -1,4 +1,3 @@
-@@ -0,0 +1,50 @@
 name: Deploy to Google Apps Script
 
 on:
