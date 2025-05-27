@@ -56,11 +56,11 @@ jobs:
           cat <<EOF > ~/.clasprc.json
           {
             "token": {
-              "access_token": "$ACCESS_TOKEN",
-              "scope": "https://www.googleapis.com/auth/cloud-platform",
-              "token_type": "Bearer",
-              "expiry_date": 9999999999999,
-              "id_token": ""
+            "access_token": "$ACCESS_TOKEN",
+            "scope": "https://www.googleapis.com/auth/cloud-platform",
+            "token_type": "Bearer",
+            "expiry_date": 9999999999999,
+            "id_token": ""
             }
           }
           EOF
