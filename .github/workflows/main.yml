@@ -38,20 +38,22 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
 
-      - name: Generate .clasprc.json from GCP access token
+      - name: Generate .clasprc.json
         shell: bash
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
       
-          echo "{
-            \"token\": {
-              \"access_token\": \"$ACCESS_TOKEN\",
-              \"scope\": \"https://www.googleapis.com/auth/cloud-platform\",
-              \"token_type\": \"Bearer\",
-              \"expiry_date\": 9999999999999,
-              \"id_token\": \"\"
+          JSON_CONTENT=$(jq -n --arg at "$ACCESS_TOKEN" '{
+            token: {
+              access_token: $at,
+              scope: "https://www.googleapis.com/auth/cloud-platform",
+              token_type: "Bearer",
+              expiry_date: 9999999999999,
+              id_token: ""
             }
-          }" > ~/.clasprc.json
+          }')
+      
+          echo "$JSON_CONTENT" > ~/.clasprc.json
 
 
 
