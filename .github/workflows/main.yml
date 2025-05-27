@@ -26,11 +26,16 @@ jobs:
       - name: Install clasp
         run: npm install -g @google/clasp
 
-      - name: Authenticate to Google Cloud (Workload Identity Federation)
-        id: 'auth'
+      - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           audience: ${{ secrets.AU }}
+          create_credentials_file: true
+          export_environment_variables: true
+          access_token_lifetime: 3600s
+          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
+          id_token_include_email: false
+
