@@ -34,36 +34,3 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
-
-      - name: Create new Apps Script Deployment
-        # This creates a new versioned deployment every time the workflow runs.
-        # Recommended for clear deployment history.
-        run: clasp deploy --description "Deployed via GitHub Actions: ${{ github.sha }}"
-        # If you need to specify a version number, uncomment the line below and modify.
-        # run: clasp deploy --versionNumber <optional_version_number> --description "Deployed via GitHub Actions: ${{ github.sha }}"
-
-      # Optional: Update an existing web app/API executable deployment
-      # If you have a fixed deployment ID (e.g., for a web app URL)
-      # - name: Update existing Apps Script Deployment
-      #   run: clasp deploy --deploymentId <YOUR_EXISTING_DEPLOYMENT_ID> --description "Updated via GitHub Actions: ${{ github.sha }}"
-
-
-      - name: Push Apps Script code to Google
-        run: clasp push # clasp will use ADC set by 'auth' action and project ID from .clasp.json
-
-      - name: Create new Apps Script Deployment
-        # This creates a new versioned deployment every time the workflow runs.
-        # Recommended for clear deployment history.
-       run: clasp deploy --description "Deployed via GitHub Actions: ${{ github.sha }}" # --versionNumber <optional_version_number>
-
-      # Optional: Update an existing web app/API executable deployment
-      # If you have a fixed deployment ID (e.g., for a web app URL)
-      # - name: Update existing Apps Script Deployment
-      #   run: clasp deploy --deploymentId <YOUR_EXISTING_DEPLOYMENT_ID> --description "Updated via GitHub Actions: ${{ github.sha }}"
-
-      # Optional: Run a specific Apps Script function after deployment (e.g., for tests)
-      # - name: Run Apps Script Function
-      #   run: clasp run 'myTestFunction'
-      #   env:
-      #     CLASP_RUN_FUNCTION_ARG1: 'value for arg1'
-      #     CLASP_RUN_FUNCTION_ARG2: 'value for arg2'
