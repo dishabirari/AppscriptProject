@@ -38,6 +38,18 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
 
+      - name: Create .clasp.json
+        run: |
+          echo '{
+            "scriptId": "${{ secrets.APPS_SCRIPT_PROJECT_ID }}",
+            "rootDir": "",
+            "scriptExtensions": [".js", ".gs"],
+            "htmlExtensions": [".html"],
+            "jsonExtensions": [".json"],
+            "filePushOrder": [],
+            "skipSubdirectories": false
+          }' > .clasp.json
+
       - name: Generate .clasprc.json
         shell: bash
         run: |
