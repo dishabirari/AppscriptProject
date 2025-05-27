@@ -65,5 +65,8 @@ jobs:
           }
           EOF
 
+      - name: Debug .clasprc.json
+        run: cat ~/.clasprc.json
+
       - name: Push to Google Apps Script
         run: clasp push
