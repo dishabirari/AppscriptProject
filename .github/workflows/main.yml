@@ -3,15 +3,15 @@ name: Deploy Google Apps Script
 on:
   push:
     branches:
-      - main # Trigger this workflow when code is pushed to the 'main' branch
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read' # Required for checkout
-      id-token: 'write' # REQUIRED for Workload Identity Federation (to get an OIDC token)
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - name: Checkout code
@@ -20,22 +20,28 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or your preferred Node.js version (e.g., '18', '20')
-      
+          node-version: '20'
 
       - name: Install clasp
         run: npm install -g @google/clasp
 
-      - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v2'
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          audience: ${{ secrets.AU }}
+          audience: https://token.actions.githubusercontent.com
           create_credentials_file: true
           export_environment_variables: true
           access_token_lifetime: 3600s
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
+
+      - name: Set CLASP credentials
+        run: |
+          echo '{}' > ~/.clasp.json
+
+      - name: Push to Google Apps Script
+        run: clasp push --force
 
