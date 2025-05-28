@@ -43,6 +43,7 @@ jobs:
           echo '{
             "scriptId": "${{ secrets.APPS_SCRIPT_PROJECT_ID }}",
             "rootDir": "",
+            "projectId": "perfect-nature-384612",
             "scriptExtensions": [".js", ".gs"],
             "htmlExtensions": [".html"],
             "jsonExtensions": [".json"],
