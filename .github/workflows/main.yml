@@ -38,36 +38,11 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
 
-      - name: Create .clasp.json
-        run: |
-          echo '{
-            "scriptId": "${{ secrets.APPS_SCRIPT_PROJECT_ID }}",
-            "rootDir": "",
-            "projectId": "perfect-nature-384612",
-            "scriptExtensions": [".js", ".gs"],
-            "htmlExtensions": [".html"],
-            "jsonExtensions": [".json"],
-            "filePushOrder": [],
-            "skipSubdirectories": false
-          }' > .clasp.json
-
-      - name: Generate .clasprc.json
-        run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          cat <<EOF > ~/.clasprc.json
-          {
-            "token": {
-            "access_token": "$ACCESS_TOKEN",
-            "scope": "https://www.googleapis.com/auth/cloud-platform",
-            "token_type": "Bearer",
-            "expiry_date": 9999999999999,
-            "id_token": ""
-            }
-          }
-          EOF
-
-      - name: Debug .clasprc.json
-        run: cat ~/.clasprc.json
+      - name: Create clasp credentials file
+        run: echo "${{ secrets.CLASP_CREDS_JSON }}" > ./creds.json
+  
+      - name: Authenticate clasp using service account
+        run: clasp login --creds ./creds.json
 
       - name: Push to Google Apps Script
         run: clasp push
