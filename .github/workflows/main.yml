@@ -39,8 +39,12 @@ jobs:
           id_token_include_email: false
 
       - name: Create clasp credentials file
-        run: echo "${{ secrets.CLASP_CREDS_JSON }}" > ./creds.json
-  
+        run: |
+          echo "${{ secrets.CLASP_CREDS_JSON }}" > creds.json
+
+      - name: Check creds.json content
+        run: head -20 creds.json
+        
       - name: Authenticate clasp using service account
         run: clasp login --creds ./creds.json
 
