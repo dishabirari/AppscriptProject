@@ -50,10 +50,20 @@ jobs:
             "skipSubdirectories": false
           }' > .clasp.json
 
-      - name: Decode and setup .clasprc.json
+      - name: Generate .clasprc.json
         run: |
-          echo "${{ secrets.APPS_SCRIPT_PROJECT_ID }}" | base64 --decode > ~/.clasprc.json
-          chmod 600 ~/.clasprc.json
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
+          cat <<EOF > ~/.clasprc.json
+          {
+            "token": {
+            "access_token": "$ACCESS_TOKEN",
+            "scope": "https://www.googleapis.com/auth/cloud-platform",
+            "token_type": "Bearer",
+            "expiry_date": 9999999999999,
+            "id_token": ""
+            }
+          }
+          EOF
 
       - name: Debug .clasprc.json
         run: cat ~/.clasprc.json
