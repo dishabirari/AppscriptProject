@@ -52,7 +52,7 @@ jobs:
 
       - name: Decode and setup .clasprc.json
         run: |
-          echo "${{ secrets.CLASPRC_JSON }}" | base64 --decode > ~/.clasprc.json
+          echo "${{ secrets.APPS_SCRIPT_PROJECT_ID }}" | base64 --decode > ~/.clasprc.json
           chmod 600 ~/.clasprc.json
 
       - name: Debug .clasprc.json
