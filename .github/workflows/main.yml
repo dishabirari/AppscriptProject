@@ -18,6 +18,6 @@ jobs:
           clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
           scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
           command: "push"
-          rootDir: "src" # set to your source dir
+          rootDir: "" # set to your source dir
 
           
