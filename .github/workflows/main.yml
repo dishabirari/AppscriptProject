@@ -1,68 +1,23 @@
-name: Deploy Google Apps Script
-
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Clasp Action
+        uses: daikikatsuragawa/clasp-action@v1.1.0
         with:
-          node-version: '20'
+          accessToken: ${{ secrets.CLASP_ACCESS_TOKEN }}
+          idToken: ""  # leave blank unless needed
+          refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
+          clientId: ${{ secrets.CLASP_CLIENT_ID }}
+          clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
+          scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
+          command: "push"
+          rootDir: "src" # set to your source dir
 
-      - name: Install clasp
-        run: npm install -g @google/clasp
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          audience: https://token.actions.githubusercontent.com
-          create_credentials_file: true
-          export_environment_variables: true
-          access_token_lifetime: 3600s
-          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
-          id_token_include_email: false
-
-      - name: Generate .clasprc.json
-        run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          cat <<EOF > ~/.clasprc.json
-          {
-            "token": {
-              "access_token": "$ACCESS_TOKEN",
-              "scope": "https://www.googleapis.com/auth/cloud-platform",
-              "token_type": "Bearer",
-              "expiry_date": 9999999999999,
-              "id_token": ""
-            }
-          }
-          EOF
-
-      - name: Debug .clasprc.json
-        run: cat ~/.clasprc.json
-
-      - name: Test clasp authentication
-        run: clasp whoami
-        env:
-          CLASPRC: ~/.clasprc.json
-
-      - name: Push to Google Apps Script
-        run: clasp push
-        env:
-          CLASPRC: ~/.clasprc.json
-
+          
