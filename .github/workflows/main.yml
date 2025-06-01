@@ -38,23 +38,28 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
 
       - name: Generate .clasprc.json
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
+          mkdir -p ~/.config/configstore
           cat <<EOF > ~/.clasprc.json
           {
             "token": {
-            "access_token": "$ACCESS_TOKEN",
-            "scope": "https://www.googleapis.com/auth/cloud-platform",
-            "token_type": "Bearer",
-            "expiry_date": 9999999999999,
-            "id_token": ""
+              "access_token": "$ACCESS_TOKEN",
+              "scope": "https://www.googleapis.com/auth/cloud-platform",
+              "token_type": "Bearer",
+              "expiry_date": 9999999999999,
+              "id_token": ""
             }
           }
           EOF
+
       - name: Debug .clasprc.json
         run: cat ~/.clasprc.json
 
       - name: Push to Google Apps Script
         run: clasp push
+
