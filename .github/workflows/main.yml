@@ -38,13 +38,9 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-
       - name: Generate .clasprc.json
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
-          mkdir -p ~/.config/configstore
           cat <<EOF > ~/.clasprc.json
           {
             "token": {
@@ -60,6 +56,13 @@ jobs:
       - name: Debug .clasprc.json
         run: cat ~/.clasprc.json
 
+      - name: Test clasp authentication
+        run: clasp whoami
+        env:
+          CLASPRC: ~/.clasprc.json
+
       - name: Push to Google Apps Script
         run: clasp push
+        env:
+          CLASPRC: ~/.clasprc.json
 
