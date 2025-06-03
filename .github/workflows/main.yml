@@ -1,5 +1,7 @@
 on:
-  workflow_dispatch
+  push:
+    branches:
+      - main  # or change to your desired branch
 
 jobs:
   deploy:
@@ -18,6 +20,4 @@ jobs:
           clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
           scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
           command: "push"
-          rootDir: "" # set to your source dir
-
-          
+          rootDir: ""  # set to your source dir
