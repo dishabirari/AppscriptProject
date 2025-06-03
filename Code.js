@@ -1198,3 +1198,97 @@ function processForm(formData) {
 //   </html>
 //   `;
 // }
+
+
+
+// -------------------------------Addmission Form-----------------------------------//
+
+function submitForm(formObject) {
+  try {
+    const spreadsheetId = '1LY9jRUmIblUk_3e62GL_5jzyQwsA-TysboHRwbtnvho'; // Replace with your actual Spreadsheet ID
+    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+    const sheetName = 'Admissions';
+    let sheet = spreadsheet.getSheetByName(sheetName);
+
+    // Create sheet if it doesn't exist
+    if (!sheet) {
+      sheet = spreadsheet.insertSheet(sheetName);
+    }
+
+    // Define headers
+    const headers = [
+      'Timestamp',
+      'Receipt Number',
+      'Student Name',
+      'Course Name',
+      'Course Duration', // Added course duration
+      'Course Fees (per year)', // Renamed for clarity
+      'Payment Type',
+      'Payment Method',
+      'Course Years',
+      'Year 1 Total',
+      'Year 1 Paid',
+      'Year 1 Due',
+      'Year 1 Installments', // For EMI
+      'Year 2 Total',
+      'Year 2 Paid',
+      'Year 2 Due',
+      'Year 2 Installments', // For EMI
+      'Year 3 Total',
+      'Year 3 Paid',
+      'Year 3 Due',
+      'Year 3 Installments', // For EMI
+      'Guardian Relation',
+      'Guardian Name',
+      'Agreement'
+    ];
+
+    // Set headers if the sheet is empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(headers);
+    }
+
+    // Prepare the data row
+    const timestamp = new Date();
+    const rowData = [
+      timestamp,
+      formObject.receipt_number || '',
+      formObject.student_name || '',
+      formObject.courseSelect || '',
+      formObject.courseDuration || '',
+      formObject.courseFees || '',
+      formObject.payment_type || '',
+      formObject.payment_method || '',
+      formObject.courseYears || '',
+      // Year 1 data
+      formObject.year1_total || '',
+      formObject.year1_paid || '',
+      formObject.year1_due || '',
+      formObject.year1_installments || '',
+      // Year 2 data
+      formObject.year2_total || '',
+      formObject.year2_paid || '',
+      formObject.year2_due || '',
+      formObject.year2_installments || '',
+      // Year 3 data
+      formObject.year3_total || '',
+      formObject.year3_paid || '',
+      formObject.year3_due || '',
+      formObject.year3_installments || '',
+      formObject.guardian_relation || '',
+      formObject.guardian_name || '',
+      formObject.agree ? 'Yes' : 'No'
+    ];
+
+    // Append the data to the sheet
+    sheet.appendRow(rowData);
+
+    // Return success message
+    return { status: 'success', message: 'Data saved successfully!' };
+
+  } catch (error) {
+    // Log the error and return error message
+    console.error('Error submitting form:', error);
+    return { status: 'error', message: 'Failed to save data: ' + error.message };
+  }
+}
