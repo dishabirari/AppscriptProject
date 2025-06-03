@@ -21,6 +21,14 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!---------------------Admission Form ----------------------------->
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!---------------------Admission Form End ----------------------------->
+
+
     <style>
          body {
          font-family: 'Inter', sans-serif;
@@ -953,553 +961,157 @@
             </div>
             <div id="dueFeesTableContainer" class="overflow-x-auto"></div>
           </div>
-          <div id="admissionFormSection"
-            class="hidden bg-white rounded-xl shadow-xl overflow-hidden">
-            <!-- Your existing Admission Form HTML here -->
-            <form class="max-w-6xl mx-auto bg-white p-6 border border-gray-300"
-              onsubmit="handleSubmit(event)">
-              <!-- Header Section -->
-              <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center">
-                  <img
-                    src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png"
-                    class="w-20 mx-auto mb-4 rounded-lg"
-                    alt="Institute Logo" />
-                  <div id="slipFormSection">
-                    <h1 class="text-5xl font-bold text-yellow-500">STI</h1>
-                    <p class="text-sm">Shelar Training Institute</p>
-                  </div>
-                </div>
-                <div class="text-right text-sm">
-                  <p>Mob: +91 9967288158</p>
-                  <p>+91 7400406467</p>
-                  <p>SHELAR TRAINING INSTITUTE C/34,</p>
-                  <p>BUNGLOW, NEAR NANDIKESHWAR MANDIR,</p>
-                  <p>KAMGAR NAGAR, KURLA (E)</p>
-                </div>
-              </div>
-              <!-- Title Section -->
-              <h2
-                class="text-center text-xl font-bold bg-black text-white py-1 mb-4">ADMISSION
-                FORM</h2>
-              <!-- Form Fields -->
-              <div class="space-y-4">
-                <!-- Receipt Number -->
-                <div class="flex items-center">
-                  <label class="w-1/4">Receipt Number:</label>
-                  <input class="border-b border-black flex-2 ml-3"
-                    name="recipt_number" type="text" />
-                </div>
-                <!-- Student Name -->
-                <div class="flex items-center">
-                  <label class="w-1/4">Student Name:</label>
-                  <input class="border-b border-black flex-2 ml-3"
-                    name="student_name" type="text" />
-                </div>
-                <!-- Branch -->
-                <div class="flex items-center">
-                  <label class="w-1/4">Branch:</label>
-                  <select class="border-b border-black flex-2 ml-3"
-                    name="branch">
-                    <option value disabled selected>Select Branch</option>
-                    <option value="kurla">Kurla</option>
-                    <option value="nala_sopara">Nala Sopara</option>
-                  </select>
-                </div>
-                <!-- Course Name and Duration -->
-                <div class="flex items-center">
-                  <label class="w-1/4">Course Name:</label>
-                  <select class="border-b border-black flex-2 ml-3"
-                    name="course_name">
-                    <option value disabled selected>Select Course</option>
-                    <option value="anm_nursing">ANM Nursing Diploma
-                      Course</option>
-                    <option value="gnm_nursing">GNM Nursing Diploma
-                      Course</option>
-                    <option value="dmlt">DMLT Diploma Course</option>
-                    <option value="ot_technician">OT Technician</option>
-                    <option value="general_nursing">General Nursing and
-                      Midwifery Assistant</option>
-                    <option value="beautician">Beautician</option>
-                    <option value="electrician">Electrician Course</option>
-                    <option value="mobile_repairing">Mobile Repairing
-                      Course</option>
-                    <option value="ac_refrigerator">AC & Refrigerator</option>
-                    <option value="automobile">Automobile Course</option>
-                  </select>
-                </div>
-                <!-- Admission Fees Input -->
-                <div class="flex items-center">
-                  <label class="w-1/4">Admission Fees:</label>
-                  <input class="border-b border-black flex-2 ml-3"
-                    name="admission_fees" type="text" id="admission_fees"
-                    oninput="calculateMonthlyFees()" />
-                </div>
-                <!-- Monthly Fees Output -->
-                <div class="flex items-center">
-                  <label class="w-1/4">Monthly Fees:</label>
-                  <input class="border-b border-black flex-2 ml-3"
-                    name="monthly_fees" type="text" id="monthly_fees"
-                    readonly />
-                  <label class="w-1/4 ml-4">Total:</label>
-                  <input class="border-b border-black flex-2 ml-3" name="total"
-                    type="text" id="total" readonly />
-                </div>
-              </div>
-              <div class="mb-4">
-                <h3 class="font-bold mb-2">
-                  1
-                  <sup>
-                    st
-                  </sup>
-                  Year Fees 2025
-                </h3>
-    
-              <table
-                class="w-full border-collapse border border-black text-center">
-                <tr>
-                  <td class="border border-black p-1">
-                    Jan 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Feb 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Mar 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Apr 25
-                  </td>
-                  <td class="border border-black p-1">
-                    May 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Jun 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Jul 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Aug 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Sep 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Oct 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Nov 25
-                  </td>
-                  <td class="border border-black p-1">
-                    Dec 25
-                  </td>
-                </tr>
-                <tr>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jan_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="feb_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="mar_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="apr_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="may_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jun_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jul_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="aug_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="sep_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="oct_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="nov_25"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="dec_25"
-                      type="text" />
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="mb-4">
-              <h3 class="font-bold mb-2">
-                2
-                <sup>
-                  nd
-                </sup>
-                Year Fees 2026
-              </h3>
-              <table
-                class="w-full border-collapse border border-black text-center">
-                <tr>
-                  <td class="border border-black p-1">
-                    Jan 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Feb 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Mar 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Apr 26
-                  </td>
-                  <td class="border border-black p-1">
-                    May 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Jun 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Jul 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Aug 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Sep 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Oct 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Nov 26
-                  </td>
-                  <td class="border border-black p-1">
-                    Dec 26
-                  </td>
-                </tr>
-                <tr>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jan_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="feb_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="mar_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="apr_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="may_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jun_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jul_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="aug_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="sep_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="oct_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="nov_26"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="dec_26"
-                      type="text" />
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="mb-4">
-              <h3 class="font-bold mb-2">
-                3
-                <sup> rd </sup>
-                Year Fees 2027
-              </h3>
-              <table
-                class="w-full border-collapse border border-black text-center">
-                <tr>
-                  <td class="border border-black p-1">
-                    Jan 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Feb 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Mar 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Apr 27
-                  </td>
-                  <td class="border border-black p-1">
-                    May 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Jun 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Jul 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Aug 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Sep_27
-                  </td>
-                  <td class="border border-black p-1">
-                    Oct 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Nov 27
-                  </td>
-                  <td class="border border-black p-1">
-                    Dec 27
-                  </td>
-                </tr>
-                <tr>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jan_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="feb_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="mar_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="apr_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="may_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jun_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jul_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="aug_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="sep_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="oct_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="nov_27"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="dec_27"
-                      type="text" />
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="mb-4">
-              <h3 class="font-bold mb-2">
-                3
-                <sup>
-                  rd
-                </sup>
-                Year Fees 2028
-              </h3>
-              <table
-                class="w-full border-collapse border border-black text-center">
-                <tr>
-                  <td class="border border-black p-1">
-                    Jan 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Feb 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Mar 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Apr 28
-                  </td>
-                  <td class="border border-black p-1">
-                    May 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Jun 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Jul 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Aug 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Sep 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Oct 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Nov 28
-                  </td>
-                  <td class="border border-black p-1">
-                    Dec 28
-                  </td>
-                </tr>
-                <tr>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jan_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="feb_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="mar_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="apr_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="may_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jun_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="jul_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="aug_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="sep_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="oct_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="nov_28"
-                      type="text" />
-                  </td>
-                  <td class="border border-black p-1">
-                    <input class="w-full border-none text-center" name="dec_28"
-                      type="text" />
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="mb-4">
-              <p>
-                I Am Mr./Ms.
-                <input class="border-b border-black inline-block w-full"
-                  name="I Am Mr./Ms." type="text" />
-                Mother / Father / Husband / Sister / Brother of
-                <input class="border-b border-black inline-block w-full"
-                  name="Mother / Father / Husband / Sister / Brother of"
-                  type="text" />
-              </p>
-              <!-- Agree to Terms -->
-              <div class="mb-4">
-                <label class="inline-flex items-center">
-                  <input type="checkbox" id="agree" name="agree" required
-                    class="form-checkbox h-6 w-5 text-blue-600"><span
-                    class="ml-2 text-gray-700 text-sm">I agree to the
-                    terms and conditions</span>
-                </label>
-                <div class="text-red-500 text-xs italic" id="agreeError"></div>
-              </div>
-              <div class="space-y-4">
-                <div class="flex flex-col items-center space-y-2">
-                  <div class="flex items-center space-x-8">
-                    <div class="flex flex-col items-center space-y-4">
-                      <div class="w-24 border-t border-black"></div>
-                      <span class="text-lg">Parent Signature</span>
-                    </div>
-                    <div class="flex flex-col items-center space-y-4">
-                      <div class="w-24 border-t border-black"></div>
-                      <span class="text-lg">Student Signature</span>
-                    </div>
-                    <div class="flex flex-col items-center space-y-4">
-                      <div class="w-24 border-t border-black"></div>
-                      <span class="text-lg">Manager Signature</span>
-                    </div>
-                    <div class="flex flex-col items-center space-y-4">
-                      <div class="w-24 border-t border-black"></div>
-                      <span class="text-lg">Director Signature</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-center">
-                  <!-- Submit Button -->
-                  <button type="submit"
-                    id="submitButton"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    onclick="generatePDFAdmission()">
-                    <i class="fa fa-paper-plane mr-2"></i>
-                    Submit
-                  </button>
-                </div>          
-              </div>
-            </div>
-          </form>
+
+
+          <!---------------------Admission Form ----------------------------->
+           <div id="admissionFormSection">
+    <form class="max-w-2xl mx-auto bg-white p-6 border border-gray-300" onsubmit="handleSubmit(event)">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center">
+          <img alt="STI Logo" class="mr-2" src="https://via.placeholder.com/50" /> <div>
+            <h1 class="text-2xl font-bold text-yellow-500">STI</h1>
+            <p class="text-sm">Shelar Training Institute</p>
+          </div>
         </div>
+        <div class="text-right text-sm">
+          <p>Mob: +91 9967288158</p>
+          <p>+91 7400406467</p>
+          <p>SHELAR TRAINING INSTITUTE C/34,</p>
+          <p>BUNGLOW, NEAR NANDIKESHWAR MANDIR,</p>
+          <p>KAMGAR NAGAR, KURLA (E)</p>
+        </div>
+      </div>
+
+      <h2 class="text-center text-xl font-bold bg-black text-white py-1 mb-4">ADMISSION RECEIPT</h2>
+
+      <div class="space-y-4">
+        <div class="flex items-center">
+          <label class="w-1/4">Receipt Number:</label>
+          <input class="border-b border-black flex-1 ml-2 p-1" name="receipt_number" type="text" />
+        </div>
+
+        <div class="flex items-center">
+          <label class="w-1/4">Student Name:</label>
+          <input class="border-b border-black flex-1 ml-2 p-1" name="student_name" type="text" />
+        </div>
+
+        <div class="flex items-center mb-2">
+          <label class="w-1/4">Course Name:</label>
+          <select id="courseSelect" name="courseSelect" class="border border-gray-300 rounded px-2 py-1 flex-1 ml-2" onchange="updateCourseDetails()">
+            <option value="" disabled selected>Select Course</option>
+            <option value="anm_nursing">ANM Nursing Diploma Course</option>
+            <option value="gnm_nursing">GNM Nursing Diploma Course</option>
+            <option value="dmlt">DMLT Diploma Course</option>
+            <option value="ot_technician">OT Technician</option>
+            <option value="general_nursing">General Nursing and Midwifery Assistant</option>
+            <option value="beautician">Beautician</option>
+            <option value="electrician">Electrician Course</option>
+            <option value="mobile_repairing">Mobile Repairing Course</option>
+            <option value="ac_refrigerator">AC & Refrigerator</option>
+            <option value="automobile">Automobile Course</option>
+          </select>
+        </div>
+
+        <div class="flex items-center mb-4">
+          <label class="w-1/4">Payment Type:</label>
+          <div class="flex-1 ml-2 space-x-4">
+            <label class="inline-flex items-center">
+              <input type="radio" name="payment_type" value="full" class="form-radio" checked onchange="updatePaymentFields()">
+              <span class="ml-2">Full Payment</span>
+            </label>
+            <label class="inline-flex items-center">
+              <input type="radio" name="payment_type" value="partial" class="form-radio" onchange="updatePaymentFields()">
+              <span class="ml-2">Partial Payment</span>
+            </label>
+            <label class="inline-flex items-center">
+              <input type="radio" name="payment_type" value="emi" class="form-radio" onchange="updatePaymentFields()">
+              <span class="ml-2">Full EMI</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="paymentDetails" class="space-y-4">
+          <div class="flex items-center">
+            <label class="w-1/4">Payment Method:</label>
+            <select class="border border-gray-300 rounded px-2 py-1 flex-1 ml-2" name="payment_method">
+              <option value="cash">Cash</option>
+              <option value="check">Check</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="online_payment">Online Payment</option>
+            </select>
+          </div>
+
+          <div class="flex items-center">
+            <label class="w-1/4">Course Years:</label>
+            <select id="courseYears" class="border border-gray-300 rounded px-2 py-1 flex-1 ml-2" onchange="updateYearPaymentOptions()">
+              <option value="1">1 Year</option>
+              <option value="2">2 Years</option>
+              <option value="3">3 Years</option>
+            </select>
+          </div>
+
+          <div id="yearPayments" class="space-y-2">
+            </div>
+        </div>
+
+        <div class="flex items-center mb-2">
+          <label class="w-1/4">Course Duration:</label>
+          <div id="courseDuration" class="flex-1 ml-2 border-b border-black py-1"></div>
+        </div>
+
+        <div class="flex items-center mb-4">
+          <label class="w-1/4">Course Fees (per year):</label>
+          <div id="courseFees" class="flex-1 ml-2 border-b border-black py-1"></div>
+        </div>
+
+        <div class="mb-4">
+          <p>
+            I Am Mr./Ms.
+            <input class="border-b border-black inline-block w-full p-1" name="guardian_relation" type="text" />
+            Mother / Father / Husband / Sister / Brother of
+            <input class="border-b border-black inline-block w-full p-1" name="guardian_name" type="text" />
+          </p>
+          <div class="mb-4">
+            <label class="inline-flex items-center">
+              <input type="checkbox" id="agree" name="agree" required class="form-checkbox h-5 w-5 text-blue-600">
+              <span class="ml-2 text-gray-700 text-sm">I agree to the terms and conditions</span>
+            </label>
+            <div class="text-red-500 text-xs italic" id="agreeError"></div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex flex-col items-center space-y-2">
+            <div class="flex items-center space-x-8">
+              <div class="flex flex-col items-center space-y-4">
+                <div class="w-24 border-t border-black"></div>
+                <span class="text-lg">Parent Signature</span>
+              </div>
+              <div class="flex flex-col items-center space-y-4">
+                <div class="w-24 border-t border-black"></div>
+                <span class="text-lg">Student Signature</span>
+              </div>
+              <div class="flex flex-col items-center space-y-4">
+                <div class="w-24 border-t border-black"></div>
+                <span class="text-lg">Manager Signature</span>
+              </div>
+              <div class="flex flex-col items-center space-y-4">
+                <div class="w-24 border-t border-black"></div>
+                <span class="text-lg">Director Signature</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-center">
+            <button type="submit" id="submitButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+        <!---------------------Admission Form End----------------------------->
+
         
         <!-- Invoice View (Hidden Initially) -->
         <div class="flex items-center justify-center bg-gray-100 p-4">
@@ -1857,7 +1469,7 @@
          /******************************************
          * 0.0) COURSE PAYMENT  
          ******************************************/
-               const courseData = {
+        const courseData1 = {
         anm_nursing: { duration: "1 year", fees: 60000 },
         gnm_nursing: { duration: "3 years", fees: 95000 },
         dmlt: { duration: "1 years", fees: 30000 },
@@ -1881,8 +1493,8 @@
         const select = document.getElementById("courseSelect");
         selectedCourse = select.value;
 
-        if (selectedCourse && courseData[selectedCourse]) {
-          const course = courseData[selectedCourse];
+        if (selectedCourse && courseData1[selectedCourse]) {
+          const course = courseData1[selectedCourse];
 
           // Update displayed information
           document.getElementById("courseDuration").textContent =
@@ -1963,7 +1575,7 @@
       function getTotalFees() {
         if (!selectedCourse) return 0;
 
-        const course = courseData[selectedCourse];
+        const course = courseData1[selectedCourse];
         const years = course.duration.includes("year")
           ? parseInt(course.duration.split(" ")[0])
           : 1;
@@ -3559,5 +3171,323 @@ const formValues = {
 }
 
       </script>
+
+<!---------------------------Admission Form --------------------------->
+
+ <script>
+    // Ensure jsPDF is available globally
+    
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize payment type change handler
+      document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
+        radio.addEventListener('change', updatePaymentFields);
+      });
+
+      // Initialize course year change handler
+      document.getElementById('courseYears').addEventListener('change', updateYearPaymentOptions);
+
+      // Initialize year payment input handlers (delegated for dynamic elements)
+      document.getElementById('yearPayments').addEventListener('input', function(event) {
+        if (event.target.matches('[id^="year"][id$="_paid"]') || event.target.matches('[id^="year"][id$="_installments"]')) {
+          calculateDueFees();
+        }
+      });
+
+      updatePaymentFields(); // Initialize payment fields
+      updateCourseDetails(); // Initialize course details
+    });
+
+    const courseData = {
+      anm_nursing: { duration: "2 years", fees: "₹50,000" },
+      gnm_nursing: { duration: "3 years", fees: "₹60,000" },
+      dmlt: { duration: "2 years", fees: "₹45,000" },
+      ot_technician: { duration: "1 year", fees: "₹40,000" },
+      general_nursing: { duration: "2 years", fees: "₹55,000" },
+      beautician: { duration: "6 months", fees: "₹25,000" },
+      electrician: { duration: "1 year", fees: "₹30,000" },
+      mobile_repairing: { duration: "3 months", fees: "₹15,000" },
+      ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
+      automobile: { duration: "1 year", fees: "₹35,000" }
+    };
+
+    function updateCourseDetails() {
+      const select = document.getElementById('courseSelect');
+      const value = select.value;
+      const durationDiv = document.getElementById('courseDuration');
+      const feesDiv = document.getElementById('courseFees');
+      const yearsSelect = document.getElementById('courseYears');
+
+      if (courseData[value]) {
+        durationDiv.textContent = courseData[value].duration;
+        feesDiv.textContent = courseData[value].fees;
+
+        // Set course years based on duration
+        if (courseData[value].duration.includes('2')) {
+          yearsSelect.value = '2';
+        } else if (courseData[value].duration.includes('3')) {
+          yearsSelect.value = '3';
+        } else {
+          yearsSelect.value = '1';
+        }
+      } else {
+        durationDiv.textContent = '';
+        feesDiv.textContent = '';
+        yearsSelect.value = '1'; // Default to 1 year if no course is selected
+      }
+      updateYearPaymentOptions(); // Recalculate options based on new years
+    }
+
+    function updatePaymentFields() {
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      // No need to hide/show `paymentFields` or `emiFields` as they are now combined
+      // `yearPayments` will be updated by `updateYearPaymentOptions`
+      updateYearPaymentOptions();
+    }
+
+    function updateYearPaymentOptions() {
+      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      const yearPaymentsDiv = document.getElementById('yearPayments');
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+
+      yearPaymentsDiv.innerHTML = ''; // Clear previous year inputs
+
+      if (courseYears > 0) {
+        for (let i = 1; i <= courseYears; i++) {
+          const yearDiv = document.createElement('div');
+          yearDiv.className = 'flex items-center mb-2';
+
+          if (paymentType === 'emi') {
+            yearDiv.innerHTML = `
+              <label class="w-1/4">Year ${i} EMI:</label>
+              <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
+                <option value="0">Select Installment</option>
+                <option value="6">6 Installments</option>
+                <option value="12">12 Installments</option>
+              </select>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
+              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(2)}</span>
+            `;
+          } else {
+            yearDiv.innerHTML = `
+              <label class="w-1/4">Year ${i} Fees:</label>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${i > 1 ? 'disabled' : ''} value="0">
+              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(2)}</span>
+            `;
+          }
+          yearPaymentsDiv.appendChild(yearDiv);
+        }
+      }
+      calculateDueFees();
+    }
+
+    function calculateInstallment(year) {
+      const installments = parseInt(document.getElementById(`year${year}_installments`).value);
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const totalFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+      let installmentAmount = 0;
+
+      if (installments > 0) {
+        installmentAmount = Math.ceil(totalFees / installments);
+      }
+      document.getElementById(`year${year}_paid`).value = installmentAmount.toFixed(2);
+      calculateDueFees();
+    }
+
+    function calculateDueFees() {
+      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+
+      for (let i = 1; i <= courseYears; i++) {
+        const paidElement = document.getElementById(`year${i}_paid`);
+        const dueElement = document.getElementById(`year${i}_due`);
+        let total = courseFees; // Default to courseFees for EMI and partial
+
+        if (paymentType !== 'emi') { // For full/partial, total is from the readonly input
+          const totalElement = document.getElementById(`year${i}_total`);
+          if (totalElement) {
+            total = parseFloat(totalElement.value) || 0;
+          }
+        }
+
+        if (paidElement && dueElement) {
+          const paid = parseFloat(paidElement.value) || 0;
+          let due = total - paid;
+
+          if (paymentType === 'emi') {
+            const installmentsSelect = document.getElementById(`year${i}_installments`);
+            const selectedInstallments = parseInt(installmentsSelect.value);
+            if (selectedInstallments > 0) {
+              const totalForYear = courseFees; // Total for EMI is always full course fees for that year
+              const installmentPerMonth = (totalForYear / selectedInstallments).toFixed(2);
+              const paidAmount = parseFloat(paidElement.value) || 0;
+              due = totalForYear - paidAmount;
+              dueElement.textContent = `Due: ₹${due.toFixed(2)} (EMI: ${selectedInstallments} x ₹${installmentPerMonth})`;
+            } else {
+               dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
+            }
+          } else if (paymentType === 'partial' && due > 0) {
+            const emiAmount = (due / 11).toFixed(2);
+            dueElement.textContent = `Due: ₹${due.toFixed(2)} (EMI: 11 x ₹${emiAmount})`;
+          } else {
+            dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
+          }
+
+          // Enable next year only if current year is fully paid (for full/partial)
+          if (i < courseYears && paymentType !== 'emi') {
+            const nextPaidElement = document.getElementById(`year${i + 1}_paid`);
+            if (nextPaidElement) {
+              nextPaidElement.disabled = due > 0;
+              if (due > 0) {
+                nextPaidElement.value = '';
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+      const formObject = {};
+
+      formData.forEach((value, key) => {
+        if (key === 'agree') {
+          formObject[key] = document.getElementById('agree').checked;
+        } else {
+          formObject[key] = value;
+        }
+      });
+
+      // Add course details
+      formObject.courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      formObject.courseFees = document.getElementById('courseFees').textContent.trim();
+      formObject.courseDuration = document.getElementById('courseDuration').textContent.trim();
+
+      // Add year-specific payment data
+      const courseYears = formObject.courseYears;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+
+      for (let i = 1; i <= courseYears; i++) {
+        if (paymentType === 'emi') {
+          formObject[`year${i}_installments`] = getValue(`year${i}_installments`);
+          formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
+          formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
+        } else {
+          formObject[`year${i}_total`] = getValue(`year${i}_total`);
+          formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
+          formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
+        }
+      }
+
+      // Submit to Google Apps Script
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .submitForm(formObject);
+    }
+
+    // Helper functions
+    function getValue(id) {
+      const element = document.getElementById(id);
+      return element ? element.value : '';
+    }
+
+    function getDueValue(id) {
+      const element = document.getElementById(id);
+      return element ? element.textContent.replace(/[^\d.]/g, '') : '';
+    }
+
+    function onSuccess(result) {
+      Swal.fire({
+        title: 'Success!',
+        text: result.message,
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        generatePDF();
+      });
+    }
+
+    function onFailure(error) {
+      Swal.fire({
+        title: 'Error!',
+        text: error.message,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+
+    function generatePDF() {
+      const element = document.getElementById('slipForm');
+      const options = {
+        scale: 3,
+        useCORS: true,
+        letterRendering: true,
+        onclone: (clonedDoc) => {
+          clonedDoc.querySelectorAll('input, select').forEach(element => {
+            // Apply minimal padding to elements for better PDF rendering
+            element.style.paddingTop = '2px';
+            element.style.paddingBottom = '2px';
+            element.style.paddingLeft = '2px';
+            element.style.paddingRight = '2px';
+          });
+          // Hide buttons and other non-essential elements for the PDF
+          clonedDoc.getElementById('submitButton').style.display = 'none';
+          // Hide radio buttons and checkboxes by setting their container to display: none
+          clonedDoc.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+            el.closest('label').style.display = 'none';
+          });
+          // Ensure border-bottom is visible for inputs that use it
+          clonedDoc.querySelectorAll('.border-b').forEach(el => {
+            el.style.borderBottomWidth = '1px';
+            el.style.borderColor = 'black';
+          });
+        }
+      };
+
+      html2canvas(element, options).then(canvas => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let position = 0;
+
+        // Calculate the number of pages needed
+        const numPages = Math.ceil(imgHeight / pageHeight);
+
+        for (let i = 0; i < numPages; i++) {
+          const sX = 0; // start X
+          const sY = i * pageHeight * (canvas.width / imgWidth); // start Y based on page
+          const sWidth = canvas.width; // slice width
+          const sHeight = Math.min(pageHeight * (canvas.width / imgWidth), canvas.height - sY); // slice height, cap at remaining canvas height
+
+          // Create a temporary canvas to hold the sliced portion
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width = sWidth;
+          sliceCanvas.height = sHeight;
+          const sliceContext = sliceCanvas.getContext('2d');
+          sliceContext.drawImage(canvas, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+          if (i > 0) {
+            pdf.addPage();
+          }
+          pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, (sliceCanvas.height * imgWidth) / sliceCanvas.width);
+        }
+
+        const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
+        pdf.save(`${studentName}_AdmissionForm.pdf`);
+      });
+    }
+  </script>
+<!---------------------------Admission Form End--------------------------->
     </body>
   </html>
