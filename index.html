@@ -188,16 +188,16 @@
             </div>
           </div>
           <nav class="flex-1 px-4 py-4 space-y-2">
-            <button onclick="openSlip()"
+            <!-- <button onclick="openSlip()"
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
               <i class="fas fa-file-alt"></i>
               <span>Slip</span>
-            </button>
-            <button onclick="openInquiryForm()"
-              class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
-              <i class="fas fa-plane-plus"></i>
-              <span>Inquiry Form</span>
-            </button>
+            </button> -->
+           <button onclick="openInquiryForm()"
+  class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
+  <i class="fas fa-file-signature"></i>
+  <span>Inquiry Form</span>
+</button>
                   <button onclick="openCoursePayment()"
   class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
   <i class="fas fa-money-bill-wave"></i>
@@ -234,21 +234,21 @@
               <i class="fas fa-hand-holding-usd"></i>
               <span>Due Fees</span>
             </button>
-            <button onclick="downloadPDF()"
+             <!-- <button onclick="downloadPDF()"
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
               <i class="fas fa-file-pdf"></i>
               <span>Download PDF</span>
             </button>
-            <button onclick="showLatestReceipt()"
+            <!-- <button onclick="showLatestReceipt()"
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
               <i class="fas fa-receipt"></i>
               <span>View Receipt</span>
-            </button>
+            </button> -->
             <button onclick="logout()"
               class="mt-6 w-full flex items-center gap-2 px-3 py-2 rounded-md text-white bg-red-600 hover:bg-red-700">
               <i class="fas fa-sign-out-alt"></i>
               <span>Logout</span>
-            </button>
+            </button> 
           </nav>
         </aside>
         <!-- MAIN CONTENT -->
@@ -256,7 +256,6 @@
           <!-- HIDDEN INPUTS -->
           <input type="hidden" id="userName" />
           <input type="hidden" id="userRole" />
-          <!-- SLIP FORM SECTION -->
           <div id="slipFormSection"
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
             <div
@@ -487,8 +486,8 @@
               </button>
             </div>
           </div>
-          <!-- OLD FEES SECTION -->
-          <div id="oldFeesSection"
+          <!-- OLD FEES SECTION  -->
+           <div id="oldFeesSection"
             class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
             <div class="flex justify-between items-center mb-6">
               <h2 class="text-2xl font-bold text-gray-800">Payment History</h2>
@@ -565,7 +564,7 @@
                   class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded">
                   Clear Filter
                 </button>
-                <button onclick="backToSlipFromAnalytics()"
+                <button onclick="closeDueFees()"
                   class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg flex items-center gap-2">
                   <i class="fas fa-arrow-left"></i> Back
                 </button>
@@ -661,7 +660,7 @@
               class="flex flex-col md:flex-row justify-between items-center mb-6">
               <h2 class="text-2xl font-bold text-gray-800">Class &amp; Month
                 Dashboard</h2>
-              <button onclick="backToSlipFromClassDashboard()"
+              <button onclick="closeDueFees()"
                 class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg flex items-center gap-2">
                 <i class="fas fa-arrow-left"></i><span>Back</span>
               </button>
@@ -1820,45 +1819,85 @@
          /******************************************
          * 2) LOGIN / LOGOUT
          ******************************************/
+        //  document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //  e.preventDefault();
+        //  const loginData = {
+        //  username: document.getElementById('loginUsername').value.trim(),
+        //  password: document.getElementById('loginPassword').value.trim()
+        //  };
+        //  google.script.run.withSuccessHandler(function(resp) {
+        //  if (resp.success) {
+        //    Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
+        //    document.getElementById('loginSection').classList.add('hidden');
+        //    document.getElementById('appSection').classList.remove('hidden');
+        //    document.getElementById('userName').value = resp.userName;
+        //    document.getElementById('userRole').value = resp.role;
+        //    document.getElementById('userRoleDisplay').textContent = resp.role;
+         
+        //    // Admin UI if role=admin
+        //    if (resp.role === 'admin') {
+        //      document.getElementById('manageStudentsBtn').classList.remove('hidden');
+        //      document.getElementById('analyticsBtn').classList.remove('hidden');
+        //      document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
+        //      document.getElementById('dueFeesBtn').classList.remove('hidden');
+        //    }
+         
+        //    // load dropdown data
+        //    google.script.run.withSuccessHandler(function(dd) {
+        //      if (dd.error) {
+        //        console.log("Dropdown error", dd.error);
+        //        return;
+        //      }
+        //      dropdownData = dd;
+        //      fillDropdowns();
+        //    }).getDropdownData();
+         
+        //  } else {
+        //    Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
+        //  }
+        //  }).loginUser(loginData);
+        //  });
          document.getElementById('loginForm').addEventListener('submit', function(e) {
-         e.preventDefault();
-         const loginData = {
-         username: document.getElementById('loginUsername').value.trim(),
-         password: document.getElementById('loginPassword').value.trim()
-         };
-         google.script.run.withSuccessHandler(function(resp) {
-         if (resp.success) {
-           Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
-           document.getElementById('loginSection').classList.add('hidden');
-           document.getElementById('appSection').classList.remove('hidden');
-           document.getElementById('userName').value = resp.userName;
-           document.getElementById('userRole').value = resp.role;
-           document.getElementById('userRoleDisplay').textContent = resp.role;
-         
-           // Admin UI if role=admin
-           if (resp.role === 'admin') {
-             document.getElementById('manageStudentsBtn').classList.remove('hidden');
-             document.getElementById('analyticsBtn').classList.remove('hidden');
-             document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
-             document.getElementById('dueFeesBtn').classList.remove('hidden');
-           }
-         
-           // load dropdown data
-           google.script.run.withSuccessHandler(function(dd) {
-             if (dd.error) {
-               console.log("Dropdown error", dd.error);
-               return;
-             }
-             dropdownData = dd;
-             fillDropdowns();
-           }).getDropdownData();
-         
-         } else {
-           Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
-         }
-         }).loginUser(loginData);
-         });
-         
+  e.preventDefault();
+  const loginData = {
+    username: document.getElementById('loginUsername').value.trim(),
+    password: document.getElementById('loginPassword').value.trim()
+  };
+  
+  google.script.run.withSuccessHandler(function(resp) {
+    if (resp.success) {
+      Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('appSection').classList.remove('hidden');
+      document.getElementById('userName').value = resp.userName;
+      document.getElementById('userRole').value = resp.role;
+      document.getElementById('userRoleDisplay').textContent = resp.role;
+
+      // Show Inquiry Form by default after login
+      openInquiryForm();
+
+      // Admin UI if role=admin
+      if (resp.role === 'admin') {
+        document.getElementById('manageStudentsBtn').classList.remove('hidden');
+        document.getElementById('analyticsBtn').classList.remove('hidden');
+        document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
+        document.getElementById('dueFeesBtn').classList.remove('hidden');
+      }
+
+      // load dropdown data
+      google.script.run.withSuccessHandler(function(dd) {
+        if (dd.error) {
+          console.log("Dropdown error", dd.error);
+          return;
+        }
+        dropdownData = dd;
+        fillDropdowns();
+      }).getDropdownData();
+    } else {
+      Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
+    }
+  }).loginUser(loginData);
+});
          function logout() {
          document.getElementById('appSection').classList.add('hidden');
          document.getElementById('loginSection').classList.remove('hidden');
@@ -2085,9 +2124,9 @@
          }
          }).getOldFees(sid);
          }
-         function backToSlipForm() {
+         function backToInquiryForm() {
          hideAllSections();
-         document.getElementById('slipFormSection').classList.remove('hidden');
+         document.getElementById('ifId').classList.remove('hidden');
          }
          function viewRecord(rowNumber) {
          google.script.run.withSuccessHandler(function(resp) {
@@ -2149,9 +2188,9 @@
          document.getElementById('analyticsSection').classList.remove('hidden');
          loadAnalytics();
          }
-         function backToSlipFromAnalytics() {
+         function backToInquiryFromAnalytics() {
          hideAllSections();
-         document.getElementById('slipFormSection').classList.remove('hidden');
+         document.getElementById('ifId').classList.remove('hidden');
          }
          function clearAnalyticsFilter() {
          document.getElementById('analyticsDateFrom').value = "";
@@ -2391,9 +2430,9 @@
          document.getElementById('classMonthDashboard').classList.remove('hidden');
          loadClassList();
          }
-         function backToSlipFromClassDashboard() {
+         function backToInquiryFromClassDashboard() {
          hideAllSections();
-         document.getElementById('slipFormSection').classList.remove('hidden');
+         document.getElementById('ifId').classList.remove('hidden');
          }
          function loadClassList() {
          google.script.run.withSuccessHandler(function(cls) {
@@ -2544,7 +2583,7 @@
          }
          function closeDueFees() {
          hideAllSections();
-         document.getElementById('slipFormSection').classList.remove('hidden');
+         document.getElementById('ifId').classList.remove('hidden');
          }
          function loadDueFees() {
          const userRole = document.getElementById('userRole').value;
@@ -2695,111 +2734,112 @@
          /******************************************
          * 11) INITIALIZE
          ******************************************/
-         updateGeneratedTime();
+        //  updateGeneratedTime();
          
-         // Fill dropdowns function
-         function fillDropdowns() {
-         // Slip form
-         const sessionEl = document.getElementById('session');
-         sessionEl.innerHTML = '<option value="">Select Session</option>';
-         dropdownData.sessions.forEach(s=>{
-         const opt = document.createElement('option');
-         opt.value=s; opt.textContent=s;
-         sessionEl.appendChild(opt);
-         });
-         const tradeEl = document.getElementById('trade');
-         tradeEl.innerHTML='<option value="">Select Course</option>';
-         dropdownData.trades.forEach(t=>{
-         const opt=document.createElement('option');
-         opt.value=t; opt.textContent=t;
-         tradeEl.appendChild(opt);
-         });
-         const feesEl=document.getElementById('feesType');
-         feesEl.innerHTML='<option value="">Select Branch </option>';
-         dropdownData.feesTypes.forEach(f=>{
-         const opt=document.createElement('option');
-         opt.value=f; opt.textContent=f;
-         feesEl.appendChild(opt);
-         });
-         const payEl=document.getElementById('paymentMode');
-         payEl.innerHTML='<option value="">Select Payment Mode</option>';
-         dropdownData.paymentModes.forEach(pm=>{
-         const opt=document.createElement('option');
-         opt.value=pm; opt.textContent=pm;
-         payEl.appendChild(opt);
-         });
+        //  // Fill dropdowns function
+        //  function fillDropdowns() {
+        //  // Slip form
+        // //  const sessionEl = document.getElementById('session');
+        // //  sessionEl.innerHTML = '<option value="">Select Session</option>';
+        // //  dropdownData.sessions.forEach(s=>{
+        // //  const opt = document.createElement('option');
+        // //  opt.value=s; opt.textContent=s;
+        // //  sessionEl.appendChild(opt);
+        // //  });
+        //  const tradeEl = document.getElementById('trade');
+        //  tradeEl.innerHTML='<option value="">Select Course</option>';
+        //  dropdownData.trades.forEach(t=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=t; opt.textContent=t;
+        //  tradeEl.appendChild(opt);
+        //  });
+        //  const feesEl=document.getElementById('feesType');
+        //  feesEl.innerHTML='<option value="">Select Branch </option>';
+        //  dropdownData.feesTypes.forEach(f=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=f; opt.textContent=f;
+        //  feesEl.appendChild(opt);
+        //  });
+        //  const payEl=document.getElementById('paymentMode');
+        //  payEl.innerHTML='<option value="">Select Payment Mode</option>';
+        //  dropdownData.paymentModes.forEach(pm=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=pm; opt.textContent=pm;
+        //  payEl.appendChild(opt);
+        //  });
          
-         // Student form
-         const sessNew=document.getElementById('sessionNew');
-         sessNew.innerHTML='<option value="">Select Session</option>';
-         dropdownData.sessions.forEach(s=>{
-         const opt=document.createElement('option');
-         opt.value=s; opt.textContent=s;
-         sessNew.appendChild(opt);
-         });
-         const tradeNew=document.getElementById('tradeNew');
-         tradeNew.innerHTML='<option value="">Select Course</option>';
-         dropdownData.trades.forEach(t=>{
-         const opt=document.createElement('option');
-         opt.value=t; opt.textContent=t;
-         tradeNew.appendChild(opt);
-         });
+        //  // Student form
+        //  const sessNew=document.getElementById('sessionNew');
+        //  sessNew.innerHTML='<option value="">Select Session</option>';
+        //  dropdownData.sessions.forEach(s=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=s; opt.textContent=s;
+        //  sessNew.appendChild(opt);
+        //  });
+        //  const tradeNew=document.getElementById('tradeNew');
+        //  tradeNew.innerHTML='<option value="">Select Course</option>';
+        //  dropdownData.trades.forEach(t=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=t; opt.textContent=t;
+        //  tradeNew.appendChild(opt);
+        //  });
          
-         // analytics
-         const aFees=document.getElementById('analyticsFeesTypeFilter');
-         aFees.innerHTML='<option value="">Branch </option>';
-         dropdownData.feesTypes.forEach(f=>{
-         const opt=document.createElement('option');
-         opt.value=f; opt.textContent=f;
-         aFees.appendChild(opt);
-         });
-         const aPay=document.getElementById('analyticsPaymentModeFilter');
-         aPay.innerHTML='<option value="">All Payment Modes</option>';
-         dropdownData.paymentModes.forEach(pm=>{
-         const opt=document.createElement('option');
-         opt.value=pm; opt.textContent=pm;
-         aPay.appendChild(opt);
-         });
-         }
+        //  // analytics
+        //  const aFees=document.getElementById('analyticsFeesTypeFilter');
+        //  aFees.innerHTML='<option value="">Branch </option>';
+        //  dropdownData.feesTypes.forEach(f=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=f; opt.textContent=f;
+        //  aFees.appendChild(opt);
+        //  });
+        //  const aPay=document.getElementById('analyticsPaymentModeFilter');
+        //  aPay.innerHTML='<option value="">All Payment Modes</option>';
+        //  dropdownData.paymentModes.forEach(pm=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=pm; opt.textContent=pm;
+        //  aPay.appendChild(opt);
+        //  });
+        //  }
          // Show Slip by default on login
-         function openSlip(){
-         hideAllSections();
-         document.getElementById('slipFormSection').classList.remove('hidden');
-         }
-           function calculateMonthlyFees() {
-           // Get the value of admission fees
-           const admissionFees = parseFloat(document.getElementById('admission_fees').value) || 0;
+        //  function openSlip(){
+        //  hideAllSections();
+        //  document.getElementById('slipFormSection').classList.remove('hidden');
+        //  }
+        //    function calculateMonthlyFees() {
+        //    // Get the value of admission fees
+        //    const admissionFees = parseFloat(document.getElementById('admission_fees').value) || 0;
          
-          // Calculate monthly fees as admission / 12
-          const monthlyFees = admissionFees / 12;
+        //   // Calculate monthly fees as admission / 12
+        //   const monthlyFees = admissionFees / 12;
          
-          document.getElementById('total').value = admissionFees;
+        //   document.getElementById('total').value = admissionFees;
          
-          // Update the monthly fees input field
-          document.getElementById('monthly_fees').value = monthlyFees.toFixed(2); // Format to two decimal places
-         }
-         function saveDataToSheet() {
-         // Collect values from input fields
-         const data = [
-           document.getElementById("jan_25").value,
-           document.getElementById("feb_25").value,
-           document.getElementById("mar_25").value,
-           document.getElementById("apr_25").value,
-           document.getElementById("may_25").value,
-           document.getElementById("jun_25").value,
-           document.getElementById("jul_25").value,
-           document.getElementById("aug_25").value,
-           document.getElementById("sep_25").value,
-           document.getElementById("oct_25").value,
-           document.getElementById("nov_25").value,
-           document.getElementById("dec_25").value
-         ];
-         // Call Apps Script function to save data
-         google.script.run.saveData(data);
-         alert('Data saved successfully!');
-         }
-         
-              function openInquiryForm() {
+        //   // Update the monthly fees input field
+        //   document.getElementById('monthly_fees').value = monthlyFees.toFixed(2); // Format to two decimal places
+        //  }
+        //  function saveDataToSheet() {
+        //  // Collect values from input fields
+        //  const data = [
+        //    document.getElementById("jan_25").value,
+        //    document.getElementById("feb_25").value,
+        //    document.getElementById("mar_25").value,
+        //    document.getElementById("apr_25").value,
+        //    document.getElementById("may_25").value,
+        //    document.getElementById("jun_25").value,
+        //    document.getElementById("jul_25").value,
+        //    document.getElementById("aug_25").value,
+        //    document.getElementById("sep_25").value,
+        //    document.getElementById("oct_25").value,
+        //    document.getElementById("nov_25").value,
+        //    document.getElementById("dec_25").value
+        //  ];
+        //  // Call Apps Script function to save data
+        //  google.script.run.saveData(data);
+        //  alert('Data saved successfully!');
+        //  }
+  
+  
+                function openInquiryForm() {
 
                 const userRole = document.getElementById('userRole').value;
                 
