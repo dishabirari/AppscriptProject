@@ -163,7 +163,9 @@
     <div id="appSection" class="hidden min-h-screen">
       <div class="flex min-h-screen">
         <!-- SIDEBAR -->
-        <aside class="bg-blue-800 text-white w-64 hidden md:flex flex-col">
+
+        <?!= include('SideBar'); ?>
+ <!--       <aside class="bg-blue-800 text-white w-64 hidden md:flex flex-col">
           <div
             class="py-6 px-4 bg-blue-900 flex flex-col items-center justify-center">
             <img
@@ -174,7 +176,9 @@
                 id="userRoleDisplay"></span></p>
           </div>
           <!-- SIDEBAR SEARCH -->
-          <div class="p-4">
+          
+
+          <!-- <div class="p-4">
             <label class="block text-xs text-blue-200">Search Student ID</label>
             <div class="mt-1 relative">
               <input type="text" id="sideBarSearchId"
@@ -192,17 +196,17 @@
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
               <i class="fas fa-file-alt"></i>
               <span>Slip</span>
-            </button> -->
-           <button onclick="openInquiryForm()"
-  class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
-  <i class="fas fa-file-signature"></i>
-  <span>Inquiry Form</span>
-</button>
-                  <button onclick="openCoursePayment()"
-  class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
-  <i class="fas fa-money-bill-wave"></i>
-  <span>Course Payment</span>
-</button>
+            </button> 
+            <button onclick="openInquiryForm()"
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
+            <i class="fas fa-file-signature"></i>
+            <span>Inquiry Form</span>
+            </button>
+            <button onclick="openCoursePayment()"
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Course Payment</span>
+            </button>
             <button onclick="openAdmissionForm()"
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
               <i class="fas fa-user-plus"></i>
@@ -243,14 +247,15 @@
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white hover:bg-blue-700">
               <i class="fas fa-receipt"></i>
               <span>View Receipt</span>
-            </button> -->
+            </button> 
             <button onclick="logout()"
               class="mt-6 w-full flex items-center gap-2 px-3 py-2 rounded-md text-white bg-red-600 hover:bg-red-700">
               <i class="fas fa-sign-out-alt"></i>
               <span>Logout</span>
             </button> 
           </nav>
-        </aside>
+        </aside> -->
+
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-4 overflow-y-auto">
           <!-- HIDDEN INPUTS -->
