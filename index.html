@@ -492,7 +492,11 @@
             </div>
           </div>
           <!-- OLD FEES SECTION  -->
-           <div id="oldFeesSection"
+
+
+         <?!= include('OldFees'); ?>
+
+           <!-- <div id="oldFeesSection"
             class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
             <div class="flex justify-between items-center mb-6">
               <h2 class="text-2xl font-bold text-gray-800">Payment History</h2>
@@ -522,9 +526,13 @@
                   class="divide-y divide-gray-200"></tbody>
               </table>
             </div>
-          </div>
+          </div> -->
+
           <!-- ANALYTICS SECTION -->
-          <div id="analyticsSection"
+
+          <?!= include('AnalyticsSection'); ?>
+
+           <!-- <div id="analyticsSection"
             class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
             <div
               class="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -564,7 +572,6 @@
                   class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded">
                   Filter
                 </button>
-                <!-- CLEAR FILTER -->
                 <button onclick="clearAnalyticsFilter()"
                   class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded">
                   Clear Filter
@@ -621,9 +628,12 @@
                 <canvas id="pieChart"></canvas>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- MANAGE STUDENTS SECTION -->
-          <div id="manageStudentSection"
+
+          <?!= include('ManageStudentSection'); ?>
+
+          <!-- <div id="manageStudentSection"
             class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
             <div
               class="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -643,7 +653,6 @@
                       </button>
               </div>
             </div>
-            <!-- Export buttons for Manage Students -->
             <div class="mb-4 flex gap-2">
               <button onclick="copyTable('studentTableContainer')"
                 class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
@@ -661,9 +670,12 @@
               </button>
             </div>
             <div id="studentTableContainer" class="overflow-x-auto"></div>
-          </div>
+          </div>  -->
           <!-- CLASS & MONTH DASHBOARD -->
-          <div id="classMonthDashboard"
+
+           <?!= include('Dashboard'); ?>
+
+          <!-- <div id="classMonthDashboard"
             class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
             <div
               class="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -674,7 +686,6 @@
                 <i class="fas fa-arrow-left"></i><span>Back</span>
               </button>
             </div>
-            <!-- Improved UI: added a student search box -->
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
               <div>
                 <label
@@ -715,7 +726,6 @@
                   <option value="unpaid">Unpaid Only</option>
                 </select>
               </div>
-              <!-- Student Search Input -->
               <div>
                 <label
                   class="block text-sm font-medium text-gray-700 mb-1">Search
@@ -755,17 +765,18 @@
                 <tbody id="classMonthStudentTable"></tbody>
               </table>
             </div>
-          </div>
+          </div> -->
 
           <!-- COURSE PAYMENT SECTION -->
-          <div id="coursePaymentSection" class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+
+           <?!= include('CoursePayment'); ?>
+
+          <!-- <div id="coursePaymentSection" class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200">
             <div class="bg-gradient-to-r from-blue-200 to-blue-800 p-6 text-white">
               <h1 class="text-2xl font-bold">Course Enrollment</h1>
               <p class="opacity-90">Select your course and payment option</p>
             </div>
-
             <div class="p-6 space-y-8">
-              <!-- Course Selection -->
               <div class="space-y-4">
                 <h2 class="text-xl font-semibold text-gray-800">Course Information</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -794,12 +805,9 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Payment Options -->
               <div class="space-y-4">
                 <h2 class="text-xl font-semibold text-gray-800">Payment Options</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <!-- Full Payment -->
                   <div class="payment-card border-2 rounded-lg p-4 cursor-pointer" 
                        onclick="selectPayment('full')" id="fullPaymentCard">
                     <div class="flex items-center mb-2">
@@ -822,8 +830,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- Partial Payment -->
                   <div class="payment-card border-2 rounded-lg p-4 cursor-pointer" 
                        onclick="selectPayment('partial')" id="partialPaymentCard">
                     <div class="flex items-center mb-2">
@@ -850,8 +856,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- EMI Payment -->
                   <div class="payment-card border-2 rounded-lg p-4 cursor-pointer" 
                        onclick="selectPayment('emi')" id="emiPaymentCard">
                     <div class="flex items-center mb-2">
@@ -883,8 +887,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Installment Plan (shown for EMI/Partial) -->
               <div id="installmentPlan" class="hidden bg-white rounded-lg border border-gray-200 p-4 installment-plan">
                 <h3 class="font-semibold text-lg mb-3">Installment Schedule</h3>
                 <div class="overflow-x-auto">
@@ -898,13 +900,11 @@
                       </tr>
                     </thead>
                     <tbody id="installmentTable" class="bg-white divide-y divide-gray-200">
-                      <!-- Installment rows will be added here -->
+        
                     </tbody>
                   </table>
                 </div>
               </div>
-
-              <!-- Submit Button -->
               <div class="pt-4">
                 <button onclick="openAdmissionForm()" class="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                   Proceed to Admission Form
@@ -912,10 +912,14 @@
                 
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- DUE FEES SECTION -->
-          <div id="dueFeesSection"
+
+
+          <?!= include('DueFees'); ?>
+
+          <!-- <div id="dueFeesSection"
             class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
             <div
               class="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -925,7 +929,6 @@
                 <i class="fas fa-arrow-left"></i><span>Back</span>
               </button>
             </div>
-            <!-- Summary Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
               <div class="bg-blue-50 p-4 rounded flex flex-col items-center">
                 <p class="text-sm text-gray-700">Total Fees</p>
@@ -947,13 +950,11 @@
                   class="text-xl font-bold text-yellow-900">0</p>
               </div>
             </div>
-            <!-- Filter by Class + Search + Export Buttons -->
             <div class="flex flex-wrap items-center gap-2 mb-4">
               <select id="dueFeesClassSelect"
                 class="px-4 py-2 border rounded-lg border-gray-300"
                 onchange="filterDueFees()">
                 <option value>All Classes</option>
-                <!-- filled dynamically with getClassList() -->
               </select>
               <input type="text" id="dueFeesSearch" onkeyup="filterDueFees()"
                 placeholder="Search Due Fees..."
@@ -968,11 +969,15 @@
                 class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">PDF</button>
             </div>
             <div id="dueFeesTableContainer" class="overflow-x-auto"></div>
-          </div>
+          </div> -->
 
 
           <!---------------------Admission Form ----------------------------->
-           <div id="admissionFormSection">
+
+
+           <?!= include('Admission'); ?>
+
+           <!-- <div id="admissionFormSection">
     <form class="max-w-2xl mx-auto bg-white p-6 border border-gray-300" onsubmit="handleSubmit(event)">
       <div class="flex justify-between items-center mb-4">
         <div class="flex items-center">
@@ -1117,12 +1122,16 @@
         </div>
       </div>
     </form>
-  </div>
+  </div> -->
         <!---------------------Admission Form End----------------------------->
 
         
         <!-- Invoice View (Hidden Initially) -->
-        <div class="flex items-center justify-center bg-gray-100 p-4">
+
+
+        <?!= include('InquiryForm'); ?>
+
+        <!-- <div class="flex items-center justify-center bg-gray-100 p-4">
           <div id="inquiryFormSection"
             class="hidden bg-white rounded-xl shadow-xl overflow-hidden w-full max-w-4xl">
             <div id="container" class="hidden">
@@ -1152,12 +1161,12 @@
         </div>
 
 
-          <!-- Form View (Visible Initially) -->
+         
           <form id="ifId" class="flex justify-center items-center bg-gray-100" onsubmit="submitInquiryForm(event)">
            <div class="max-w-4xl mx-auto px-4">
-              <!-- Added mx-auto here for centering -->
+          
               <div class="bg-white rounded-xl shadow-xl">
-                <!-- Header -->
+                
                 <div class="header-bg text-white p-6">
                   <div
                     class="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -1191,10 +1200,10 @@
                     </div>
                   </div>
                 </div>
-                <!-- Form Content -->
+           
                 <div class="flex items-start justify-center p-6 bg-gray-50">
                   <div id="InquiryForm" class="space-y-5">
-                    <!-- Personal Details Row -->
+                   
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label for="date"
@@ -1216,7 +1225,7 @@
                           class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
                       </div>
                     </div>
-                    <!-- Education Row -->
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label for="qualification"
@@ -1239,7 +1248,7 @@
                           class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
                       </div>
                     </div>
-                    <!-- Contact Information -->
+                  
                     <div class="bg-blue-50 p-4 rounded-lg">
                       <h3
                         class="text-blue-900 font-semibold mb-3 flex items-center">
@@ -1289,7 +1298,7 @@
                           class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
                       </div>
                     </div>
-                    <!-- Address -->
+                  
                     <div>
                       <label for="address"
                         class="block text-sm font-medium text-gray-700 mb-1">
@@ -1298,7 +1307,7 @@
                       <textarea id="address" name="address" required rows="3"
                         class="form-input w-full px-4 py-2 rounded-lg border border-gray-300"></textarea>
                     </div>
-                    <!-- Course Details -->
+                  
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label for="interestedCourse"
@@ -1330,7 +1339,7 @@
                               class="form-input w-full px-4 py-2 rounded-lg border border-gray-300" />
                           </div>
                     </div>
-                    <!-- Terms and Submit -->
+
                     <div
                       class="border-t border-dashed border-yellow-500 my-4 pt-4">
                       <div
@@ -1355,7 +1364,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- Footer -->
                 <div class="bg-gray-50 p-4 border-t border-gray-200">
                   <div class="flex justify-end">
                     <div class="text-center">
@@ -1369,10 +1377,14 @@
               </div>
             </div>
           </form>
-      </main>
+      </main> -->
 
       <!-- STUDENT MODAL (Add/Edit) -->
-      <div id="studentModal" class="modal hidden">
+
+
+       <?!= include('StudentModal'); ?>
+
+      <!-- <div id="studentModal" class="modal hidden">
         <div class="modal-content">
           <h2 id="studentModalTitle" class="text-xl font-bold mb-4">Add
             Student</h2>
@@ -1449,7 +1461,7 @@
           </form>
         </div>
       </div>
-    
+     -->
 
       <script>
          /******************************************

@@ -1,0 +1,54 @@
+ <div id="dueFeesSection"
+            class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
+            <div
+              class="flex flex-col md:flex-row justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-800">Due Fees</h2>
+              <button onclick="closeDueFees()"
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i><span>Back</span>
+              </button>
+            </div>
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+              <div class="bg-blue-50 p-4 rounded flex flex-col items-center">
+                <p class="text-sm text-gray-700">Total Fees</p>
+                <p id="dueTotalFees"
+                  class="text-xl font-bold text-blue-900">0</p>
+              </div>
+              <div class="bg-green-50 p-4 rounded flex flex-col items-center">
+                <p class="text-sm text-gray-700">Total Paid</p>
+                <p id="dueTotalPaid"
+                  class="text-xl font-bold text-green-900">0</p>
+              </div>
+              <div class="bg-red-50 p-4 rounded flex flex-col items-center">
+                <p class="text-sm text-gray-700">Total Due</p>
+                <p id="dueTotalDue" class="text-xl font-bold text-red-900">0</p>
+              </div>
+              <div class="bg-yellow-50 p-4 rounded flex flex-col items-center">
+                <p class="text-sm text-gray-700">Fully Paid Students</p>
+                <p id="dueFullyPaidCount"
+                  class="text-xl font-bold text-yellow-900">0</p>
+              </div>
+            </div>
+            <!-- Filter by Class + Search + Export Buttons -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              <select id="dueFeesClassSelect"
+                class="px-4 py-2 border rounded-lg border-gray-300"
+                onchange="filterDueFees()">
+                <option value>All Classes</option>
+                <!-- filled dynamically with getClassList() -->
+              </select>
+              <input type="text" id="dueFeesSearch" onkeyup="filterDueFees()"
+                placeholder="Search Due Fees..."
+                class="px-3 py-2 border rounded-lg" />
+              <button onclick="copyTable('dueFeesTableContainer')"
+                class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">Copy</button>
+              <button
+                onclick="exportCSV('dueFeesTableContainer','due_fees.csv')"
+                class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">CSV</button>
+              <button
+                onclick="exportTablePDF('dueFeesTableContainer','DueFees')"
+                class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">PDF</button>
+            </div>
+            <div id="dueFeesTableContainer" class="overflow-x-auto"></div>
+          </div>
