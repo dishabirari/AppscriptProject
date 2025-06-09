@@ -28,8 +28,8 @@
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!---------------------Admission Form End ----------------------------->
 
-
-    <style>
+<?!= include('Style'); ?>
+    <!-- <style>
          body {
          font-family: 'Inter', sans-serif;
          }
@@ -113,7 +113,9 @@
         background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       }
          }
-      </style>
+      </style> -->
+<?!= include('Style'); ?>
+
   </head>
   <body class="bg-gray-100">
     <!-- LOGIN SECTION -->
@@ -1463,7 +1465,9 @@
       </div>
      -->
 
-      <script>
+
+     <?!= include('script'); ?>
+      <!-- <script>
          /******************************************
          * 0) INITIAL SETUP & GLOBALS
          ******************************************/
@@ -3548,7 +3552,7 @@ const formValues = {
         pdf.save(`${studentName}_AdmissionForm.pdf`);
       });
     }
-  </script>
+  </script> -->
 <!---------------------------Admission Form End--------------------------->
     </body>
   </html>
