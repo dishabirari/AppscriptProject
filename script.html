@@ -428,6 +428,7 @@
       document.getElementById('userName').value = resp.userName;
       document.getElementById('userRole').value = resp.role;
       document.getElementById('userRoleDisplay').textContent = resp.role;
+      document.getElementById('userBranch').value = resp.branch;
 
       // Show Inquiry Form by default after login
       openInquiryForm();
@@ -1395,25 +1396,24 @@
         //  }
   
   
-                function openInquiryForm() {
+             function openInquiryForm() {
+  console.log("Inquiry Form button clicked");
+  hideAllSections(); 
+  document.getElementById('ifId').classList.remove('hidden');
 
-                const userRole = document.getElementById('userRole').value;
-                
-                console.log("Inquiry Form button clicked");
-                hideAllSections(); 
-                document.getElementById('ifId').classList.remove('hidden');
+  // 1. Get the stored branch from the hidden input
+  const userBranch = document.getElementById('userBranch').value;
 
-                const branchInput = document.getElementById("branch22");
+  // 2. Get the branch input element in your inquiry form
+  const branchInput = document.getElementById("branch22");
 
-                if (userRole === 'admin') {
-                  branchInput.value = "Kurla";
-                } else if (userRole === 'user') {
-                  branchInput.value = "Thane";
-                } else {
-                  branchInput.value = "Unknown";
-                }
-              }
-
+  // 3. Set its value directly
+  if (userBranch) {
+    branchInput.value = userBranch;
+  } else {
+    branchInput.value = ""; // Or some default value
+  }
+}
 
 
          
