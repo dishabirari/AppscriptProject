@@ -1,0 +1,93 @@
+          <div id="classMonthDashboard"
+            class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
+            <div
+              class="flex flex-col md:flex-row justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-800">Class &amp; Month
+                Dashboard</h2>
+              <button onclick="closeDueFees()"
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i><span>Back</span>
+              </button>
+            </div>
+            <!-- Improved UI: added a student search box -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-1">Select
+                  Class</label>
+                <select id="selectClass"
+                  class="w-full px-4 py-2 border rounded-lg border-gray-300"></select>
+              </div>
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-1">Select
+                  Month</label>
+                <select id="selectMonth"
+                  class="w-full px-4 py-2 border rounded-lg border-gray-300">
+                  <option value>All Months</option>
+                  <option value="Jan">Jan</option>
+                  <option value="Feb">Feb</option>
+                  <option value="Mar">Mar</option>
+                  <option value="Apr">Apr</option>
+                  <option value="May">May</option>
+                  <option value="Jun">Jun</option>
+                  <option value="Jul">Jul</option>
+                  <option value="Aug">Aug</option>
+                  <option value="Sep">Sep</option>
+                  <option value="Oct">Oct</option>
+                  <option value="Nov">Nov</option>
+                  <option value="Dec">Dec</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Paid
+                  Status</label>
+                <select id="selectPaidStatus"
+                  class="w-full px-4 py-2 border rounded-lg border-gray-300"
+                  onchange="filterClassMonthTable()">
+                  <option value="all">All</option>
+                  <option value="paid">Paid Only</option>
+                  <option value="unpaid">Unpaid Only</option>
+                </select>
+              </div>
+              <!-- Student Search Input -->
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-1">Search
+                  Student</label>
+                <input type="text" id="classMonthSearchInput"
+                  class="w-full px-4 py-2 border rounded-lg border-gray-300"
+                  placeholder="Type name or ID..."
+                  onkeyup="filterClassMonthTable()" />
+              </div>
+              <div class="flex items-end">
+                <button onclick="loadClassMonthDashboard()"
+                  class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg">
+                  Filter
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-white p-4 rounded border shadow">
+                <h3 class="text-lg font-bold mb-4">Fees Paid (Line Chart by
+                  Date)</h3>
+                <canvas id="classMonthLineChart"></canvas>
+              </div>
+              <div class="bg-white p-4 rounded border shadow">
+                <h3 class="text-lg font-bold mb-4">Paid/Unpaid Pie</h3>
+                <canvas id="classMonthPieChart"></canvas>
+              </div>
+            </div>
+            <div class="mt-6 overflow-y-auto max-h-96">
+              <table class="min-w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left">Student ID</th>
+                    <th class="px-4 py-2 text-left">Name</th>
+                    <th class="px-4 py-2 text-left">Paid?</th>
+                  </tr>
+                </thead>
+                <tbody id="classMonthStudentTable"></tbody>
+              </table>
+            </div>
+          </div>

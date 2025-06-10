@@ -1,0 +1,32 @@
+
+            <div id="oldFeesSection"
+            class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-800">Payment History</h2>
+              <button onclick="backToSlipForm()"
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> Back
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-4 py-3 text-left text-sm font-medium text-gray-700">Date</th>
+                    <th
+                      class="px-4 py-3 text-left text-sm font-medium text-gray-700">Month</th>
+                    <th
+                      class="px-4 py-3 text-left text-sm font-medium text-gray-700">Amount</th>
+                    <th
+                      class="px-4 py-3 text-left text-sm font-medium text-gray-700">Transaction
+                      ID</th>
+                    <th
+                      class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="oldFeesTable"
+                  class="divide-y divide-gray-200"></tbody>
+              </table>
+            </div>
+          </div> 
