@@ -23,19 +23,24 @@ function loginUser(loginData) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName("LOGIN");
-    if (!sheet) return { success: false, error: "LOGIN sheet not found." };
+    if (!sheet) {
+      return { success: false, error: "LOGIN sheet not found." };
+    }
 
     var data = sheet.getDataRange().getValues();
-    // Header: [ username, password, role ]
+    // header: [username, password, role, branch]
     for (var i = 1; i < data.length; i++) {
       var username = String(data[i][0]).trim();
       var password = String(data[i][1]).trim();
-      var role = (data[i][2] || "").toLowerCase().trim();
+      var role = (data[i][2] || "").toString().toLowerCase().trim();
+      var branch = String(data[i][3]).trim(); // Get the branch from Column D
 
       if (username === loginData.username && password === loginData.password) {
-        return { success: true, userName: username, role: role };
+        // Include the branch in the return object
+        return { success: true, userName: username, role: role, branch: branch };
       }
     }
+
     return { success: false, error: "Invalid username or password." };
   } catch (err) {
     return { success: false, error: err.toString() };
