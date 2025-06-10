@@ -1,0 +1,69 @@
+<script>
+function calculateInstallment(year) {
+      const installments = parseInt(document.getElementById(`year${year}_installments`).value);
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const totalFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+      let installmentAmount = 0;
+
+      if (installments > 0) {
+        installmentAmount = Math.ceil(totalFees / installments);
+      }
+      document.getElementById(`year${year}_paid`).value = installmentAmount.toFixed(2);
+      calculateDueFees();
+    } 
+
+    function calculateDueFees() {
+      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+
+      for (let i = 1; i <= courseYears; i++) {
+        const paidElement = document.getElementById(`year${i}_paid`);
+        const dueElement = document.getElementById(`year${i}_due`);
+        let total = courseFees; // Default to courseFees for EMI and partial
+
+        if (paymentType !== 'emi') { // For full/partial, total is from the readonly input
+          const totalElement = document.getElementById(`year${i}_total`);
+          if (totalElement) {
+            total = parseFloat(totalElement.value) || 0;
+          }
+        }
+
+        if (paidElement && dueElement) {
+          const paid = parseFloat(paidElement.value) || 0;
+          let due = total - paid;
+
+          if (paymentType === 'emi') {
+            const installmentsSelect = document.getElementById(`year${i}_installments`);
+            const selectedInstallments = parseInt(installmentsSelect.value);
+            if (selectedInstallments > 0) {
+              const totalForYear = courseFees; // Total for EMI is always full course fees for that year
+              const installmentPerMonth = (totalForYear / selectedInstallments).toFixed(2);
+              const paidAmount = parseFloat(paidElement.value) || 0;
+              due = totalForYear - paidAmount;
+              dueElement.textContent = `Due: ₹${due.toFixed(2)} (EMI: ${selectedInstallments} x ₹${installmentPerMonth})`;
+            } else {
+               dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
+            }
+          } else if (paymentType === 'partial' && due > 0) {
+            const emiAmount = (due / 11).toFixed(2);
+            dueElement.textContent = `Due: ₹${due.toFixed(2)} (EMI: 11 x ₹${emiAmount})`;
+          } else {
+            dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
+          }
+
+          // Enable next year only if current year is fully paid (for full/partial)
+          if (i < courseYears && paymentType !== 'emi') {
+            const nextPaidElement = document.getElementById(`year${i + 1}_paid`);
+            if (nextPaidElement) {
+              nextPaidElement.disabled = due > 0;
+              if (due > 0) {
+                nextPaidElement.value = '';
+              }
+            }
+          }
+        }
+      }
+    }
+    </script>

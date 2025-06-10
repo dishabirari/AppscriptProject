@@ -1,0 +1,49 @@
+<script>
+    function updatePaymentFields() {
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      // No need to hide/show `paymentFields` or `emiFields` as they are now combined
+      // `yearPayments` will be updated by `updateYearPaymentOptions`
+      updateYearPaymentOptions();
+    }
+
+    function updateYearPaymentOptions() {
+      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      const yearPaymentsDiv = document.getElementById('yearPayments');
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+
+      yearPaymentsDiv.innerHTML = ''; // Clear previous year inputs
+
+      if (courseYears > 0) {
+        for (let i = 1; i <= courseYears; i++) {
+          const yearDiv = document.createElement('div');
+          yearDiv.className = 'flex items-center mb-2';
+
+          if (paymentType === 'emi') {
+            yearDiv.innerHTML = `
+              <label class="w-1/4">Year ${i} EMI:</label>
+              <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
+                <option value="0">Select Installment</option>
+                <option value="6">6 Installments</option>
+                <option value="12">12 Installments</option>
+              </select>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
+              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(2)}</span>
+            `;
+          } else {
+            yearDiv.innerHTML = `
+              <label class="w-1/4">Year ${i} Fees:</label>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${i > 1 ? 'disabled' : ''} value="0">
+              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(2)}</span>
+            `;
+          }
+          yearPaymentsDiv.appendChild(yearDiv);
+        }
+      }
+      calculateDueFees();
+    }
+
+   
+</script>
