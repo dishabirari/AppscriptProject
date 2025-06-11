@@ -24,48 +24,41 @@
          /******************************************
          * 0.0) COURSE PAYMENT  
          ******************************************/
-        const courseData1 = {
+       const courseData = {
         anm_nursing: { duration: "1 year", fees: 60000 },
         gnm_nursing: { duration: "3 years", fees: 95000 },
         dmlt: { duration: "1 years", fees: 30000 },
         ot_technician: { duration: "1 year", fees: 30000 },
-        general_nursing: { duration: "1 years", fees: 30000 },
+        general_nursing: { duration: "1 years", fees: 30000 }
       };
 
       let selectedCourse = null;
-      let selectedPaymentType = "full";
+      let selectedPaymentType = 'full';
 
       // Initialize on page load
-      document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("courseSelect")
-          .addEventListener("change", updateCourseDetails);
-        selectPayment("full");
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('coursePaySelect').addEventListener('change', updateCoursePayDetails);
+        selectPayment('full');
       });
 
       // Update course details when selection changes
-      function updateCourseDetails() {
-        const select = document.getElementById("courseSelect");
+      function updateCoursePayDetails() {
+        const select = document.getElementById('coursePaySelect');
         selectedCourse = select.value;
-
-        if (selectedCourse && courseData1[selectedCourse]) {
-          const course = courseData1[selectedCourse];
-
+        
+        if (selectedCourse && courseData[selectedCourse]) {
+          const course = courseData[selectedCourse];
+          
           // Update displayed information
-          document.getElementById("courseDuration").textContent =
-            course.duration;
-          document.getElementById("courseFees").textContent = formatCurrency(
-            course.fees
-          );
-
+          document.getElementById('courseDuration').textContent = course.duration;
+          document.getElementById('coursePayFees').textContent = formatCurrency(course.fees);
+          
           // Calculate total fees based on duration
-          const years = course.duration.includes("year")
-            ? parseInt(course.duration.split(" ")[0])
-            : 1;
+          const years = course.duration.includes('year') ? 
+            parseInt(course.duration.split(' ')[0]) : 1;
           const totalFees = years * course.fees;
-          document.getElementById("totalFees").textContent =
-            formatCurrency(totalFees);
-
+          document.getElementById('totalFees').textContent = formatCurrency(totalFees);
+          
           // Update all payment options
           updatePaymentOptions(totalFees);
         }
@@ -76,26 +69,20 @@
         // Full Payment
         const discount = totalFees * 0.05;
         const fullTotal = totalFees - discount;
-
-        document.getElementById("fullCourseFees").textContent =
-          formatCurrency(totalFees);
-        document.getElementById("fullDiscount").textContent =
-          formatCurrency(discount);
-        document.getElementById("fullTotal").textContent =
-          formatCurrency(fullTotal);
-
+        
+        document.getElementById('fullCourseFees').textContent = formatCurrency(totalFees);
+        document.getElementById('fullDiscount').textContent = formatCurrency(discount);
+        document.getElementById('fullTotal').textContent = formatCurrency(fullTotal);
+        
         // Partial Payment
         const partialInitial = Math.ceil(totalFees * 0.5);
         const partialRemaining = totalFees - partialInitial;
         const partialEMI = Math.ceil(partialRemaining / 6);
-
-        document.getElementById("partialInitial").textContent =
-          formatCurrency(partialInitial);
-        document.getElementById("partialRemaining").textContent =
-          formatCurrency(partialRemaining);
-        document.getElementById("partialEMI").textContent =
-          formatCurrency(partialEMI);
-
+        
+        document.getElementById('partialInitial').textContent = formatCurrency(partialInitial);
+        document.getElementById('partialRemaining').textContent = formatCurrency(partialRemaining);
+        document.getElementById('partialEMI').textContent = formatCurrency(partialEMI);
+        
         // EMI Payment
         calculateEMI();
       }
@@ -103,62 +90,51 @@
       // Calculate EMI based on selected tenure
       function calculateEMI() {
         if (!selectedCourse) return;
-
+        
         const totalFees = getTotalFees();
-        const tenure = parseInt(document.getElementById("emiTenure").value);
+        const tenure = parseInt(document.getElementById('emiTenure').value);
         const downPayment = Math.ceil(totalFees * 0.1); // 10% down payment
         const emiAmount = Math.ceil((totalFees - downPayment) / tenure);
-
-        document.getElementById("emiDownPayment").textContent =
-          formatCurrency(downPayment);
-        document.getElementById("emiAmount").textContent =
-          formatCurrency(emiAmount);
-        document.getElementById("emiTotal").textContent =
-          formatCurrency(totalFees);
-
-        if (selectedPaymentType === "emi") {
-          generateInstallmentSchedule(
-            totalFees,
-            downPayment,
-            emiAmount,
-            tenure
-          );
+        
+        document.getElementById('emiDownPayment').textContent = formatCurrency(downPayment);
+        document.getElementById('emiAmount').textContent = formatCurrency(emiAmount);
+        document.getElementById('emiTotal').textContent = formatCurrency(totalFees);
+        
+        if (selectedPaymentType === 'emi') {
+          generateInstallmentSchedule(totalFees, downPayment, emiAmount, tenure);
         }
       }
 
       // Get total fees for selected course
       function getTotalFees() {
         if (!selectedCourse) return 0;
-
-        const course = courseData1[selectedCourse];
-        const years = course.duration.includes("year")
-          ? parseInt(course.duration.split(" ")[0])
-          : 1;
-
+        
+        const course = courseData[selectedCourse];
+        const years = course.duration.includes('year') ? 
+          parseInt(course.duration.split(' ')[0]) : 1;
+        
         return years * course.fees;
       }
 
       // Select payment type
       function selectPayment(type) {
         selectedPaymentType = type;
-
+        
         // Update UI
-        document.getElementById("fullPaymentCard").classList.remove("selected");
-        document
-          .getElementById("partialPaymentCard")
-          .classList.remove("selected");
-        document.getElementById("emiPaymentCard").classList.remove("selected");
-
-        document.getElementById(`${type}PaymentCard`).classList.add("selected");
+        document.getElementById('fullPaymentCard').classList.remove('selected');
+        document.getElementById('partialPaymentCard').classList.remove('selected');
+        document.getElementById('emiPaymentCard').classList.remove('selected');
+        
+        document.getElementById(`${type}PaymentCard`).classList.add('selected');
         document.querySelector(`input[value="${type}"]`).checked = true;
-
+        
         // Show/hide installment plan
-        const installmentPlan = document.getElementById("installmentPlan");
-        if (type === "emi" || type === "partial") {
-          installmentPlan.classList.remove("hidden");
-
+        const installmentPlan = document.getElementById('installmentPlan');
+        if (type === 'emi' || type === 'partial') {
+          installmentPlan.classList.remove('hidden');
+          
           const totalFees = getTotalFees();
-          if (type === "emi") {
+          if (type === 'emi') {
             calculateEMI();
           } else {
             // Partial payment installment schedule
@@ -167,101 +143,76 @@
             generateInstallmentSchedule(totalFees, initial, emiAmount, 6);
           }
         } else {
-          installmentPlan.classList.add("hidden");
+          installmentPlan.classList.add('hidden');
         }
       }
 
       // Generate installment schedule
-      function generateInstallmentSchedule(
-        total,
-        initialPayment,
-        emiAmount,
-        months
-      ) {
-        const table = document.getElementById("installmentTable");
-        table.innerHTML = "";
-
+      function generateInstallmentSchedule(total, initialPayment, emiAmount, months) {
+        const table = document.getElementById('installmentTable');
+        table.innerHTML = '';
+        
         // Add initial payment row
         if (initialPayment > 0) {
-          addInstallmentRow(
-            table,
-            0,
-            "Today",
-            initialPayment,
-            "Initial Payment"
-          );
+          addInstallmentRow(table, 0, 'Today', initialPayment, 'Initial Payment');
         }
-
+        
         // Add EMI rows
         const today = new Date();
         let remaining = total - initialPayment;
-
+        
         for (let i = 1; i <= months; i++) {
           const dueDate = new Date();
           dueDate.setMonth(today.getMonth() + i);
-
-          const amount = i === months ? remaining : emiAmount;
+          
+          const amount = (i === months) ? remaining : emiAmount;
           remaining -= amount;
-
-          addInstallmentRow(table, i, formatDate(dueDate), amount, "EMI");
+          
+          addInstallmentRow(table, i, formatDate(dueDate), amount, 'EMI');
         }
       }
 
       // Add row to installment table
       function addInstallmentRow(table, number, date, amount, type) {
-        const row = document.createElement("tr");
-        row.className = number % 2 === 0 ? "bg-gray-50" : "bg-white";
-
+        const row = document.createElement('tr');
+        row.className = number % 2 === 0 ? 'bg-gray-50' : 'bg-white';
+        
         row.innerHTML = `
-          <td class="px-4 py-2 whitespace-nowrap">${
-            number === 0 ? type : `Installment ${number}`
-          }</td>
+          <td class="px-4 py-2 whitespace-nowrap">${number === 0 ? type : `Installment ${number}`}</td>
           <td class="px-4 py-2 whitespace-nowrap">${date}</td>
           <td class="px-4 py-2 whitespace-nowrap">${formatCurrency(amount)}</td>
           <td class="px-4 py-2 whitespace-nowrap">
-            <span class="px-2 py-1 text-xs rounded-full ${
-              number === 0
-                ? "bg-blue-100 text-blue-800"
-                : "bg-blue-50 text-blue-800"
-            }">
-              ${number === 0 ? "Due Now" : "Pending"}
+            <span class="px-2 py-1 text-xs rounded-full ${number === 0 ? 'bg-blue-100 text-blue-800' : 'bg-blue-50 text-blue-800'}">
+              ${number === 0 ? 'Due Now' : 'Pending'}
             </span>
           </td>
         `;
-
+        
         table.appendChild(row);
       }
 
       // Process payment (mock function)
-      // function processPayment() {
-      //   if (!selectedCourse) {
-      //     alert("Please select a course first");
-      //     return;
-      //   }
-
-      //   const paymentMethod = document.querySelector(
-      //     'input[name="payment_method"]:checked'
-      //   ).value;
-      //   const amount = getPaymentAmount();
-
-      //   alert(
-      //     `Processing ${paymentMethod} payment of ${formatCurrency(
-      //       amount
-      //     )} for ${
-      //       document.getElementById("courseSelect").selectedOptions[0].text
-      //     }`
-      //   );
-      //   // In a real app, you would integrate with a payment gateway here
-      // }
+      function processPayment() {
+        if (!selectedCourse) {
+          alert('Please select a course first');
+          return;
+        }
+        
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+        const amount = getPaymentAmount();
+        
+        alert(`Processing ${paymentMethod} payment of ${formatCurrency(amount)} for ${document.getElementById('coursePaySelect').selectedOptions[0].text}`);
+        // In a real app, you would integrate with a payment gateway here
+      }
 
       // Get payment amount based on selected option
       function getPaymentAmount() {
-        switch (selectedPaymentType) {
-          case "full":
+        switch(selectedPaymentType) {
+          case 'full':
             return getTotalFees() * 0.95; // with 5% discount
-          case "partial":
+          case 'partial':
             return Math.ceil(getTotalFees() * 0.5); // 50% initial
-          case "emi":
+          case 'emi':
             return Math.ceil(getTotalFees() * 0.1); // 10% down payment
           default:
             return 0;
@@ -270,25 +221,24 @@
 
       // Helper function to format currency
       function formatCurrency(amount) {
-        return "₹" + amount.toLocaleString("en-IN");
+        return '₹' + amount.toLocaleString('en-IN');
       }
 
       // Helper function to format date
       function formatDate(date) {
-        return date.toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
+        return date.toLocaleDateString('en-IN', { 
+          day: '2-digit', 
+          month: 'short', 
+          year: 'numeric' 
         });
       }
 
       // Open course payment section
       function openCoursePayment() {
         hideAllSections();
-        document
-          .getElementById("coursePaymentSection")
-          .classList.remove("hidden");
+        document.getElementById('coursePaymentSection').classList.remove('hidden');
       }
+
          /******************************************
          * 1) HELPER FUNCTIONS
          ******************************************/
@@ -371,7 +321,24 @@
          };
          html2pdf().set(opt).from(tempDiv).save();
          }
-         
+
+
+
+         function copyText() {
+
+          sessionStorage.setItem("tempText", document.getElementById("fullName").value);
+          document.getElementById("Student_namee").value = sessionStorage.getItem("tempText");
+
+          sessionStorage.setItem("A", document.getElementById("coursePaySelect").value);
+          document.getElementById("courseSelect").value = sessionStorage.getItem("A");
+
+          sessionStorage.setItem("Bc", document.getElementById("coursePayFees").value);
+          document.getElementById("courseFees").value = sessionStorage.getItem("Bc");
+          
+
+          }
+
+
          /******************************************
          * 2) LOGIN / LOGOUT
          ******************************************/
