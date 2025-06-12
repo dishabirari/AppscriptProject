@@ -2,6 +2,7 @@
  * MAIN HTML ENTRY POINT
  ************************************************/
 
+var ss = SpreadsheetApp.getActiveSpreadsheet();
 //Heloooo// i am yoooo// i am hitanshu // yooo again //Heloooo// i am yoooo harshhhhhhh////harsh//heth//kk
 
 
@@ -21,7 +22,7 @@ function include(filename) {
  ************************************************/
 function loginUser(loginData) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("LOGIN");
     if (!sheet) return { success: false, error: "LOGIN sheet not found." };
 
@@ -47,7 +48,7 @@ function loginUser(loginData) {
  ************************************************/
 function getDropdownData() {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("DROPDOWN");
     if (!sheet) return { error: "DROPDOWN sheet not found." };
 
@@ -88,7 +89,7 @@ function getDropdownData() {
  ************************************************/
 function getNextStudentId() {
   // We'll parse the STUDENT DATA sheet, find the highest ID that matches ST###, increment
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheet = ss.getSheetByName("STUDENT DATA");
   if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -114,7 +115,7 @@ function getNextStudentId() {
  * AUTO-INCREMENT TRANSACTION ID
  ************************************************/
 function getNextTransactionId() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheet = ss.getSheetByName("FEES");
   if (!sheet) return { error: "FEES sheet not found." };
 
@@ -139,7 +140,7 @@ function getNextTransactionId() {
  ************************************************/
 function submitData(formData) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return "Error: FEES sheet not found.";
 
@@ -194,9 +195,7 @@ function submitData(formData) {
 
 function submitInquiryData(formData2) {
   try {
-    var ss = SpreadsheetApp.openById(
-      "1ywNQ0XNgvOsG4nokF800BcfCsCzHvGzENY2Vudf5u90"
-    );
+
     var sheet = ss.getSheetByName("INQUIRY FORM");
     if (!sheet) return "Error: DF sheet not found.";
 
@@ -253,7 +252,7 @@ function updateData(formData, userRole) {
     return "Error: You don't have permission to update fee data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return "Error: FEES sheet not found.";
 
@@ -307,7 +306,7 @@ function updateData(formData, userRole) {
 
 function getStudentSession(studentId) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -339,7 +338,7 @@ function getStudentSession(studentId) {
 
 function getOldFees(studentId) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return { error: "FEES sheet not found." };
 
@@ -378,7 +377,7 @@ function getOldFees(studentId) {
 
 function getRecord(rowNumber) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return { error: "FEES sheet not found." };
 
@@ -406,7 +405,7 @@ function addStudentData(studentData, userRole) {
     return "Error: You don't have permission to add new student data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return "Error: STUDENT DATA sheet not found.";
 
@@ -440,7 +439,7 @@ function addStudentData(studentData, userRole) {
 
 function getStudentList() {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -470,7 +469,7 @@ function updateStudentData(studentData, userRole) {
     return "Error: You don't have permission to update student data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return "Error: STUDENT DATA sheet not found.";
 
@@ -508,7 +507,7 @@ function deleteStudentData(rowNumber, userRole) {
     return "Error: You don't have permission to delete student data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return "Error: STUDENT DATA sheet not found.";
 
@@ -545,7 +544,7 @@ function getAnalyticsData(
     lineData: {},
   };
 
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheetStudents = ss.getSheetByName("STUDENT DATA");
   var sheetFees = ss.getSheetByName("FEES");
   if (!sheetStudents || !sheetFees) {
@@ -646,7 +645,7 @@ function getAnalyticsData(
  ************************************************/
 function getClassList() {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -666,7 +665,7 @@ function getClassMonthDashboard(selectedClass, selectedMonth, userRole) {
   if (!userRole || userRole.toLowerCase() !== "admin") {
     return { error: "You don't have permission to view dashboard." };
   }
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheetStudents = ss.getSheetByName("STUDENT DATA");
   var sheetFees = ss.getSheetByName("FEES");
   if (!sheetStudents || !sheetFees) {
@@ -753,7 +752,7 @@ function getDueFeesData(userRole) {
   if (!userRole || userRole.toLowerCase() !== "admin") {
     return { error: "You don't have permission to view Due Fees." };
   }
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheetStudents = ss.getSheetByName("STUDENT DATA");
   var sheetFees = ss.getSheetByName("FEES");
   if (!sheetStudents || !sheetFees) {
@@ -832,14 +831,11 @@ function submitForm(data) {
     return "Invalid data received!";
   }
 
-  const spreadsheet = SpreadsheetApp.openById(
-    "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY"
-  );
-  const sheet = spreadsheet.getSheetByName("AdmissionData");
-  const sheetName = "AdmissionData"; // Name of the sheet where data will be stored
-  const ss = SpreadsheetApp.openById(
-    "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY"
-  );
+
+  const sheet = ss.getSheetByName("AdmissionData");
+
+
+
   console.log(JSON.stringify(data, null, 1));
 
   // Define the headers if the sheet is empty
@@ -982,9 +978,8 @@ function submitForm(data) {
 }
 function saveAdmissionData(data) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet =
-      ss.getSheetByName("Admissions") || ss.insertSheet("Admissions");
+    co
+    const sheet = ss.getSheetByName("Admissions") || ss.insertSheet("Admissions");
 
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(Object.keys(data));
@@ -999,8 +994,8 @@ function saveAdmissionData(data) {
 
 function processForm(formData) {
   console.log("workingg....");
-  const spreadsheetId = "1ywNQ0XNgvOsG4nokF800BcfCsCzHvGzENY2Vudf5u90"; // replace with your ID
-  const ss = SpreadsheetApp.openById(spreadsheetId); // this accesses the spreadsheet
+
+  
   const sheet = ss.getSheetById(658585387); // access a specific sheet
 
   try {
@@ -1205,14 +1200,12 @@ function processForm(formData) {
 
 function submitForm(formObject) {
   try {
-    const spreadsheetId = '1LY9jRUmIblUk_3e62GL_5jzyQwsA-TysboHRwbtnvho'; // Replace with your actual Spreadsheet ID
-    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
     const sheetName = 'Admissions';
-    let sheet = spreadsheet.getSheetByName(sheetName);
+    let sheet = ss.getSheetByName(sheetName);
 
     // Create sheet if it doesn't exist
     if (!sheet) {
-      sheet = spreadsheet.insertSheet(sheetName);
+      sheet = ss.insertSheet(sheetName);
     }
 
     // Define headers
