@@ -1254,6 +1254,26 @@
          minute: '2-digit'
          });
          }
+         // This JavaScript would go in your client-side HTML file, within <script> tags.
+document.addEventListener('DOMContentLoaded', function() {
+    const logo = document.getElementById('logo-home-link');
+
+    if (logo) {
+        logo.addEventListener('click', function() {
+            // Call the same function that your "Inquiry Form" sidebar button uses
+            // Based on your screenshot, it looks like openInquiryForm()
+            if (typeof openInquiryForm === 'function') {
+                openInquiryForm();
+            } else {
+                console.error("openInquiryForm() function not found. Please ensure it's defined.");
+                // Fallback for debugging, or if content is fetched via server
+                google.script.run.withSuccessHandler(function(htmlContent) {
+                    document.getElementById('mainContentArea').innerHTML = htmlContent; // Assuming a main content div
+                }).getInquiryFormContent(); // Example of a server-side function
+            }
+        });
+    }
+});
          
          /******************************************
          * 11) INITIALIZE
