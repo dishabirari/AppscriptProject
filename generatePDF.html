@@ -129,39 +129,45 @@ function generatePDF() {
         }
          
       function generatePDFInquire() {
-         const formElement = document.getElementById('ifId');
-         const options = {
-         scale: 2,
-         useCORS: true,
-         allowTaint: true,
-         logging: true,
-         letterRendering: true
-         };
-         
-         html2canvas(formElement, options).then(canvas => {
-         const pdf = new jsPDF('p', 'mm', 'a4');
-         const imgData = canvas.toDataURL('image/png');
-         const imgWidth = 190; // A4 width - margins
-         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-         
-         pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-         
-         const studentName = document.getElementById('fullName').value || 'Student';
-         pdf.save(`${studentName.replace(/\s+/g, '_')}_Inquiry_Form.pdf`);
-         
-         // Switch to invoice view
-         document.getElementById('ifId').classList.add('hidden');
-         document.getElementById('container').classList.remove('hidden');
-         }).catch(err => {
-         console.error('PDF generation error:', err);
-         Swal.fire({
-           icon: 'error',
-           title: 'PDF Error',
-           text: 'Failed to generate PDF',
-           confirmButtonColor: '#1e3a8a',
-         });
-         });
-         }
+    const formElement = document.getElementById('ifId');
+    const options = {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: true,
+        letterRendering: true
+    };
+
+    html2canvas(formElement, options).then(canvas => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 190; // A4 width - margins
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+
+        const studentName = document.getElementById('fullName').value || 'Student';
+        pdf.save(`${studentName.replace(/\s+/g, '_')}_Inquiry_Form.pdf`);
+
+        // Removed the lines that hide the form and show a 'container'
+        // If you want a success message, you'd show a modal/sweetalert here
+        Swal.fire({
+            icon: 'success',
+            title: 'PDF Generated!',
+            text: 'Your Inquiry Form PDF has been downloaded.',
+            confirmButtonColor: '#1e3a8a',
+        });
+
+    }).catch(err => {
+        console.error('PDF generation error:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'PDF Error',
+            text: 'Failed to generate PDF',
+            confirmButtonColor: '#1e3a8a',
+        });
+    });
+}
 
 
 
