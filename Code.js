@@ -1004,15 +1004,15 @@ function processForm(formData) {
   console.log("workingg....");
 
   
-const templateDocId = '1XoQBTCgp76uyqq8bdL1hkoONUdIS3RYs4o5Lc1vEWRQ'; // Template Doc ID
-const pdfFolder = DriveApp.getFolderById('1tWM40Gt3kmnnGcwWrLWrCg5Ff2kpZO0b'); // PDF save location
-const docFolder = DriveApp.getFolderById('1abcDEFghiJKLmnopQRstuVWXYZ123456'); // Folder to save DOC copies (replace with actual folder ID)
+const templateDocId =Iftemplateid ; // Template Doc ID
+const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
+const docFolder = DriveApp.getFolderById(ifdocsid); // Folder to save DOC copies (replace with actual folder ID)
 
-// Step 1: Make a copy of the original template into docFolder
+// Step 1: Copy the template into the DOC folder
 const copiedDocFile = DriveApp.getFileById(templateDocId).makeCopy(`Inquiry - ${formData.fullName || "Unknown"}`, docFolder);
 const copiedDocId = copiedDocFile.getId();
 
-// Step 2: Open the copied document and replace placeholders
+// Step 2: Open copied doc and replace text
 const doc = DocumentApp.openById(copiedDocId);
 const body = doc.getBody();
 
@@ -1031,13 +1031,14 @@ body.replaceText('{{branch}}', formData.branch || '');
 
 doc.saveAndClose();
 
-// Step 3: Create PDF version and save in the PDF folder
-const pdfBlob = copiedDocFile.getAs(MimeType.PDF);
+// Step 3: Refetch the updated file before converting to PDF
+const freshDoc = DocumentApp.openById(copiedDocId);
+const pdfBlob = freshDoc.getAs(MimeType.PDF);
 pdfFolder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"}.pdf`));
 
 
 
-  try {
+try {
     const requiredFields = [
       "fullName",
       "phoneNo",
@@ -1086,6 +1087,8 @@ pdfFolder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"
     };
   }
 }
+  
+
 
 // function getData() {
 //   const spreadsheetId = "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY";
@@ -1140,7 +1143,7 @@ pdfFolder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"
 //         .text-right { text-align: right; }
 //         .section { margin: 20px 0; }
 //         .section-title {
-//           color: #1e3a8a;
+//           color:rgb(22, 63, 176);
 //           border-bottom: 1px solid #eee;
 //           padding-bottom: 5px;
 //           margin-bottom: 10px;
