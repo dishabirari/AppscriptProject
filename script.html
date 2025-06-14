@@ -1631,7 +1631,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
          // PDF Generation
-         function generatePDFInquire() {
+         /*function generatePDFInquire() {
          const formElement = document.getElementById('ifId');
          const options = {
          scale: 2,
@@ -1664,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', function() {
            confirmButtonColor: '#1e3a8a',
          });
          });
-         }
+         }*/
          }
 
 
@@ -1680,8 +1680,21 @@ function submitInquiryForm(e) {
 
   
   e.preventDefault();
-  console.log("Hello88 - Form submission started");
+ // console.log("Hello88 - Form submission started");
 
+  const formData = Object.fromEntries(new FormData(document.getElementById('ifId')));
+   console.log(formData);
+
+  // Call Apps Script function to generate PDF
+  /*google.script.run
+    .withSuccessHandler(() => {
+      alert('Form submitted and PDF generated!');
+    })
+    .withFailureHandler(err => {
+      alert('Error: ' + err.message);
+    })
+    .generatePDFInquire(formData);
+*/
 
   // Validate terms checkbox
   const agreeCheckbox = document.getElementById('agree1');
@@ -1781,7 +1794,7 @@ const formValues = {
       updateCourseDetails(); // Initialize course details
     });
 
-    const courseData = {
+    const courseData1= {
       anm_nursing: { duration: "2 years", fees: "₹50,000" },
       gnm_nursing: { duration: "3 years", fees: "₹60,000" },
       dmlt: { duration: "2 years", fees: "₹45,000" },
@@ -2070,4 +2083,5 @@ const formValues = {
         pdf.save(`${studentName}_AdmissionForm.pdf`);
       });
     }
+
   </script>

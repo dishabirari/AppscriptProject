@@ -1000,61 +1000,88 @@ function getDueFeesData(userRole) {
 //   }
 // }
 
-// function processForm(formData) {
-//   console.log("workingg....");
+function processForm(formData) {
+  console.log("workingg....");
 
   
-//   const sheet = ss.getSheetById(658585387); // access a specific sheet
+  const sheet = ss.getSheetByName("DF"); // access a specific sheet
 
-//   try {
-//     const requiredFields = [
-//       "fullName",
-//       "phoneNo",
-//       "whatsappNo",
-//       "parentsNo",
-//       "address",
-//     ];
-//     const missingFields = requiredFields.filter((field) => !formData[field]);
+    const templateDocId = '1XsPRC0jpLWoq-BYs6Kn_nhz6gNEExGttv8BU8G9CWHg'; // Create a Google Doc template first and put its ID here
+  const folder = DriveApp.getFolderById('1gCAOCmFiAiNWLDxsGDx317C9erStV_NL'); // PDF save location
 
-//     if (missingFields.length > 0) {
-//       return {
-//         success: false,
-//         message: `Missing required fields: ${missingFields.join(", ")}`,
-//       };
-//     }
+  const doc = DocumentApp.openById(templateDocId);
+  const body = doc.getBody();
 
-//     const data = [
-//       new Date(), // Timestamp
-//       formData.date || new Date().toISOString().split("T")[0],
-//       formData.fullName,
-//       formData.qualification || "",
-//       formData.phoneNo,
-//       formData.whatsappNo,
-//       formData.parentsNo,
-//       formData.email || "",
-//       formData.age || "",
-//       formData.address,
-//       formData.interestedCourse || "",
-//       formData.inquiryTakenBy || "",
-//       formData.branch || "",
-//     ];
+  // Replace placeholders in template
+  body.replaceText('{{date}}', formData.date || '');
+  body.replaceText('{{fullName}}', formData.fullName || '');
+  body.replaceText('{{qualification}}', formData.qualification || '');
+  body.replaceText('{{age}}', formData.age || '');
+  body.replaceText('{{phoneNo}}', formData.phoneNo || '');
+  body.replaceText('{{whatsappNo}}', formData.whatsappNo || '');
+  body.replaceText('{{parentsNo}}', formData.parentsNo || '');
+  body.replaceText('{{email}}', formData.email || '');
+  body.replaceText('{{address}}', formData.address || '');
+  body.replaceText('{{interestedCourse}}', formData.interestedCourse || '');
+  body.replaceText('{{inquiryTakenBy}}', formData.inquiryTakenBy || '');
+  body.replaceText('{{branch}}', formData.branch || '');
 
-//     sheet.appendRow(data);
+  doc.saveAndClose();
 
-//     return {
-//       success: true,
-//       message: "Inquiry submitted successfully!",
-//       studentName: formData.fullName,
-//     };
-//   } catch (e) {
-//     console.error("Error in processForm:", e);
-//     return {
-//       success: false,
-//       message: "An error occurred while processing your inquiry.",
-//       error: e.message,
-//     };
-//   }
-// }
+  // Make a copy so the template is not overwritten
+  const pdfBlob = doc.getAs(MimeType.PDF);
+  folder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"}.pdf`));
+
+
+  try {
+    const requiredFields = [
+      "fullName",
+      "phoneNo",
+      "whatsappNo",
+      "parentsNo",
+      "address",
+    ];
+    const missingFields = requiredFields.filter((field) => !formData[field]);
+
+    if (missingFields.length > 0) {
+      return {
+        success: false,
+        message: `Missing required fields: ${missingFields.join(", ")}`,
+      };
+    }
+
+    const data = [
+      new Date(), // Timestamp
+      formData.date || new Date().toISOString().split("T")[0],
+      formData.fullName,
+      formData.qualification || "",
+      formData.phoneNo,
+      formData.whatsappNo,
+      formData.parentsNo,
+      formData.email || "",
+      formData.age || "",
+      formData.address,
+      formData.interestedCourse || "",
+      formData.inquiryTakenBy || "",
+      formData.branch || "",
+    ];
+
+    sheet.appendRow(data);
+
+    return {
+      success: true,
+      message: "Inquiry submitted successfully!",
+      studentName: formData.fullName,
+    };
+  } catch (e) {
+    console.error("Error in processForm:", e);
+    return {
+      success: false,
+      message: "An error occurred while processing your inquiry.",
+      error: e.message,
+    };
+  }
+}
 
 // function getData() {
 //   const spreadsheetId = "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY";
@@ -1293,3 +1320,41 @@ function submitForm(formObject) {
     return { status: 'error', message: 'Failed to save data: ' + error.message };
   }
 }
+
+
+// -------------------------------PDf Inquiry-----------------------------------//
+/*function generatePDFInquire(data) {
+  // Create a Google Doc from a template
+  const templateDocId = '1XsPRC0jpLWoq-BYs6Kn_nhz6gNEExGttv8BU8G9CWHg'; // Create a Google Doc template first and put its ID here
+  const folder = DriveApp.getFolderById('1gCAOCmFiAiNWLDxsGDx317C9erStV_NL'); // PDF save location
+
+  const doc = DocumentApp.openById(templateDocId);
+  const body = doc.getBody();
+
+  // Replace placeholders in template
+  body.replaceText('{{date}}', data.date || '');
+  body.replaceText('{{fullName}}', data.fullName || '');
+  body.replaceText('{{qualification}}', data.qualification || '');
+  body.replaceText('{{age}}', data.age || '');
+  body.replaceText('{{phoneNo}}', data.phoneNo || '');
+  body.replaceText('{{whatsappNo}}', data.whatsappNo || '');
+  body.replaceText('{{parentsNo}}', data.parentsNo || '');
+  body.replaceText('{{email}}', data.email || '');
+  body.replaceText('{{address}}', data.address || '');
+  body.replaceText('{{interestedCourse}}', data.interestedCourse || '');
+  body.replaceText('{{inquiryTakenBy}}', data.inquiryTakenBy || '');
+  body.replaceText('{{branch}}', data.branch || '');
+
+  doc.saveAndClose();
+
+  // Make a copy so the template is not overwritten
+  const pdfBlob = doc.getAs(MimeType.PDF);
+  folder.createFile(pdfBlob.setName(`Inquiry - ${data.fullName || "Unknown"}.pdf`));
+}
+
+function authorizeScript() {
+  // Dummy access to trigger OAuth scopes
+  const doc = DocumentApp.create("Test Auth Doc");
+  doc.getBody().appendParagraph("Authorization successful");
+  doc.saveAndClose();
+}*/
