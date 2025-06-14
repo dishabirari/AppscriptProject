@@ -1668,13 +1668,13 @@ document.addEventListener('DOMContentLoaded', function() {
          }
 
 
-
+/*
 document.addEventListener('DOMContentLoaded', function () {
   const inquiryForm = document.getElementById('ifId'); // Replace with your form's ID
   if (inquiryForm) {
     inquiryForm.addEventListener('submit', submitInquiryForm); // Handle form submission
   }
-});
+}); */
 
 function submitInquiryForm(e) {
 
@@ -1682,8 +1682,8 @@ function submitInquiryForm(e) {
   e.preventDefault();
  // console.log("Hello88 - Form submission started");
 
-  const formData = Object.fromEntries(new FormData(document.getElementById('ifId')));
-   console.log(formData);
+  //const formData = Object.fromEntries(new FormData(document.getElementById('ifId')));
+  // console.log(formData);
 
   // Call Apps Script function to generate PDF
   /*google.script.run

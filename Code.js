@@ -1004,33 +1004,37 @@ function processForm(formData) {
   console.log("workingg....");
 
   
-  const sheet = ss.getSheetByName("DF"); // access a specific sheet
+const templateDocId = '1XoQBTCgp76uyqq8bdL1hkoONUdIS3RYs4o5Lc1vEWRQ'; // Template Doc ID
+const pdfFolder = DriveApp.getFolderById('1tWM40Gt3kmnnGcwWrLWrCg5Ff2kpZO0b'); // PDF save location
+const docFolder = DriveApp.getFolderById('1abcDEFghiJKLmnopQRstuVWXYZ123456'); // Folder to save DOC copies (replace with actual folder ID)
 
-    const templateDocId = '1XsPRC0jpLWoq-BYs6Kn_nhz6gNEExGttv8BU8G9CWHg'; // Create a Google Doc template first and put its ID here
-  const folder = DriveApp.getFolderById('1gCAOCmFiAiNWLDxsGDx317C9erStV_NL'); // PDF save location
+// Step 1: Make a copy of the original template into docFolder
+const copiedDocFile = DriveApp.getFileById(templateDocId).makeCopy(`Inquiry - ${formData.fullName || "Unknown"}`, docFolder);
+const copiedDocId = copiedDocFile.getId();
 
-  const doc = DocumentApp.openById(templateDocId);
-  const body = doc.getBody();
+// Step 2: Open the copied document and replace placeholders
+const doc = DocumentApp.openById(copiedDocId);
+const body = doc.getBody();
 
-  // Replace placeholders in template
-  body.replaceText('{{date}}', formData.date || '');
-  body.replaceText('{{fullName}}', formData.fullName || '');
-  body.replaceText('{{qualification}}', formData.qualification || '');
-  body.replaceText('{{age}}', formData.age || '');
-  body.replaceText('{{phoneNo}}', formData.phoneNo || '');
-  body.replaceText('{{whatsappNo}}', formData.whatsappNo || '');
-  body.replaceText('{{parentsNo}}', formData.parentsNo || '');
-  body.replaceText('{{email}}', formData.email || '');
-  body.replaceText('{{address}}', formData.address || '');
-  body.replaceText('{{interestedCourse}}', formData.interestedCourse || '');
-  body.replaceText('{{inquiryTakenBy}}', formData.inquiryTakenBy || '');
-  body.replaceText('{{branch}}', formData.branch || '');
+body.replaceText('{{date}}', formData.date || '');
+body.replaceText('{{fullName}}', formData.fullName || '');
+body.replaceText('{{qualification}}', formData.qualification || '');
+body.replaceText('{{age}}', formData.age || '');
+body.replaceText('{{phoneNo}}', formData.phoneNo || '');
+body.replaceText('{{whatsappNo}}', formData.whatsappNo || '');
+body.replaceText('{{parentsNo}}', formData.parentsNo || '');
+body.replaceText('{{email}}', formData.email || '');
+body.replaceText('{{address}}', formData.address || '');
+body.replaceText('{{interestedCourse}}', formData.interestedCourse || '');
+body.replaceText('{{inquiryTakenBy}}', formData.inquiryTakenBy || '');
+body.replaceText('{{branch}}', formData.branch || '');
 
-  doc.saveAndClose();
+doc.saveAndClose();
 
-  // Make a copy so the template is not overwritten
-  const pdfBlob = doc.getAs(MimeType.PDF);
-  folder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"}.pdf`));
+// Step 3: Create PDF version and save in the PDF folder
+const pdfBlob = copiedDocFile.getAs(MimeType.PDF);
+pdfFolder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"}.pdf`));
+
 
 
   try {
