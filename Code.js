@@ -1001,51 +1001,47 @@ function getDueFeesData(userRole) {
 // }
 
 function processForm(formData) {
-  console.log("workingg....");
+  console.log("Processing form...");
 
-  
-const templateDocId =Iftemplateid ; // Template Doc ID
-const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
-const docFolder = DriveApp.getFolderById(ifdocsid); // Folder to save DOC copies (replace with actual folder ID)
-
-// Step 1: Copy the template into the DOC folder
-const copiedDocFile = DriveApp.getFileById(templateDocId).makeCopy(`Inquiry - ${formData.fullName || "Unknown"}`, docFolder);
-const copiedDocId = copiedDocFile.getId();
-
-// Step 2: Open copied doc and replace text
-const doc = DocumentApp.openById(copiedDocId);
-const body = doc.getBody();
-
-body.replaceText('{{date}}', formData.date || '');
-body.replaceText('{{fullName}}', formData.fullName || '');
-body.replaceText('{{qualification}}', formData.qualification || '');
-body.replaceText('{{age}}', formData.age || '');
-body.replaceText('{{phoneNo}}', formData.phoneNo || '');
-body.replaceText('{{whatsappNo}}', formData.whatsappNo || '');
-body.replaceText('{{parentsNo}}', formData.parentsNo || '');
-body.replaceText('{{email}}', formData.email || '');
-body.replaceText('{{address}}', formData.address || '');
-body.replaceText('{{interestedCourse}}', formData.interestedCourse || '');
-body.replaceText('{{inquiryTakenBy}}', formData.inquiryTakenBy || '');
-body.replaceText('{{branch}}', formData.branch || '');
-
-doc.saveAndClose();
-
-// Step 3: Refetch the updated file before converting to PDF
-const freshDoc = DocumentApp.openById(copiedDocId);
-const pdfBlob = freshDoc.getAs(MimeType.PDF);
-pdfFolder.createFile(pdfBlob.setName(`Inquiry - ${formData.fullName || "Unknown"}.pdf`));
+  const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("DF"); // Update if your sheet name is different
 
 
+  // Step 1: Populate the HTML template with form data
+ // --- Start of Corrected Code ---
 
-try {
-    const requiredFields = [
-      "fullName",
-      "phoneNo",
-      "whatsappNo",
-      "parentsNo",
-      "address",
-    ];
+  // Step 1: Read the raw HTML and inject data
+  // Get the HTML content as a plain string.
+  let html = HtmlService.createHtmlOutputFromFile("ifrom").getContent();
+
+  // Iterate over your data object.
+Object.keys(formData).forEach(key => {
+  // This modified regex finds the div by its id, capturing the opening tag ($1),
+  // whatever is inside it (.*? as $2), and the closing tag ($3).
+  // The 's' flag allows '.' to match newline characters, which is crucial for multi-line fields like 'address'.
+  const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
+
+  // Get the value, ensuring it's a string.
+  const value = formData[key] || '';
+
+  // Replace the captured content ($2) with the new value.
+  // $1 is the opening tag and $3 is the closing tag, which are kept.
+  if (regex.test(html)) {
+      html = html.replace(regex, `$1${value}$3`);
+  }
+});
+
+  // Step 2: Convert the final HTML string to a PDF
+  const blob = Utilities.newBlob(html, 'text/html', 'inquiry.html');
+  const pdfBlob = blob.getAs('application/pdf').setName("Inquiry_Form_" + (formData.fullName || "User") + ".pdf");
+
+  // Step 3: Save the generated PDF to Google Drive
+  pdfFolder.createFile(pdfBlob);
+
+
+    try {
+    // Validation
+    const requiredFields = ["fullName", "phoneNo", "whatsappNo", "parentsNo", "address"];
     const missingFields = requiredFields.filter((field) => !formData[field]);
 
     if (missingFields.length > 0) {
@@ -1055,7 +1051,8 @@ try {
       };
     }
 
-    const data = [
+    // 4. Append data to sheet
+    const rowData = [
       new Date(), // Timestamp
       formData.date || new Date().toISOString().split("T")[0],
       formData.fullName,
@@ -1071,13 +1068,14 @@ try {
       formData.branch || "",
     ];
 
-    sheet.appendRow(data);
+    sheet.appendRow(rowData);
 
     return {
       success: true,
       message: "Inquiry submitted successfully!",
       studentName: formData.fullName,
     };
+
   } catch (e) {
     console.error("Error in processForm:", e);
     return {
@@ -1087,7 +1085,8 @@ try {
     };
   }
 }
-  
+
+
 
 
 // function getData() {
