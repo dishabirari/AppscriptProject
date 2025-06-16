@@ -1,1043 +1,823 @@
 <script>
-  /******************************************
-   * 0) INITIAL SETUP & GLOBALS
-   ******************************************/
-  let dropdownData = {
-    sessions: [],
-    trades: [],
-    feesTypes: [],
-    paymentModes: [],
-  };
+         /******************************************
+         * 0) INITIAL SETUP & GLOBALS
+         ******************************************/
+         let dropdownData = {
+         sessions: [], 
+         trades: [], 
+         feesTypes: [], 
+         paymentModes: []
+         };
+         
+         // We'll store the data used in Class Dashboard
+         let classMonthLineChartRef = null; 
+         let classMonthPieChartRef = null; 
+         let classMonthData = [];
+         
+         // For Analytics
+         let dateWiseChartRef = null;
+         let lineChartRef = null;
+         let pieChartRef = null;
+         
+         // For Due Fees
+         let dueFeesData = [];
+         /******************************************
+         * 0.0) COURSE PAYMENT  
+         ******************************************/
+       const courseData = {
+        anm_nursing: { duration: "1 year", fees: 60000 },
+        gnm_nursing: { duration: "3 years", fees: 95000 },
+        dmlt: { duration: "1 years", fees: 30000 },
+        ot_technician: { duration: "1 year", fees: 30000 },
+        general_nursing: { duration: "1 years", fees: 30000 }
+      };
 
-  // We'll store the data used in Class Dashboard
-  let classMonthLineChartRef = null;
-  let classMonthPieChartRef = null;
-  let classMonthData = [];
+      let selectedCourse = null;
+      let selectedPaymentType = 'full';
 
-  // For Analytics
-  let dateWiseChartRef = null;
-  let lineChartRef = null;
-  let pieChartRef = null;
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('coursePaySelect').addEventListener('change', updateCoursePayDetails);
+        selectPayment('full');
+      });
 
-  // For Due Fees
-  let dueFeesData = [];
-  /******************************************
-   * 0.0) COURSE PAYMENT
-   ******************************************/
-  const courseData = {
-    anm_nursing: { duration: "1 year", fees: 60000, total: 60000 },
-    gnm_nursing: { duration: "3 years", fees: 95000, total: 285000 },
-    dmlt: { duration: "1 years", fees: 30000, total: 30000 },
-    ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
-    general_nursing: { duration: "1 years", fees: 30000, total: 30000 },
-  };
-
-  let selectedCourse = null;
-  let selectedPaymentType = "full";
-
-  // Initialize on page load
-  document.addEventListener("DOMContentLoaded", function () {
-    document
-      .getElementById("coursePaySelect")
-      .addEventListener("change", updateCoursePayDetails);
-    // selectPayment("full");
-  });
-
-  // Update course details when selection changes
-  function updateCoursePayDetails() {
-    const select = document.getElementById("coursePaySelect");
-    selectedCourse = select.value;
-
-    if (selectedCourse && courseData[selectedCourse]) {
-      const course = courseData[selectedCourse];
-
-      // Update displayed information
-      document.getElementById("courseDuration").textContent = course.duration;
-      document.getElementById("coursePayFees").textContent = formatCurrency(
-        course.fees
-      );
-
-      // Calculate total fees based on duration
-      const years = course.duration.includes("year")
-        ? parseInt(course.duration.split(" ")[0])
-        : 1;
-      const totalFees = years * course.fees;
-      document.getElementById("totalFees").textContent =
-        formatCurrency(totalFees);
-
-      // Update all payment options
-      updatePaymentOptions(totalFees);
-    }
-  }
-
-  // Update all payment options with the current total fees
-  function updatePaymentOptions(totalFees) {
-    // Full Payment
-    const discount = totalFees * 0.05;
-    const fullTotal = totalFees - discount;
-
-    document.getElementById("fullCourseFees").textContent =
-      formatCurrency(totalFees);
-    document.getElementById("fullDiscount").textContent =
-      formatCurrency(discount);
-    document.getElementById("fullTotal").textContent =
-      formatCurrency(fullTotal);
-
-    // Partial Payment
-    const partialInitial = Math.ceil(totalFees * 0.5);
-    const partialRemaining = totalFees - partialInitial;
-    const partialEMI = Math.ceil(partialRemaining / 6);
-
-    document.getElementById("partialInitial").textContent =
-      formatCurrency(partialInitial);
-    document.getElementById("partialRemaining").textContent =
-      formatCurrency(partialRemaining);
-    document.getElementById("partialEMI").textContent =
-      formatCurrency(partialEMI);
-
-    // EMI Payment
-    calculateEMI();
-  }
-
-  // Calculate EMI based on selected tenure
-  function calculateEMI() {
-    if (!selectedCourse) return;
-
-    const totalFees = getTotalFees();
-    const tenure = parseInt(document.getElementById("emiTenure").value);
-    const downPayment = Math.ceil(totalFees * 0.1); // 10% down payment
-    const emiAmount = Math.ceil((totalFees - downPayment) / tenure);
-
-    document.getElementById("emiDownPayment").textContent =
-      formatCurrency(downPayment);
-    document.getElementById("emiAmount").textContent =
-      formatCurrency(emiAmount);
-    document.getElementById("emiTotal").textContent = formatCurrency(totalFees);
-
-    if (selectedPaymentType === "emi") {
-      generateInstallmentSchedule(totalFees, downPayment, emiAmount, tenure);
-    }
-  }
-
-  // Get total fees for selected course
-  function getTotalFees() {
-    if (!selectedCourse) return 0;
-
-    const course = courseData[selectedCourse];
-    const years = course.duration.includes("year")
-      ? parseInt(course.duration.split(" ")[0])
-      : 1;
-
-    return years * course.fees;
-  }
-
-  // Select payment type
-  function selectPayment(type) {
-    selectedPaymentType = type;
-
-    // Update UI
-    document.getElementById("fullPaymentCard").classList.remove("selected");
-    document.getElementById("partialPaymentCard").classList.remove("selected");
-    document.getElementById("emiPaymentCard").classList.remove("selected");
-
-    document.getElementById(`${type}PaymentCard`).classList.add("selected");
-    document.querySelector(`input[value="${type}"]`).checked = true;
-
-    // Show/hide installment plan
-    const installmentPlan = document.getElementById("installmentPlan");
-    if (type === "emi" || type === "partial") {
-      installmentPlan.classList.remove("hidden");
-
-      const totalFees = getTotalFees();
-      if (type === "emi") {
-        calculateEMI();
-      } else {
-        // Partial payment installment schedule
-        const initial = Math.ceil(totalFees * 0.5);
-        const emiAmount = Math.ceil((totalFees - initial) / 6);
-        generateInstallmentSchedule(totalFees, initial, emiAmount, 6);
+      // Update course details when selection changes
+      function updateCoursePayDetails() {
+        const select = document.getElementById('coursePaySelect');
+        selectedCourse = select.value;
+        
+        if (selectedCourse && courseData[selectedCourse]) {
+          const course = courseData[selectedCourse];
+          
+          // Update displayed information
+          document.getElementById('courseDuration').textContent = course.duration;
+          document.getElementById('coursePayFees').textContent = formatCurrency(course.fees);
+          
+          // Calculate total fees based on duration
+          const years = course.duration.includes('year') ? 
+            parseInt(course.duration.split(' ')[0]) : 1;
+          const totalFees = years * course.fees;
+          document.getElementById('totalFees').textContent = formatCurrency(totalFees);
+          
+          // Update all payment options
+          updatePaymentOptions(totalFees);
+        }
       }
-    } else {
-      installmentPlan.classList.add("hidden");
-    }
-  }
 
-  // Generate installment schedule
-  function generateInstallmentSchedule(
-    total,
-    initialPayment,
-    emiAmount,
-    months
-  ) {
-    const table = document.getElementById("installmentTable");
-    table.innerHTML = "";
+      // Update all payment options with the current total fees
+      function updatePaymentOptions(totalFees) {
+        // Full Payment
+        const discount = totalFees * 0.05;
+        const fullTotal = totalFees - discount;
+        
+        document.getElementById('fullCourseFees').textContent = formatCurrency(totalFees);
+        document.getElementById('fullDiscount').textContent = formatCurrency(discount);
+        document.getElementById('fullTotal').textContent = formatCurrency(fullTotal);
+        
+        // Partial Payment
+        const partialInitial = Math.ceil(totalFees * 0.5);
+        const partialRemaining = totalFees - partialInitial;
+        const partialEMI = Math.ceil(partialRemaining / 6);
+        
+        document.getElementById('partialInitial').textContent = formatCurrency(partialInitial);
+        document.getElementById('partialRemaining').textContent = formatCurrency(partialRemaining);
+        document.getElementById('partialEMI').textContent = formatCurrency(partialEMI);
+        
+        // EMI Payment
+        calculateEMI();
+      }
 
-    // Add initial payment row
-    if (initialPayment > 0) {
-      addInstallmentRow(table, 0, "Today", initialPayment, "Initial Payment");
-    }
+      // Calculate EMI based on selected tenure
+      function calculateEMI() {
+        if (!selectedCourse) return;
+        
+        const totalFees = getTotalFees();
+        const tenure = parseInt(document.getElementById('emiTenure').value);
+        const downPayment = Math.ceil(totalFees * 0.1); // 10% down payment
+        const emiAmount = Math.ceil((totalFees - downPayment) / tenure);
+        
+        document.getElementById('emiDownPayment').textContent = formatCurrency(downPayment);
+        document.getElementById('emiAmount').textContent = formatCurrency(emiAmount);
+        document.getElementById('emiTotal').textContent = formatCurrency(totalFees);
+        
+        if (selectedPaymentType === 'emi') {
+          generateInstallmentSchedule(totalFees, downPayment, emiAmount, tenure);
+        }
+      }
 
-    // Add EMI rows
-    const today = new Date();
-    let remaining = total - initialPayment;
+      // Get total fees for selected course
+      function getTotalFees() {
+        if (!selectedCourse) return 0;
+        
+        const course = courseData[selectedCourse];
+        const years = course.duration.includes('year') ? 
+          parseInt(course.duration.split(' ')[0]) : 1;
+        
+        return years * course.fees;
+      }
 
-    for (let i = 1; i <= months; i++) {
-      const dueDate = new Date();
-      dueDate.setMonth(today.getMonth() + i);
+      // Select payment type
+      function selectPayment(type) {
+        selectedPaymentType = type;
+        
+        // Update UI
+        document.getElementById('fullPaymentCard').classList.remove('selected');
+        document.getElementById('partialPaymentCard').classList.remove('selected');
+        document.getElementById('emiPaymentCard').classList.remove('selected');
+        
+        document.getElementById(`${type}PaymentCard`).classList.add('selected');
+        document.querySelector(`input[value="${type}"]`).checked = true;
+        
+        // Show/hide installment plan
+        const installmentPlan = document.getElementById('installmentPlan');
+        if (type === 'emi' || type === 'partial') {
+          installmentPlan.classList.remove('hidden');
+          
+          const totalFees = getTotalFees();
+          if (type === 'emi') {
+            calculateEMI();
+          } else {
+            // Partial payment installment schedule
+            const initial = Math.ceil(totalFees * 0.5);
+            const emiAmount = Math.ceil((totalFees - initial) / 6);
+            generateInstallmentSchedule(totalFees, initial, emiAmount, 6);
+          }
+        } else {
+          installmentPlan.classList.add('hidden');
+        }
+      }
 
-      const amount = i === months ? remaining : emiAmount;
-      remaining -= amount;
+      // Generate installment schedule
+      function generateInstallmentSchedule(total, initialPayment, emiAmount, months) {
+        const table = document.getElementById('installmentTable');
+        table.innerHTML = '';
+        
+        // Add initial payment row
+        if (initialPayment > 0) {
+          addInstallmentRow(table, 0, 'Today', initialPayment, 'Initial Payment');
+        }
+        
+        // Add EMI rows
+        const today = new Date();
+        let remaining = total - initialPayment;
+        
+        for (let i = 1; i <= months; i++) {
+          const dueDate = new Date();
+          dueDate.setMonth(today.getMonth() + i);
+          
+          const amount = (i === months) ? remaining : emiAmount;
+          remaining -= amount;
+          
+          addInstallmentRow(table, i, formatDate(dueDate), amount, 'EMI');
+        }
+      }
 
-      addInstallmentRow(table, i, formatDate(dueDate), amount, "EMI");
-    }
-  }
-
-  // Add row to installment table
-  function addInstallmentRow(table, number, date, amount, type) {
-    const row = document.createElement("tr");
-    row.className = number % 2 === 0 ? "bg-gray-50" : "bg-white";
-
-    row.innerHTML = `
-          <td class="px-4 py-2 whitespace-nowrap">${
-            number === 0 ? type : `Installment ${number}`
-          }</td>
+      // Add row to installment table
+      function addInstallmentRow(table, number, date, amount, type) {
+        const row = document.createElement('tr');
+        row.className = number % 2 === 0 ? 'bg-gray-50' : 'bg-white';
+        
+        row.innerHTML = `
+          <td class="px-4 py-2 whitespace-nowrap">${number === 0 ? type : `Installment ${number}`}</td>
           <td class="px-4 py-2 whitespace-nowrap">${date}</td>
           <td class="px-4 py-2 whitespace-nowrap">${formatCurrency(amount)}</td>
           <td class="px-4 py-2 whitespace-nowrap">
-            <span class="px-2 py-1 text-xs rounded-full ${
-              number === 0
-                ? "bg-blue-100 text-blue-800"
-                : "bg-blue-50 text-blue-800"
-            }">
-              ${number === 0 ? "Due Now" : "Pending"}
+            <span class="px-2 py-1 text-xs rounded-full ${number === 0 ? 'bg-blue-100 text-blue-800' : 'bg-blue-50 text-blue-800'}">
+              ${number === 0 ? 'Due Now' : 'Pending'}
             </span>
           </td>
         `;
+        
+        table.appendChild(row);
+      }
 
-    table.appendChild(row);
-  }
+      // Process payment (mock function)
+      function processPayment() {
+        if (!selectedCourse) {
+          alert('Please select a course first');
+          return;
+        }
+        
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+        const amount = getPaymentAmount();
+        
+        alert(`Processing ${paymentMethod} payment of ${formatCurrency(amount)} for ${document.getElementById('coursePaySelect').selectedOptions[0].text}`);
+        // In a real app, you would integrate with a payment gateway here
+      }
 
-  // Process payment (mock function)
-  function processPayment() {
-    if (!selectedCourse) {
-      alert("Please select a course first");
-      return;
-    }
+      // Get payment amount based on selected option
+      function getPaymentAmount() {
+        switch(selectedPaymentType) {
+          case 'full':
+            return getTotalFees() * 0.95; // with 5% discount
+          case 'partial':
+            return Math.ceil(getTotalFees() * 0.5); // 50% initial
+          case 'emi':
+            return Math.ceil(getTotalFees() * 0.1); // 10% down payment
+          default:
+            return 0;
+        }
+      }
 
-    const paymentMethod = document.querySelector(
-      'input[name="payment_method"]:checked'
-    ).value;
-    const amount = getPaymentAmount();
+      // Helper function to format currency
+      function formatCurrency(amount) {
+        return '₹' + amount.toLocaleString('en-IN');
+      }
 
-    alert(
-      `Processing ${paymentMethod} payment of ${formatCurrency(amount)} for ${
-        document.getElementById("coursePaySelect").selectedOptions[0].text
-      }`
-    );
-    // In a real app, you would integrate with a payment gateway here
-  }
+      // Helper function to format date
+      function formatDate(date) {
+        return date.toLocaleDateString('en-IN', { 
+          day: '2-digit', 
+          month: 'short', 
+          year: 'numeric' 
+        });
+      }
 
-  // Get payment amount based on selected option
-  function getPaymentAmount() {
-    switch (selectedPaymentType) {
-      case "full":
-        return getTotalFees() * 0.95; // with 5% discount
-      case "partial":
-        return Math.ceil(getTotalFees() * 0.5); // 50% initial
-      case "emi":
-        return Math.ceil(getTotalFees() * 0.1); // 10% down payment
-      default:
-        return 0;
-    }
-  }
+      // Open course payment section
+      function openCoursePayment() {
+        hideAllSections();
+        document.getElementById('coursePaymentSection').classList.remove('hidden');
+      }
 
-  // Helper function to format currency
-  function formatCurrency(amount) {
-    return "₹" + amount.toLocaleString("en-IN");
-  }
+         /******************************************
+         * 1) HELPER FUNCTIONS
+         ******************************************/
+         function hideAllSections() {
+         document.getElementById('slipFormSection').classList.add('hidden');
+         document.getElementById('oldFeesSection').classList.add('hidden');
+         document.getElementById('analyticsSection').classList.add('hidden');
+         document.getElementById('manageStudentSection').classList.add('hidden');
+         document.getElementById('classMonthDashboard').classList.add('hidden');
+         document.getElementById('dueFeesSection').classList.add('hidden');
+         document.getElementById('separateReceipt').classList.add('hidden');
+         document.getElementById('ifId').classList.add('hidden');
+         document.getElementById('admissionFormSection').classList.add('hidden');
+         document.getElementById('coursePaymentSection').classList.add('hidden');
+         }
+         function updateGeneratedTime() {
+         const now = new Date();
+         document.getElementById('generatedTime').innerText = now.toLocaleString();
+         }
 
-  // Helper function to format date
-  function formatDate(date) {
-    return date.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  }
+         
+         
+         // Convert any table to CSV / Copy / PDF
+         function copyTable(containerId) {
+         const container = document.getElementById(containerId);
+         const table = container.querySelector('table');
+         if (!table) return;
+         let range = document.createRange();
+         range.selectNode(table);
+         window.getSelection().removeAllRanges();
+         window.getSelection().addRange(range);
+         try {
+         document.execCommand('copy');
+         Swal.fire({ icon: 'success', title: 'Copied', text: 'Table copied to clipboard.', timer: 1500, showConfirmButton: false });
+         } catch (err) {
+         console.log(err);
+         }
+         window.getSelection().removeAllRanges();
+         }
+         
+         function exportCSV(containerId, filename) {
+         const container = document.getElementById(containerId);
+         const table = container.querySelector('table');
+         if (!table) return;
+         let csv = [];
+         const rows = table.querySelectorAll('tr');
+         rows.forEach(row => {
+         const cols = row.querySelectorAll('td, th');
+         let rowData = [];
+         cols.forEach(col => {
+           // Escape quotes
+           rowData.push('"'+(col.innerText.replace(/"/g, '""'))+'"');
+         });
+         csv.push(rowData.join(","));
+         });
+         const csvString = csv.join("\n");
+         const blob = new Blob([csvString], { type: 'text/csv' });
+         const url = URL.createObjectURL(blob);
+         const a = document.createElement('a');
+         a.setAttribute('hidden', '');
+         a.setAttribute('href', url);
+         a.setAttribute('download', filename);
+         document.body.appendChild(a);
+         a.click();
+         document.body.removeChild(a);
+         }
+         
+         function exportTablePDF(containerId, title) {
+         const container = document.getElementById(containerId);
+         const table = container.querySelector('table');
+         if (!table) return;
+         const tempDiv = document.createElement('div');
+         tempDiv.innerHTML = `<h2 style="text-align:center;font-size:20px;margin-bottom:10px;">${title}</h2>` + table.outerHTML;
+         const opt = {
+         margin: 0.5,
+         filename: title + '.pdf',
+         image: { type: 'jpeg', quality: 0.98 },
+         html2canvas: { scale: 2 },
+         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+         };
+         html2pdf().set(opt).from(tempDiv).save();
+         }
 
-  // Open course payment section
-  function openCoursePayment() {
-    hideAllSections();
-    document.getElementById("coursePaymentSection").classList.remove("hidden");
-  }
 
-  /******************************************
-   * 1) HELPER FUNCTIONS
-   ******************************************/
-  function hideAllSections() {
-    document.getElementById("slipFormSection").classList.add("hidden");
-    document.getElementById("oldFeesSection").classList.add("hidden");
-    document.getElementById("analyticsSection").classList.add("hidden");
-    document.getElementById("manageStudentSection").classList.add("hidden");
-    document.getElementById("classMonthDashboard").classList.add("hidden");
-    document.getElementById("dueFeesSection").classList.add("hidden");
-    document.getElementById("separateReceipt").classList.add("hidden");
-    document.getElementById("ifId").classList.add("hidden");
-    document.getElementById("admissionFormSection").classList.add("hidden");
-    document.getElementById("coursePaymentSection").classList.add("hidden");
-  }
-  function updateGeneratedTime() {
-    const now = new Date();
-    document.getElementById("generatedTime").innerText = now.toLocaleString();
-  }
 
-  // Convert any table to CSV / Copy / PDF
-  function copyTable(containerId) {
-    const container = document.getElementById(containerId);
-    const table = container.querySelector("table");
-    if (!table) return;
-    let range = document.createRange();
-    range.selectNode(table);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    try {
-      document.execCommand("copy");
-      Swal.fire({
-        icon: "success",
-        title: "Copied",
-        text: "Table copied to clipboard.",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-    window.getSelection().removeAllRanges();
-  }
+         function copyText() {
 
-  function exportCSV(containerId, filename) {
-    const container = document.getElementById(containerId);
-    const table = container.querySelector("table");
-    if (!table) return;
-    let csv = [];
-    const rows = table.querySelectorAll("tr");
-    rows.forEach((row) => {
-      const cols = row.querySelectorAll("td, th");
-      let rowData = [];
-      cols.forEach((col) => {
-        // Escape quotes
-        rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
-      });
-      csv.push(rowData.join(","));
-    });
-    const csvString = csv.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.setAttribute("hidden", "");
-    a.setAttribute("href", url);
-    a.setAttribute("download", filename);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
+          sessionStorage.setItem("tempText", document.getElementById("fullName").value);
+          document.getElementById("Student_namee").value = sessionStorage.getItem("tempText");
 
-  function exportTablePDF(containerId, title) {
-    const container = document.getElementById(containerId);
-    const table = container.querySelector("table");
-    if (!table) return;
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML =
-      `<h2 style="text-align:center;font-size:20px;margin-bottom:10px;">${title}</h2>` +
-      table.outerHTML;
-    const opt = {
-      margin: 0.5,
-      filename: title + ".pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    };
-    html2pdf().set(opt).from(tempDiv).save();
-  }
+          sessionStorage.setItem("A", document.getElementById("coursePaySelect").value);
+          document.getElementById("courseSelect").value = sessionStorage.getItem("A");
 
-  function copyInquiry() {
-    sessionStorage.setItem(
-      "tempText",
-      document.getElementById("fullName").value
-    );
-    // document.getElementById("Student_namee").value =
-    //   sessionStorage.getItem("tempText");
+          sessionStorage.setItem("Bc", document.getElementById("coursePayFees").value);
+          document.getElementById("courseFees").value = sessionStorage.getItem("Bc");
+          
 
-    // sessionStorage.setItem(
-    //   "A",
-    //   document.getElementById("coursePaySelect").value
-    // );
-    // document.getElementById("courseSelect").value = sessionStorage.getItem("A");
-
-    // sessionStorage.setItem(
-    //   "Bc",
-    //   document.getElementById("coursePayFees").value
-    // );
-    // document.getElementById("courseFees").value = sessionStorage.getItem("Bc");
-  }
-
-  // function copyCoursePay() {
-  //   sessionStorage.setItem(
-  //     "A",
-  //     document.getElementById("coursePaySelect").value
-  //   );
-  //   document.getElementById("courseSelect").value = sessionStorage.getItem("A");
-
-  //   sessionStorage.setItem(
-  //     "paytype",
-  //     document.getElementById("Coursepayment_type").value
-  //   );
-  //   document.getElementById("payment_type").value =
-  //     sessionStorage.getItem("paytype");
-  //   console.log(sessionStorage.getItem("paytype"));
-  //   updateCourseDetails();
-  //   updateYearPaymentOptions();
-  //   updatePaymentFields();
-  // }
-  function copyCoursePay() {
-    // Store coursePaySelect value
-    sessionStorage.setItem(
-      "A",
-      document.getElementById("coursePaySelect").value
-    );
-    document.getElementById("courseSelect").value = sessionStorage.getItem("A");
-
-    // Get selected payment type
-    const selectedRadio = document.querySelector(
-      'input[name="Coursepayment_type"]:checked'
-    );
-
-    if (!selectedRadio) {
-      alert("Please select a payment type.");
-      return;
-    }
-
-    sessionStorage.setItem("paytype", selectedRadio.value);
-    console.log("Payment type selected:", selectedRadio.value);
-
-    // Call the rest
-    updateCourseDetails();
-    updateYearPaymentOptions();
-    updatePaymentFields();
-    storePayementType();
-  }
-
-  /******************************************
-   * 2) LOGIN / LOGOUT
-   ******************************************/
-  //  document.getElementById('loginForm').addEventListener('submit', function(e) {
-  //  e.preventDefault();
-  //  const loginData = {
-  //  username: document.getElementById('loginUsername').value.trim(),
-  //  password: document.getElementById('loginPassword').value.trim()
-  //  };
-  //  google.script.run.withSuccessHandler(function(resp) {
-  //  if (resp.success) {
-  //    Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
-  //    document.getElementById('loginSection').classList.add('hidden');
-  //    document.getElementById('appSection').classList.remove('hidden');
-  //    document.getElementById('userName').value = resp.userName;
-  //    document.getElementById('userRole').value = resp.role;
-  //    document.getElementById('userRoleDisplay').textContent = resp.role;
-
-  //    // Admin UI if role=admin
-  //    if (resp.role === 'admin') {
-  //      document.getElementById('manageStudentsBtn').classList.remove('hidden');
-  //      document.getElementById('analyticsBtn').classList.remove('hidden');
-  //      document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
-  //      document.getElementById('dueFeesBtn').classList.remove('hidden');
-  //    }
-
-  //    // load dropdown data
-  //    google.script.run.withSuccessHandler(function(dd) {
-  //      if (dd.error) {
-  //        console.log("Dropdown error", dd.error);
-  //        return;
-  //      }
-  //      dropdownData = dd;
-  //      fillDropdowns();
-  //    }).getDropdownData();
-
-  //  } else {
-  //    Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
-  //  }
-  //  }).loginUser(loginData);
-  //  });
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const loginData = {
-      username: document.getElementById("loginUsername").value.trim(),
-      password: document.getElementById("loginPassword").value.trim(),
-    };
-
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.success) {
-          Swal.fire({
-            icon: "success",
-            title: "Login Successful",
-            text: "Welcome, " + resp.userName,
-            timer: 1500,
-            showConfirmButton: false,
-          });
-          document.getElementById("loginSection").classList.add("hidden");
-          document.getElementById("appSection").classList.remove("hidden");
-          document.getElementById("userName").value = resp.userName;
-          document.getElementById("userRole").value = resp.role;
-          document.getElementById("userRoleDisplay").textContent = resp.role;
-          document.getElementById("userBranch").value = resp.branch;
-
-          // Show Inquiry Form by default after login
-          openInquiryForm();
-
-          // Admin UI if role=admin
-          if (resp.role === "admin") {
-            document
-              .getElementById("manageStudentsBtn")
-              .classList.remove("hidden");
-            document.getElementById("analyticsBtn").classList.remove("hidden");
-            document
-              .getElementById("classMonthDashboardBtn")
-              .classList.remove("hidden");
-            document.getElementById("dueFeesBtn").classList.remove("hidden");
           }
 
-          // load dropdown data
-          google.script.run
-            .withSuccessHandler(function (dd) {
-              if (dd.error) {
-                console.log("Dropdown error", dd.error);
-                return;
-              }
-              dropdownData = dd;
-              fillDropdowns();
-            })
-            .getDropdownData();
-        } else {
-          Swal.fire({ icon: "error", title: "Login Failed", text: resp.error });
-        }
-      })
-      .loginUser(loginData);
-  });
-  function logout() {
-    document.getElementById("appSection").classList.add("hidden");
-    document.getElementById("loginSection").classList.remove("hidden");
-    document.getElementById("loginUsername").value = "";
-    document.getElementById("loginPassword").value = "";
-    Swal.fire({
-      icon: "info",
-      title: "Logged Out",
-      text: "You have been logged out.",
-      timer: 1500,
-      showConfirmButton: false,
-    });
-  }
 
-  /******************************************
-   * 3) SLIP FORM: SUBMIT / UPDATE
-   ******************************************/
-  document
-    .getElementById("receiptForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      submitFeeData();
-    });
+         /******************************************
+         * 2) LOGIN / LOGOUT
+         ******************************************/
+        //  document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //  e.preventDefault();
+        //  const loginData = {
+        //  username: document.getElementById('loginUsername').value.trim(),
+        //  password: document.getElementById('loginPassword').value.trim()
+        //  };
+        //  google.script.run.withSuccessHandler(function(resp) {
+        //  if (resp.success) {
+        //    Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
+        //    document.getElementById('loginSection').classList.add('hidden');
+        //    document.getElementById('appSection').classList.remove('hidden');
+        //    document.getElementById('userName').value = resp.userName;
+        //    document.getElementById('userRole').value = resp.role;
+        //    document.getElementById('userRoleDisplay').textContent = resp.role;
+         
+        //    // Admin UI if role=admin
+        //    if (resp.role === 'admin') {
+        //      document.getElementById('manageStudentsBtn').classList.remove('hidden');
+        //      document.getElementById('analyticsBtn').classList.remove('hidden');
+        //      document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
+        //      document.getElementById('dueFeesBtn').classList.remove('hidden');
+        //    }
+         
+        //    // load dropdown data
+        //    google.script.run.withSuccessHandler(function(dd) {
+        //      if (dd.error) {
+        //        console.log("Dropdown error", dd.error);
+        //        return;
+        //      }
+        //      dropdownData = dd;
+        //      fillDropdowns();
+        //    }).getDropdownData();
+         
+        //  } else {
+        //    Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
+        //  }
+        //  }).loginUser(loginData);
+        //  });
+         document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const loginData = {
+    username: document.getElementById('loginUsername').value.trim(),
+    password: document.getElementById('loginPassword').value.trim()
+  };
+  
+  google.script.run.withSuccessHandler(function(resp) {
+    if (resp.success) {
+      Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('appSection').classList.remove('hidden');
+      document.getElementById('userName').value = resp.userName;
+      document.getElementById('userRole').value = resp.role;
+      document.getElementById('userRoleDisplay').textContent = resp.role;
+      document.getElementById('userBranch').value = resp.branch;
 
-  function submitFeeData() {
-    const formData = collectFormData();
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.includes("Error")) {
-          Swal.fire({ icon: "error", title: "Error", text: resp });
-        } else {
-          Swal.fire({
-            icon: "success",
-            title: "Saved",
-            text: resp,
-            timer: 1500,
-            showConfirmButton: false,
-          });
-          document.getElementById("receiptForm").reset();
-          document.getElementById("monthField").value = "";
-          document.getElementById("recordRowNumber").value = "";
-          document.getElementById("btnUpdateData").classList.add("hidden");
-          document.getElementById("btnSubmitNew").classList.remove("hidden");
-          updateGeneratedTime();
-          showReceipt(formData); // Show receipt after successful submission
-        }
-      })
-      .submitData(formData);
-  }
+      // Show Inquiry Form by default after login
+      openInquiryForm();
 
-  function updateFeeData() {
-    const userRole = document.getElementById("userRole").value;
-    const formData = collectFormData();
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.includes("Error")) {
-          Swal.fire({ icon: "error", title: "Update Error", text: resp });
-        } else {
-          Swal.fire({
-            icon: "success",
-            title: "Updated",
-            text: resp,
-            timer: 1500,
-            showConfirmButton: false,
-          });
-          document.getElementById("receiptForm").reset();
-          document.getElementById("monthField").value = "";
-          document.getElementById("recordRowNumber").value = "";
-          document.getElementById("btnUpdateData").classList.add("hidden");
-          document.getElementById("btnSubmitNew").classList.remove("hidden");
-          updateGeneratedTime();
-          showReceipt(formData); // Show receipt after successful update
-        }
-      })
-      .updateData(formData, userRole);
-  }
-
-  function collectFormData() {
-    return {
-      studentId: document.getElementById("studentId").value.trim(),
-      date: document.getElementById("date").value.trim(),
-      month: document.getElementById("monthField").value.trim(),
-      session: document.getElementById("session").value.trim(),
-      transactionId: document.getElementById("transactionId").value.trim(),
-      trade: document.getElementById("trade").value.trim(),
-      studentName: document.getElementById("studentName").value.trim(),
-      fatherName: document.getElementById("fatherName").value.trim(),
-      paidAmount: document.getElementById("paidAmount").value.trim(),
-      paidAmountInWord: document
-        .getElementById("paidAmountInWord")
-        .value.trim(),
-      feesType: document.getElementById("feesType").value.trim(),
-      paymentMode: document.getElementById("paymentMode").value.trim(),
-      remark: document.getElementById("remark").value.trim(),
-      userName: document.getElementById("userName").value.trim(),
-      recordRowNumber: document.getElementById("recordRowNumber").value.trim(),
-    };
-  }
-
-  // Convert amount => words
-  function numberToWords(num) {
-    if (num === 0) return "zero";
-    const a = [
-      "",
-      "one",
-      "two",
-      "three",
-      "four",
-      "five",
-      "six",
-      "seven",
-      "eight",
-      "nine",
-      "ten",
-      "eleven",
-      "twelve",
-      "thirteen",
-      "fourteen",
-      "fifteen",
-      "sixteen",
-      "seventeen",
-      "eighteen",
-      "nineteen",
-    ];
-    const b = [
-      "",
-      "",
-      "twenty",
-      "thirty",
-      "forty",
-      "fifty",
-      "sixty",
-      "seventy",
-      "eighty",
-      "ninety",
-    ];
-    const g = ["", "thousand", "million", "billion"];
-    function grp(n) {
-      let str = "";
-      if (n > 99) {
-        str += a[Math.floor(n / 100)] + " hundred ";
-        n = n % 100;
+      // Admin UI if role=admin
+      if (resp.role === 'admin') {
+        document.getElementById('manageStudentsBtn').classList.remove('hidden');
+        document.getElementById('analyticsBtn').classList.remove('hidden');
+        document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
+        document.getElementById('dueFeesBtn').classList.remove('hidden');
       }
-      if (n > 0) {
-        if (n < 20) str += a[n] + " ";
-        else str += b[Math.floor(n / 10)] + " " + a[n % 10] + " ";
-      }
-      return str;
-    }
-    let result = "";
-    let j = 0;
-    while (num > 0) {
-      let n = num % 1000;
-      if (n !== 0) result = grp(n) + g[j] + " " + result;
-      num = Math.floor(num / 1000);
-      j++;
-    }
-    return result.trim();
-  }
-  function convertAmountToWords() {
-    const val = document.getElementById("paidAmount").value.trim();
-    if (!val) {
-      document.getElementById("paidAmountInWord").value = "";
-      return;
-    }
-    const num = parseFloat(val);
-    if (isNaN(num)) {
-      document.getElementById("paidAmountInWord").value = "Invalid amount";
-      return;
-    }
-    document.getElementById("paidAmountInWord").value = numberToWords(
-      Math.floor(num)
-    );
-  }
-  function updateMonthField() {
-    const dVal = document.getElementById("date").value;
-    if (dVal) {
-      const dObj = new Date(dVal);
-      const shortM = dObj.toLocaleString("en-US", { month: "short" });
-      document.getElementById("monthField").value = shortM;
+
+      // load dropdown data
+      google.script.run.withSuccessHandler(function(dd) {
+        if (dd.error) {
+          console.log("Dropdown error", dd.error);
+          return;
+        }
+        dropdownData = dd;
+        fillDropdowns();
+      }).getDropdownData();
     } else {
-      document.getElementById("monthField").value = "";
+      Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
     }
-  }
+  }).loginUser(loginData);
+});
+         function logout() {
+         document.getElementById('appSection').classList.add('hidden');
+         document.getElementById('loginSection').classList.remove('hidden');
+         document.getElementById('loginUsername').value = "";
+         document.getElementById('loginPassword').value = "";
+         Swal.fire({ icon: 'info', title: 'Logged Out', text: 'You have been logged out.', timer: 1500, showConfirmButton: false });
+         }
+         
+         /******************************************
+         * 3) SLIP FORM: SUBMIT / UPDATE
+         ******************************************/
+         document.getElementById('receiptForm').addEventListener('submit', function(e) {
+         e.preventDefault();
+         submitFeeData();
+         });
+         
+         function submitFeeData() {
+         const formData = collectFormData();
+         google.script.run.withSuccessHandler(function(resp) {
+         if (resp.includes("Error")) {
+           Swal.fire({ icon: 'error', title: 'Error', text: resp });
+         } else {
+           Swal.fire({ icon: 'success', title: 'Saved', text: resp, timer: 1500, showConfirmButton: false });
+           document.getElementById('receiptForm').reset();
+           document.getElementById('monthField').value = "";
+           document.getElementById('recordRowNumber').value = "";
+           document.getElementById('btnUpdateData').classList.add('hidden');
+           document.getElementById('btnSubmitNew').classList.remove('hidden');
+           updateGeneratedTime();
+           showReceipt(formData); // Show receipt after successful submission
+         }
+         }).submitData(formData);
+         }
+         
+         function updateFeeData() {
+         const userRole = document.getElementById('userRole').value;
+         const formData = collectFormData();
+         google.script.run.withSuccessHandler(function(resp) {
+         if (resp.includes("Error")) {
+           Swal.fire({ icon: 'error', title: 'Update Error', text: resp });
+         } else {
+           Swal.fire({ icon: 'success', title: 'Updated', text: resp, timer: 1500, showConfirmButton: false });
+           document.getElementById('receiptForm').reset();
+           document.getElementById('monthField').value = "";
+           document.getElementById('recordRowNumber').value = "";
+           document.getElementById('btnUpdateData').classList.add('hidden');
+           document.getElementById('btnSubmitNew').classList.remove('hidden');
+           updateGeneratedTime();
+           showReceipt(formData); // Show receipt after successful update
+         }
+         }).updateData(formData, userRole);
+         }
+         
+          
 
-  /******************************************
-   * 4) SEARCHING STUDENT & OLD FEES
-   ******************************************/
-  function searchBySideBar() {
-    const sid = document.getElementById("sideBarSearchId").value.trim();
-    if (!sid) {
-      Swal.fire({
-        icon: "info",
-        title: "Enter Student ID",
-        text: "Please type a Student ID",
-      });
-      return;
-    }
-    fetchStudentSession(sid);
-  }
-  function fetchStudentSession(studentId) {
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.error) {
-          Swal.fire({ icon: "error", title: "Error", text: resp.error });
-        } else {
-          document.getElementById("studentId").value = studentId;
-          document.getElementById("session").value = resp.session;
-          document.getElementById("studentName").value = resp.studentName;
-          document.getElementById("fatherName").value = resp.fatherName;
-          document.getElementById("trade").value = resp.trade;
-
-          // auto date => today
-          const today = new Date();
-          const yyyy = today.getFullYear();
-          const mm = String(today.getMonth() + 1).padStart(2, "0");
-          const dd = String(today.getDate()).padStart(2, "0");
-          document.getElementById("date").value = `${yyyy}-${mm}-${dd}`;
-          updateMonthField();
-
-          document.getElementById("recordRowNumber").value = "";
-          document.getElementById("btnUpdateData").classList.add("hidden");
-          document.getElementById("btnSubmitNew").classList.remove("hidden");
-          updateGeneratedTime();
-          Swal.fire({
-            icon: "success",
-            title: "Student Loaded",
-            timer: 1000,
-            showConfirmButton: false,
-          });
-        }
-      })
-      .getStudentSession(studentId);
-  }
-  function searchOldFees() {
-    const sid = prompt("Enter Student ID for Old Fees:");
-    if (!sid) return;
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.error) {
-          Swal.fire({ icon: "error", title: "Error", text: resp.error });
-        } else {
-          let tbl = "";
-          if (!resp.length) {
-            tbl = `<tr><td colspan='5' class='px-4 py-2 text-center'>No old fee records found.</td></tr>`;
-          } else {
-            resp.forEach((r) => {
-              tbl += `<tr>
+ 
+          
+         function collectFormData() {
+         return {
+         studentId: document.getElementById('studentId').value.trim(),
+         date: document.getElementById('date').value.trim(),
+         month: document.getElementById('monthField').value.trim(),
+         session: document.getElementById('session').value.trim(),
+         transactionId: document.getElementById('transactionId').value.trim(),
+         trade: document.getElementById('trade').value.trim(),
+         studentName: document.getElementById('studentName').value.trim(),
+         fatherName: document.getElementById('fatherName').value.trim(),
+         paidAmount: document.getElementById('paidAmount').value.trim(),
+         paidAmountInWord: document.getElementById('paidAmountInWord').value.trim(),
+         feesType: document.getElementById('feesType').value.trim(),
+         paymentMode: document.getElementById('paymentMode').value.trim(),
+         remark: document.getElementById('remark').value.trim(),
+         userName: document.getElementById('userName').value.trim(),
+         recordRowNumber: document.getElementById('recordRowNumber').value.trim()
+         };
+         }
+         
+         // Convert amount => words
+         function numberToWords(num) {
+         if (num === 0) return "zero";
+         const a = ["","one","two","three","four","five","six","seven","eight","nine","ten","eleven",
+                  "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+         const b = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+         const g = ["","thousand","million","billion"];
+         function grp(n) {
+         let str = "";
+         if (n > 99) {
+           str += a[Math.floor(n / 100)] + " hundred ";
+           n = n % 100;
+         }
+         if (n > 0) {
+           if (n < 20) str += a[n]+" ";
+           else str += b[Math.floor(n / 10)]+" "+a[n % 10]+" ";
+         }
+         return str;
+         }
+         let result = "";
+         let j = 0;
+         while (num > 0) {
+         let n = num % 1000;
+         if (n !== 0) result = grp(n)+g[j]+" "+result;
+         num = Math.floor(num/1000);
+         j++;
+         }
+         return result.trim();
+         }
+         function convertAmountToWords() {
+         const val = document.getElementById('paidAmount').value.trim();
+         if (!val) {
+         document.getElementById('paidAmountInWord').value = "";
+         return;
+         }
+         const num = parseFloat(val);
+         if (isNaN(num)) {
+         document.getElementById('paidAmountInWord').value = "Invalid amount";
+         return;
+         }
+         document.getElementById('paidAmountInWord').value = numberToWords(Math.floor(num));
+         }
+         function updateMonthField() {
+         const dVal = document.getElementById('date').value;
+         if (dVal) {
+         const dObj = new Date(dVal);
+         const shortM = dObj.toLocaleString("en-US", { month: "short" });
+         document.getElementById('monthField').value = shortM;
+         } else {
+         document.getElementById('monthField').value = "";
+         }
+         }
+         
+         /******************************************
+         * 4) SEARCHING STUDENT & OLD FEES
+         ******************************************/
+         function searchBySideBar() {
+         const sid = document.getElementById('sideBarSearchId').value.trim();
+         if (!sid) {
+         Swal.fire({ icon: 'info', title: 'Enter Student ID', text: 'Please type a Student ID' });
+         return;
+         }
+         fetchStudentSession(sid);
+         }
+         function fetchStudentSession(studentId) {
+         google.script.run.withSuccessHandler(function(resp) {
+         if (resp.error) {
+           Swal.fire({ icon: 'error', title: 'Error', text: resp.error });
+         } else {
+           document.getElementById('studentId').value = studentId;
+           document.getElementById('session').value = resp.session;
+           document.getElementById('studentName').value = resp.studentName;
+           document.getElementById('fatherName').value = resp.fatherName;
+           document.getElementById('trade').value = resp.trade;
+         
+           // auto date => today
+           const today = new Date();
+           const yyyy = today.getFullYear();
+           const mm = String(today.getMonth()+1).padStart(2,'0');
+           const dd = String(today.getDate()).padStart(2,'0');
+           document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
+           updateMonthField();
+         
+           document.getElementById('recordRowNumber').value = "";
+           document.getElementById('btnUpdateData').classList.add('hidden');
+           document.getElementById('btnSubmitNew').classList.remove('hidden');
+           updateGeneratedTime();
+           Swal.fire({ icon: 'success', title: 'Student Loaded', timer: 1000, showConfirmButton: false });
+         }
+         }).getStudentSession(studentId);
+         }
+         function searchOldFees() {
+         const sid = prompt("Enter Student ID for Old Fees:");
+         if (!sid) return;
+         google.script.run.withSuccessHandler(function(resp) {
+         if (resp.error) {
+           Swal.fire({ icon: 'error', title: 'Error', text: resp.error });
+         } else {
+           let tbl = "";
+           if (!resp.length) {
+             tbl = `<tr><td colspan='5' class='px-4 py-2 text-center'>No old fee records found.</td></tr>`;
+           } else {
+             resp.forEach(r => {
+               tbl += `<tr>
                  <td class='px-4 py-2'>${r.date}</td>
                  <td class='px-4 py-2'>${r.month}</td>
                  <td class='px-4 py-2'>${r.paidAmount}</td>
                  <td class='px-4 py-2'>${r.transactionId}</td>
                  <td class='px-4 py-2'><button class='bg-blue-500 text-white px-2 py-1 rounded' onclick='viewRecord(${r.row})'>Get</button></td>
                </tr>`;
-            });
-          }
-          document.getElementById("oldFeesTable").innerHTML = tbl;
-          hideAllSections();
-          document.getElementById("oldFeesSection").classList.remove("hidden");
-        }
-      })
-      .getOldFees(sid);
-  }
-  // "View Old Slips" from Slip form
-  function searchOldFeesFromSlip() {
-    const sid = document.getElementById("studentId").value.trim();
-    if (!sid) {
-      Swal.fire({
-        icon: "warning",
-        title: "Enter Student ID",
-        text: "Please type a Student ID first.",
-      });
-      return;
-    }
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.error) {
-          Swal.fire({ icon: "error", title: "Error", text: resp.error });
-        } else {
-          let tbl = "";
-          if (!resp.length) {
-            tbl = `<tr><td colspan='5' class='px-4 py-2 text-center'>No old fee records found.</td></tr>`;
-          } else {
-            resp.forEach((r) => {
-              tbl += `<tr>
+             });
+           }
+           document.getElementById('oldFeesTable').innerHTML = tbl;
+           hideAllSections();
+           document.getElementById('oldFeesSection').classList.remove('hidden');
+         }
+         }).getOldFees(sid);
+         }
+         // "View Old Slips" from Slip form
+         function searchOldFeesFromSlip() {
+         const sid = document.getElementById('studentId').value.trim();
+         if (!sid) {
+         Swal.fire({ icon: 'warning', title: 'Enter Student ID', text: 'Please type a Student ID first.' });
+         return;
+         }
+         google.script.run.withSuccessHandler(function(resp) {
+         if (resp.error) {
+           Swal.fire({ icon: 'error', title: 'Error', text: resp.error });
+         } else {
+           let tbl = "";
+           if (!resp.length) {
+             tbl = `<tr><td colspan='5' class='px-4 py-2 text-center'>No old fee records found.</td></tr>`;
+           } else {
+             resp.forEach(r => {
+               tbl += `<tr>
                  <td class='px-4 py-2'>${r.date}</td>
                  <td class='px-4 py-2'>${r.month}</td>
                  <td class='px-4 py-2'>${r.paidAmount}</td>
                  <td class='px-4 py-2'>${r.transactionId}</td>
                  <td class='px-4 py-2'><button class='bg-blue-500 text-white px-2 py-1 rounded' onclick='viewRecord(${r.row})'>Get</button></td>
                </tr>`;
-            });
-          }
-          document.getElementById("oldFeesTable").innerHTML = tbl;
-          hideAllSections();
-          document.getElementById("oldFeesSection").classList.remove("hidden");
-        }
-      })
-      .getOldFees(sid);
-  }
-  function backToInquiryForm() {
-    hideAllSections();
-    document.getElementById("ifId").classList.remove("hidden");
-  }
-  function viewRecord(rowNumber) {
-    google.script.run
-      .withSuccessHandler(function (resp) {
-        if (resp.error) {
-          Swal.fire({ icon: "error", title: "Error", text: resp.error });
-        } else {
-          const vals = resp.values;
-          document.getElementById("studentId").value = vals[0] || "";
-          document.getElementById("date").value = vals[1] || "";
-          document.getElementById("monthField").value = vals[2] || "";
-          document.getElementById("session").value = vals[3] || "";
-          document.getElementById("transactionId").value = vals[4] || "";
-          document.getElementById("trade").value = vals[5] || "";
-          document.getElementById("studentName").value = vals[6] || "";
-          document.getElementById("fatherName").value = vals[7] || "";
-          document.getElementById("paidAmount").value = vals[8] || "";
-          document.getElementById("paidAmountInWord").value = vals[9] || "";
-          document.getElementById("feesType").value = vals[10] || "";
-          document.getElementById("paymentMode").value = vals[11] || "";
-          document.getElementById("remark").value = vals[12] || "";
-          document.getElementById("userName").value = vals[13] || "";
-          document.getElementById("recordRowNumber").value = rowNumber;
-
-          const role = document.getElementById("userRole").value;
-          if (role === "admin") {
-            document.getElementById("btnUpdateData").classList.remove("hidden");
-            document.getElementById("btnSubmitNew").classList.add("hidden");
-          } else {
-            document.getElementById("btnUpdateData").classList.add("hidden");
-            document.getElementById("btnSubmitNew").classList.remove("hidden");
-          }
-          backToSlipForm();
-        }
-      })
-      .getRecord(rowNumber);
-  }
-
-  /******************************************
-   * 5) PDF DOWNLOAD
-   ******************************************/
-  function downloadPDF() {
-    const element = document.getElementById("slipFormSection");
-    const opt = {
-      margin: 0.5,
-      filename: "FeeSlip.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    };
-    html2pdf()
-      .set(opt)
-      .from(element)
-      .save()
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "PDF Downloaded",
-          text: "Fee slip PDF downloaded.",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      });
-  }
-
-  /******************************************
-   * 6) ANALYTICS
-   ******************************************/
-  function toggleAnalytics() {
-    hideAllSections();
-    document.getElementById("analyticsSection").classList.remove("hidden");
-    loadAnalytics();
-  }
-  function backToInquiryFromAnalytics() {
-    hideAllSections();
-    document.getElementById("ifId").classList.remove("hidden");
-  }
-  function clearAnalyticsFilter() {
-    document.getElementById("analyticsDateFrom").value = "";
-    document.getElementById("analyticsDateTo").value = "";
-    document.getElementById("analyticsMonthFilter").value = "";
-    document.getElementById("analyticsFeesTypeFilter").value = "";
-    document.getElementById("analyticsPaymentModeFilter").value = "";
-    loadAnalytics();
-  }
-  function loadAnalytics() {
-    const userRole = document.getElementById("userRole").value;
-    const monthFilter = document
-      .getElementById("analyticsMonthFilter")
-      .value.trim();
-    const feesTypeFilter = document
-      .getElementById("analyticsFeesTypeFilter")
-      .value.trim();
-    const paymentModeFilter = document
-      .getElementById("analyticsPaymentModeFilter")
-      .value.trim();
-    const dateFrom = document.getElementById("analyticsDateFrom").value.trim();
-    const dateTo = document.getElementById("analyticsDateTo").value.trim();
-
-    google.script.run
-      .withSuccessHandler(function (an) {
-        if (an.error) {
-          Swal.fire({
-            icon: "error",
-            title: "Analytics Error",
-            text: an.error,
-          });
-          return;
-        }
-
-        document.getElementById("cardTotalPaid").textContent =
-          an.totalPaidFees.toFixed(2);
-        document.getElementById("cardTotalUnpaid").textContent =
-          an.totalUnpaidFees.toFixed(2);
-        document.getElementById("cardTotalStudents").textContent =
-          an.totalStudents;
-        document.getElementById("cardPaidStudents").textContent =
-          an.paidStudentsCount;
-        document.getElementById("cardUnpaidStudents").textContent =
-          an.unpaidStudentsCount;
-
-        const dateLabels = Object.keys(an.dateWisePaid).sort();
-        const dateVals = dateLabels.map((d) => an.dateWisePaid[d]);
-
-        // Bar Chart
-        if (dateWiseChartRef) dateWiseChartRef.destroy();
-        const ctxBar = document
-          .getElementById("dateWiseChart")
-          .getContext("2d");
-        dateWiseChartRef = new Chart(ctxBar, {
-          type: "bar",
-          data: {
-            labels: dateLabels,
-            datasets: [
-              {
-                label: "Fees Paid",
-                data: dateVals,
-                backgroundColor: "rgba(54, 162, 235, 0.6)",
-                borderColor: "rgba(54, 162, 235, 1)",
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: { responsive: true, scales: { y: { beginAtZero: true } } },
-        });
-
-        // Line Chart
-        const lineLabels = Object.keys(an.lineData).sort();
-        const lineVals = lineLabels.map((d) => an.lineData[d]);
-        if (lineChartRef) lineChartRef.destroy();
-        const ctxLine = document.getElementById("lineChart").getContext("2d");
-        lineChartRef = new Chart(ctxLine, {
-          type: "line",
-          data: {
-            labels: lineLabels,
-            datasets: [
-              {
-                label: "Fees Trend",
-                data: lineVals,
-                fill: false,
-                borderColor: "rgba(255,99,132,1)",
-                tension: 0.1,
-              },
-            ],
-          },
-          options: { responsive: true },
-        });
-
-        // Pie Chart
-        if (pieChartRef) pieChartRef.destroy();
-        const ctxPie = document.getElementById("pieChart").getContext("2d");
-        pieChartRef = new Chart(ctxPie, {
-          type: "pie",
-          data: {
-            labels: ["Paid", "Unpaid"],
-            datasets: [
-              {
-                data: [an.pieData.paid, an.pieData.unpaid],
-                backgroundColor: ["#4CAF50", "#FF9800"],
-              },
-            ],
-          },
-          options: { responsive: true },
-        });
-      })
-      .getAnalyticsData(
-        monthFilter,
-        feesTypeFilter,
-        paymentModeFilter,
-        dateFrom,
-        dateTo,
-        userRole
-      );
-  }
-
-  /******************************************
-   * 7) MANAGE STUDENTS
-   ******************************************/
-  function toggleManageStudents() {
-    hideAllSections();
-    document.getElementById("manageStudentSection").classList.remove("hidden");
-    loadStudentList();
-  }
-  function loadStudentList() {
-    google.script.run
-      .withSuccessHandler(function (studs) {
-        if (studs.error) {
-          Swal.fire({ icon: "error", title: "Error", text: studs.error });
-          return;
-        }
-        let h = `<table class='min-w-full'>
+             });
+           }
+           document.getElementById('oldFeesTable').innerHTML = tbl;
+           hideAllSections();
+           document.getElementById('oldFeesSection').classList.remove('hidden');
+         }
+         }).getOldFees(sid);
+         }
+         function backToInquiryForm() {
+         hideAllSections();
+         document.getElementById('ifId').classList.remove('hidden');
+         }
+         function viewRecord(rowNumber) {
+         google.script.run.withSuccessHandler(function(resp) {
+         if (resp.error) {
+           Swal.fire({ icon: 'error', title: 'Error', text: resp.error });
+         } else {
+           const vals = resp.values;
+           document.getElementById('studentId').value = vals[0] || "";
+           document.getElementById('date').value = vals[1] || "";
+           document.getElementById('monthField').value = vals[2] || "";
+           document.getElementById('session').value = vals[3] || "";
+           document.getElementById('transactionId').value = vals[4] || "";
+           document.getElementById('trade').value = vals[5] || "";
+           document.getElementById('studentName').value = vals[6] || "";
+           document.getElementById('fatherName').value = vals[7] || "";
+           document.getElementById('paidAmount').value = vals[8] || "";
+           document.getElementById('paidAmountInWord').value = vals[9] || "";
+           document.getElementById('feesType').value = vals[10] || "";
+           document.getElementById('paymentMode').value = vals[11] || "";
+           document.getElementById('remark').value = vals[12] || "";
+           document.getElementById('userName').value = vals[13] || "";
+           document.getElementById('recordRowNumber').value = rowNumber;
+         
+           const role = document.getElementById('userRole').value;
+           if (role === 'admin') {
+             document.getElementById('btnUpdateData').classList.remove('hidden');
+             document.getElementById('btnSubmitNew').classList.add('hidden');
+           } else {
+             document.getElementById('btnUpdateData').classList.add('hidden');
+             document.getElementById('btnSubmitNew').classList.remove('hidden');
+           }
+           backToSlipForm();
+         }
+         }).getRecord(rowNumber);
+         }
+         
+         /******************************************
+         * 5) PDF DOWNLOAD
+         ******************************************/
+         function downloadPDF() {
+         const element = document.getElementById("slipFormSection");
+         const opt = {
+         margin: 0.5,
+         filename: 'FeeSlip.pdf',
+         image: { type: 'jpeg', quality: 0.98 },
+         html2canvas: { scale: 2 },
+         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+         };
+         html2pdf().set(opt).from(element).save().then(() => {
+         Swal.fire({ icon: 'success', title: 'PDF Downloaded', text: 'Fee slip PDF downloaded.', timer: 1500, showConfirmButton: false });
+         });
+         }
+         
+         /******************************************
+         * 6) ANALYTICS
+         ******************************************/
+         function toggleAnalytics() {
+         hideAllSections();
+         document.getElementById('analyticsSection').classList.remove('hidden');
+         loadAnalytics();
+         }
+         function backToInquiryFromAnalytics() {
+         hideAllSections();
+         document.getElementById('ifId').classList.remove('hidden');
+         }
+         function clearAnalyticsFilter() {
+         document.getElementById('analyticsDateFrom').value = "";
+         document.getElementById('analyticsDateTo').value = "";
+         document.getElementById('analyticsMonthFilter').value = "";
+         document.getElementById('analyticsFeesTypeFilter').value = "";
+         document.getElementById('analyticsPaymentModeFilter').value = "";
+         loadAnalytics();
+         }
+         function loadAnalytics() {
+         const userRole = document.getElementById('userRole').value;
+         const monthFilter = document.getElementById('analyticsMonthFilter').value.trim();
+         const feesTypeFilter = document.getElementById('analyticsFeesTypeFilter').value.trim();
+         const paymentModeFilter = document.getElementById('analyticsPaymentModeFilter').value.trim();
+         const dateFrom = document.getElementById('analyticsDateFrom').value.trim();
+         const dateTo = document.getElementById('analyticsDateTo').value.trim();
+         
+         google.script.run.withSuccessHandler(function(an) {
+         if (an.error) {
+           Swal.fire({ icon: 'error', title: 'Analytics Error', text: an.error });
+           return;
+         }
+         
+         document.getElementById('cardTotalPaid').textContent = an.totalPaidFees.toFixed(2);
+         document.getElementById('cardTotalUnpaid').textContent = an.totalUnpaidFees.toFixed(2);
+         document.getElementById('cardTotalStudents').textContent = an.totalStudents;
+         document.getElementById('cardPaidStudents').textContent = an.paidStudentsCount;
+         document.getElementById('cardUnpaidStudents').textContent = an.unpaidStudentsCount;
+         
+         const dateLabels = Object.keys(an.dateWisePaid).sort();
+         const dateVals = dateLabels.map(d => an.dateWisePaid[d]);
+         
+         // Bar Chart
+         if (dateWiseChartRef) dateWiseChartRef.destroy();
+         const ctxBar = document.getElementById('dateWiseChart').getContext('2d');
+         dateWiseChartRef = new Chart(ctxBar, {
+           type: 'bar',
+           data: {
+             labels: dateLabels,
+             datasets: [{
+               label: 'Fees Paid',
+               data: dateVals,
+               backgroundColor: 'rgba(54, 162, 235, 0.6)',
+               borderColor: 'rgba(54, 162, 235, 1)',
+               borderWidth: 1
+             }]
+           },
+           options: { responsive: true, scales: { y: { beginAtZero: true } } }
+         });
+         
+         // Line Chart
+         const lineLabels = Object.keys(an.lineData).sort();
+         const lineVals = lineLabels.map(d => an.lineData[d]);
+         if (lineChartRef) lineChartRef.destroy();
+         const ctxLine = document.getElementById('lineChart').getContext('2d');
+         lineChartRef = new Chart(ctxLine, {
+           type: 'line',
+           data: {
+             labels: lineLabels,
+             datasets: [{
+               label: 'Fees Trend',
+               data: lineVals,
+               fill: false,
+               borderColor: 'rgba(255,99,132,1)',
+               tension: 0.1
+             }]
+           },
+           options: { responsive: true }
+         });
+         
+         // Pie Chart
+         if (pieChartRef) pieChartRef.destroy();
+         const ctxPie = document.getElementById('pieChart').getContext('2d');
+         pieChartRef = new Chart(ctxPie, {
+           type: 'pie',
+           data: {
+             labels: ['Paid', 'Unpaid'],
+             datasets: [{
+               data: [an.pieData.paid, an.pieData.unpaid],
+               backgroundColor: ['#4CAF50','#FF9800']
+             }]
+           },
+           options: { responsive: true }
+         });
+         
+         }).getAnalyticsData(monthFilter, feesTypeFilter, paymentModeFilter, dateFrom, dateTo, userRole);
+         }
+         
+         /******************************************
+         * 7) MANAGE STUDENTS
+         ******************************************/
+         function toggleManageStudents() {
+         hideAllSections();
+         document.getElementById('manageStudentSection').classList.remove('hidden');
+         loadStudentList();
+         }
+         function loadStudentList() {
+         google.script.run.withSuccessHandler(function(studs) {
+         if (studs.error) {
+           Swal.fire({ icon: 'error', title: 'Error', text: studs.error });
+           return;
+         }
+         let h = `<table class='min-w-full'>
            <thead class='bg-gray-50'>
              <tr>
                <th class='px-4 py-2 text-left'>Student ID</th>
@@ -1049,8 +829,8 @@
                <th class='px-4 py-2 text-left'>Actions</th>
              </tr>
            </thead><tbody>`;
-        studs.forEach((s) => {
-          h += `<tr class='border-b'>
+         studs.forEach(s => {
+           h += `<tr class='border-b'>
              <td class='px-4 py-2'>${s.studentId}</td>
              <td class='px-4 py-2'>${s.session}</td>
              <td class='px-4 py-2'>${s.studentName}</td>
@@ -1058,364 +838,295 @@
              <td class='px-4 py-2'>${s.className}</td>
              <td class='px-4 py-2'>${s.totalFees}</td>
              <td class='px-4 py-2'>
-               <button class='bg-blue-500 text-white px-2 py-1 rounded mr-2' onclick='editStudent(${JSON.stringify(
-                 s
-               )})'>Edit</button>
-               <button class='bg-red-500 text-white px-2 py-1 rounded' onclick='deleteStudent(${
-                 s.row
-               })'>Delete</button>
+               <button class='bg-blue-500 text-white px-2 py-1 rounded mr-2' onclick='editStudent(${JSON.stringify(s)})'>Edit</button>
+               <button class='bg-red-500 text-white px-2 py-1 rounded' onclick='deleteStudent(${s.row})'>Delete</button>
              </td>
            </tr>`;
-        });
-        h += "</tbody></table>";
-        document.getElementById("studentTableContainer").innerHTML = h;
-      })
-      .getStudentList();
-  }
-  function openStudentModal(mode, stud) {
-    document.getElementById("studentModal").classList.remove("hidden");
-    if (mode === "add") {
-      document.getElementById("studentModalTitle").innerText = "Add Student";
-      document.getElementById("studentModalBtn").innerText = "Add Student";
-      document.getElementById("studentForm").reset();
-      document.getElementById("studentRow").value = "";
-    } else if (mode === "edit") {
-      document.getElementById("studentModalTitle").innerText = "Edit Student";
-      document.getElementById("studentModalBtn").innerText = "Update Student";
-      document.getElementById("studentRow").value = stud.row;
-      document.getElementById("studentIdNew").value = stud.studentId;
-      document.getElementById("sessionNew").value = stud.session;
-      document.getElementById("tradeNew").value = stud.trade;
-      document.getElementById("studentNameNew").value = stud.studentName;
-      document.getElementById("fatherNameNew").value = stud.fatherName;
-      document.getElementById("instituteNameNew").value = stud.instituteName;
-      document.getElementById("classNameNew").value = stud.className;
-      document.getElementById("totalFeesNew").value = stud.totalFees;
-    }
-  }
-  function closeStudentModal() {
-    document.getElementById("studentModal").classList.add("hidden");
-  }
-  document
-    .getElementById("studentForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      const userRole = document.getElementById("userRole").value;
-      const sData = {
-        studentId: document.getElementById("studentIdNew").value.trim(),
-        session: document.getElementById("sessionNew").value.trim(),
-        trade: document.getElementById("tradeNew").value.trim(),
-        studentName: document.getElementById("studentNameNew").value.trim(),
-        fatherName: document.getElementById("fatherNameNew").value.trim(),
-        instituteName: document.getElementById("instituteNameNew").value.trim(),
-        className: document.getElementById("classNameNew").value.trim(),
-        totalFees: document.getElementById("totalFeesNew").value.trim(),
-      };
-      const row = document.getElementById("studentRow").value.trim();
-
-      if (row) {
-        // update
-        sData.row = row;
-        google.script.run
-          .withSuccessHandler(function (resp) {
-            if (resp.includes("Error")) {
-              Swal.fire({ icon: "error", title: "Update Error", text: resp });
-            } else {
-              Swal.fire({
-                icon: "success",
-                title: "Updated",
-                text: resp,
-                timer: 1500,
-                showConfirmButton: false,
-              });
-              closeStudentModal();
-              loadStudentList();
-            }
-          })
-          .updateStudentData(sData, userRole);
-      } else {
-        // add
-        google.script.run
-          .withSuccessHandler(function (resp) {
-            if (resp.includes("Error")) {
-              Swal.fire({ icon: "error", title: "Add Error", text: resp });
-            } else {
-              Swal.fire({
-                icon: "success",
-                title: "Student Added",
-                text: resp,
-                timer: 1500,
-                showConfirmButton: false,
-              });
-              closeStudentModal();
-              loadStudentList();
-            }
-          })
-          .addStudentData(sData, userRole);
-      }
-    });
-  function editStudent(stud) {
-    openStudentModal("edit", stud);
-  }
-  function deleteStudent(rowNumber) {
-    const ur = document.getElementById("userRole").value;
-    Swal.fire({
-      icon: "warning",
-      title: "Are you sure?",
-      text: "This will delete the student record.",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        google.script.run
-          .withSuccessHandler(function (resp) {
-            if (resp.includes("Error")) {
-              Swal.fire({ icon: "error", title: "Delete Error", text: resp });
-            } else {
-              Swal.fire({
-                icon: "success",
-                title: "Deleted",
-                text: resp,
-                timer: 1500,
-                showConfirmButton: false,
-              });
-              loadStudentList();
-            }
-          })
-          .deleteStudentData(rowNumber, ur);
-      }
-    });
-  }
-  function filterStudentList() {
-    const input = document
-      .getElementById("studentSearchInput")
-      .value.toLowerCase();
-    const table = document
-      .getElementById("studentTableContainer")
-      .getElementsByTagName("table")[0];
-    if (!table) return;
-    const tr = table.getElementsByTagName("tr");
-    for (let i = 1; i < tr.length; i++) {
-      const rowTxt = tr[i].textContent.toLowerCase();
-      tr[i].style.display = rowTxt.indexOf(input) > -1 ? "" : "none";
-    }
-  }
-
-  /******************************************
-   * 8) CLASS & MONTH DASHBOARD
-   ******************************************/
-  function toggleClassMonthDashboard() {
-    hideAllSections();
-    document.getElementById("classMonthDashboard").classList.remove("hidden");
-    loadClassList();
-  }
-  function backToInquiryFromClassDashboard() {
-    hideAllSections();
-    document.getElementById("ifId").classList.remove("hidden");
-  }
-  function loadClassList() {
-    google.script.run
-      .withSuccessHandler(function (cls) {
-        const sel = document.getElementById("selectClass");
-        sel.innerHTML = `<option value="">All Classes</option>`;
-        if (cls.error) {
-          console.log(cls.error);
-          return;
-        }
-        cls.forEach((c) => {
-          const opt = document.createElement("option");
-          opt.value = c;
-          opt.textContent = c;
-          sel.appendChild(opt);
-        });
-      })
-      .getClassList();
-  }
-  function loadClassMonthDashboard() {
-    const sc = document.getElementById("selectClass").value;
-    const sm = document.getElementById("selectMonth").value;
-    const ur = document.getElementById("userRole").value;
-    google.script.run
-      .withSuccessHandler(function (res) {
-        if (res.error) {
-          Swal.fire({ icon: "error", title: "Error", text: res.error });
-          return;
-        }
-        // line chart
-        if (classMonthLineChartRef) classMonthLineChartRef.destroy();
-        const ctx = document
-          .getElementById("classMonthLineChart")
-          .getContext("2d");
-        const dLabels = Object.keys(res.lineData);
-        const dVals = dLabels.map((d) => res.lineData[d]);
-        classMonthLineChartRef = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: dLabels,
-            datasets: [
-              {
-                label: "Fees Paid",
-                data: dVals,
-                borderColor: "rgba(75,192,192,1)",
-                fill: false,
-                tension: 0.1,
-              },
-            ],
-          },
-          options: { responsive: true, scales: { y: { beginAtZero: true } } },
-        });
-
-        // store data to do client-side filtering
-        classMonthData = res.students;
-
-        // build table
-        const tb = document.getElementById("classMonthStudentTable");
-        tb.innerHTML = "";
-        res.students.forEach((s) => {
-          const paidTxt = s.hasPaid ? "Yes" : "No";
-          tb.innerHTML += `<tr>
+         });
+         h += "</tbody></table>";
+         document.getElementById('studentTableContainer').innerHTML = h;
+         }).getStudentList();
+         }
+         function openStudentModal(mode, stud) {
+         document.getElementById('studentModal').classList.remove('hidden');
+         if (mode === 'add') {
+         document.getElementById('studentModalTitle').innerText = "Add Student";
+         document.getElementById('studentModalBtn').innerText = "Add Student";
+         document.getElementById('studentForm').reset();
+         document.getElementById('studentRow').value = "";
+         } else if (mode === 'edit') {
+         document.getElementById('studentModalTitle').innerText = "Edit Student";
+         document.getElementById('studentModalBtn').innerText = "Update Student";
+         document.getElementById('studentRow').value = stud.row;
+         document.getElementById('studentIdNew').value = stud.studentId;
+         document.getElementById('sessionNew').value = stud.session;
+         document.getElementById('tradeNew').value = stud.trade;
+         document.getElementById('studentNameNew').value = stud.studentName;
+         document.getElementById('fatherNameNew').value = stud.fatherName;
+         document.getElementById('instituteNameNew').value = stud.instituteName;
+         document.getElementById('classNameNew').value = stud.className;
+         document.getElementById('totalFeesNew').value = stud.totalFees;
+         }
+         }
+         function closeStudentModal() {
+         document.getElementById('studentModal').classList.add('hidden');
+         }
+         document.getElementById('studentForm').addEventListener('submit', function(e) {
+         e.preventDefault();
+         const userRole = document.getElementById('userRole').value;
+         const sData = {
+         studentId: document.getElementById('studentIdNew').value.trim(),
+         session: document.getElementById('sessionNew').value.trim(),
+         trade: document.getElementById('tradeNew').value.trim(),
+         studentName: document.getElementById('studentNameNew').value.trim(),
+         fatherName: document.getElementById('fatherNameNew').value.trim(),
+         instituteName: document.getElementById('instituteNameNew').value.trim(),
+         className: document.getElementById('classNameNew').value.trim(),
+         totalFees: document.getElementById('totalFeesNew').value.trim()
+         };
+         const row = document.getElementById('studentRow').value.trim();
+         
+         if (row) {
+         // update
+         sData.row = row;
+         google.script.run.withSuccessHandler(function(resp) {
+           if (resp.includes("Error")) {
+             Swal.fire({ icon: 'error', title: 'Update Error', text: resp });
+           } else {
+             Swal.fire({ icon: 'success', title: 'Updated', text: resp, timer: 1500, showConfirmButton: false });
+             closeStudentModal();
+             loadStudentList();
+           }
+         }).updateStudentData(sData, userRole);
+         } else {
+         // add
+         google.script.run.withSuccessHandler(function(resp) {
+           if (resp.includes("Error")) {
+             Swal.fire({ icon: 'error', title: 'Add Error', text: resp });
+           } else {
+             Swal.fire({ icon: 'success', title: 'Student Added', text: resp, timer: 1500, showConfirmButton: false });
+             closeStudentModal();
+             loadStudentList();
+           }
+         }).addStudentData(sData, userRole);
+         }
+         });
+         function editStudent(stud) {
+         openStudentModal('edit', stud);
+         }
+         function deleteStudent(rowNumber) {
+         const ur = document.getElementById('userRole').value;
+         Swal.fire({
+         icon: 'warning',
+         title: 'Are you sure?',
+         text: 'This will delete the student record.',
+         showCancelButton: true,
+         confirmButtonText: 'Yes, delete'
+         }).then(result => {
+         if (result.isConfirmed) {
+           google.script.run.withSuccessHandler(function(resp) {
+             if (resp.includes("Error")) {
+               Swal.fire({ icon: 'error', title: 'Delete Error', text: resp });
+             } else {
+               Swal.fire({ icon: 'success', title: 'Deleted', text: resp, timer: 1500, showConfirmButton: false });
+               loadStudentList();
+             }
+           }).deleteStudentData(rowNumber, ur);
+         }
+         });
+         }
+         function filterStudentList() {
+         const input = document.getElementById('studentSearchInput').value.toLowerCase();
+         const table = document.getElementById('studentTableContainer').getElementsByTagName('table')[0];
+         if (!table) return;
+         const tr = table.getElementsByTagName('tr');
+         for (let i = 1; i < tr.length; i++) {
+         const rowTxt = tr[i].textContent.toLowerCase();
+         tr[i].style.display = rowTxt.indexOf(input) > -1 ? "" : "none";
+         }
+         }
+         
+         /******************************************
+         * 8) CLASS & MONTH DASHBOARD
+         ******************************************/
+         function toggleClassMonthDashboard() {
+         hideAllSections();
+         document.getElementById('classMonthDashboard').classList.remove('hidden');
+         loadClassList();
+         }
+         function backToInquiryFromClassDashboard() {
+         hideAllSections();
+         document.getElementById('ifId').classList.remove('hidden');
+         }
+         function loadClassList() {
+         google.script.run.withSuccessHandler(function(cls) {
+         const sel = document.getElementById('selectClass');
+         sel.innerHTML = `<option value="">All Classes</option>`;
+         if (cls.error) {
+           console.log(cls.error);
+           return;
+         }
+         cls.forEach(c => {
+           const opt = document.createElement('option');
+           opt.value = c;
+           opt.textContent = c;
+           sel.appendChild(opt);
+         });
+         }).getClassList();
+         }
+         function loadClassMonthDashboard() {
+         const sc = document.getElementById('selectClass').value;
+         const sm = document.getElementById('selectMonth').value;
+         const ur = document.getElementById('userRole').value;
+         google.script.run.withSuccessHandler(function(res) {
+         if (res.error) {
+           Swal.fire({ icon: 'error', title: 'Error', text: res.error });
+           return;
+         }
+         // line chart
+         if (classMonthLineChartRef) classMonthLineChartRef.destroy();
+         const ctx = document.getElementById('classMonthLineChart').getContext('2d');
+         const dLabels = Object.keys(res.lineData);
+         const dVals = dLabels.map(d => res.lineData[d]);
+         classMonthLineChartRef = new Chart(ctx, {
+           type: 'line',
+           data: {
+             labels: dLabels,
+             datasets: [{
+               label: 'Fees Paid',
+               data: dVals,
+               borderColor: 'rgba(75,192,192,1)',
+               fill: false,
+               tension: 0.1
+             }]
+           },
+           options: { responsive: true, scales: { y: { beginAtZero: true } } }
+         });
+         
+         // store data to do client-side filtering
+         classMonthData = res.students;
+         
+         // build table
+         const tb = document.getElementById('classMonthStudentTable');
+         tb.innerHTML = "";
+         res.students.forEach(s => {
+           const paidTxt = s.hasPaid ? 'Yes' : 'No';
+           tb.innerHTML += `<tr>
              <td class='px-4 py-2'>${s.studentId}</td>
              <td class='px-4 py-2'>${s.studentName}</td>
              <td class='px-4 py-2'>${paidTxt}</td>
            </tr>`;
-        });
-
-        updateClassMonthPieChart();
-        filterClassMonthTable(); // apply filters immediately
-      })
-      .getClassMonthDashboard(sc, sm, ur);
-  }
-  // Filter paid/unpaid + student search client-side
-  function filterClassMonthTable() {
-    const selectPaid = document.getElementById("selectPaidStatus").value;
-    const searchVal = document
-      .getElementById("classMonthSearchInput")
-      .value.toLowerCase();
-    const rows = document
-      .getElementById("classMonthStudentTable")
-      .getElementsByTagName("tr");
-    for (let i = 0; i < rows.length; i++) {
-      let cols = rows[i].getElementsByTagName("td");
-      if (cols.length < 3) continue;
-      let studentId = cols[0].textContent.toLowerCase();
-      let studentName = cols[1].textContent.toLowerCase();
-      let paidCol = cols[2].textContent.toLowerCase(); // "yes" or "no"
-
-      // check search
-      if (
-        studentId.indexOf(searchVal) === -1 &&
-        studentName.indexOf(searchVal) === -1
-      ) {
-        rows[i].style.display = "none";
-        continue;
-      }
-      // check paid status
-      if (selectPaid === "paid" && paidCol !== "yes") {
-        rows[i].style.display = "none";
-      } else if (selectPaid === "unpaid" && paidCol !== "no") {
-        rows[i].style.display = "none";
-      } else {
-        rows[i].style.display = "";
-      }
-    }
-    updateClassMonthPieChart();
-  }
-
-  function updateClassMonthPieChart() {
-    // count paid vs. unpaid in classMonthData (but also consider search filter if we want)
-    // For simplicity, we recalc from the array because it's easy:
-    let paidCount = 0,
-      unpaidCount = 0;
-
-    // We'll also check what is currently visible in the table:
-    const rows = document
-      .getElementById("classMonthStudentTable")
-      .getElementsByTagName("tr");
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i].style.display === "none") continue; // skip hidden
-      let cols = rows[i].getElementsByTagName("td");
-      if (cols.length < 3) continue;
-      let paidCol = cols[2].textContent.toLowerCase();
-      if (paidCol === "yes") paidCount++;
-      else unpaidCount++;
-    }
-
-    if (classMonthPieChartRef) classMonthPieChartRef.destroy();
-    const ctxPie = document
-      .getElementById("classMonthPieChart")
-      .getContext("2d");
-    classMonthPieChartRef = new Chart(ctxPie, {
-      type: "pie",
-      data: {
-        labels: ["Paid", "Unpaid"],
-        datasets: [
-          {
-            data: [paidCount, unpaidCount],
-            backgroundColor: ["#4CAF50", "#FF9800"],
-          },
-        ],
-      },
-      options: { responsive: true },
-    });
-  }
-
-  /******************************************
-   * 9) DUE FEES
-   ******************************************/
-  function toggleDueFees() {
-    hideAllSections();
-    document.getElementById("dueFeesSection").classList.remove("hidden");
-    // Load class list for filter
-    google.script.run
-      .withSuccessHandler(function (cls) {
-        const sel = document.getElementById("dueFeesClassSelect");
-        sel.innerHTML = `<option value="">All Classes</option>`;
-        if (cls.error) {
-          console.log(cls.error);
-        } else {
-          cls.forEach((c) => {
-            const opt = document.createElement("option");
-            opt.value = c;
-            opt.textContent = c;
-            sel.appendChild(opt);
-          });
-        }
-      })
-      .getClassList();
-    loadDueFees();
-  }
-  function closeDueFees() {
-    hideAllSections();
-    document.getElementById("ifId").classList.remove("hidden");
-  }
-  function loadDueFees() {
-    const userRole = document.getElementById("userRole").value;
-    google.script.run
-      .withSuccessHandler(function (res) {
-        if (res.error) {
-          Swal.fire({
-            icon: "error",
-            title: "Due Fees Error",
-            text: res.error,
-          });
-          return;
-        }
-        document.getElementById("dueTotalFees").textContent =
-          res.summary.totalFees;
-        document.getElementById("dueTotalPaid").textContent =
-          res.summary.totalPaid;
-        document.getElementById("dueTotalDue").textContent =
-          res.summary.totalDue;
-        document.getElementById("dueFullyPaidCount").textContent =
-          res.summary.fullyPaidCount;
-
-        dueFeesData = res.data; // store globally
-        renderDueFeesTable(dueFeesData);
-      })
-      .getDueFeesData(userRole);
-  }
-  function renderDueFeesTable(dataArray) {
-    let h = `<table class='min-w-full'>
+         });
+         
+         updateClassMonthPieChart();
+         filterClassMonthTable(); // apply filters immediately
+         }).getClassMonthDashboard(sc, sm, ur);
+         }
+         // Filter paid/unpaid + student search client-side
+         function filterClassMonthTable() {
+         const selectPaid = document.getElementById('selectPaidStatus').value;
+         const searchVal = document.getElementById('classMonthSearchInput').value.toLowerCase();
+         const rows = document.getElementById('classMonthStudentTable').getElementsByTagName('tr');
+         for (let i=0; i<rows.length; i++){
+         let cols = rows[i].getElementsByTagName('td');
+         if (cols.length<3) continue;
+         let studentId = cols[0].textContent.toLowerCase();
+         let studentName = cols[1].textContent.toLowerCase();
+         let paidCol = cols[2].textContent.toLowerCase(); // "yes" or "no"
+         
+         // check search
+         if (studentId.indexOf(searchVal)===-1 && studentName.indexOf(searchVal)===-1){
+           rows[i].style.display='none';
+           continue;
+         }
+         // check paid status
+         if (selectPaid==='paid' && paidCol!=='yes'){
+           rows[i].style.display='none';
+         } else if (selectPaid==='unpaid' && paidCol!=='no') {
+           rows[i].style.display='none';
+         } else {
+           rows[i].style.display='';
+         }
+         }
+         updateClassMonthPieChart();
+         }
+         
+         function updateClassMonthPieChart() {
+         // count paid vs. unpaid in classMonthData (but also consider search filter if we want)
+         // For simplicity, we recalc from the array because it's easy:
+         let paidCount=0, unpaidCount=0;
+         
+         // We'll also check what is currently visible in the table:
+         const rows = document.getElementById('classMonthStudentTable').getElementsByTagName('tr');
+         for (let i=0; i<rows.length; i++){
+         if (rows[i].style.display==='none') continue; // skip hidden
+         let cols = rows[i].getElementsByTagName('td');
+         if (cols.length<3) continue;
+         let paidCol = cols[2].textContent.toLowerCase();
+         if (paidCol==='yes') paidCount++;
+         else unpaidCount++;
+         }
+         
+         if (classMonthPieChartRef) classMonthPieChartRef.destroy();
+         const ctxPie = document.getElementById('classMonthPieChart').getContext('2d');
+         classMonthPieChartRef = new Chart(ctxPie, {
+         type: 'pie',
+         data: {
+           labels: ['Paid','Unpaid'],
+           datasets: [{
+             data: [paidCount, unpaidCount],
+             backgroundColor: ['#4CAF50','#FF9800']
+           }]
+         },
+         options:{ responsive:true }
+         });
+         }
+         
+         /******************************************
+         * 9) DUE FEES
+         ******************************************/
+         function toggleDueFees() {
+         hideAllSections();
+         document.getElementById('dueFeesSection').classList.remove('hidden');
+         // Load class list for filter
+         google.script.run.withSuccessHandler(function(cls){
+         const sel = document.getElementById('dueFeesClassSelect');
+         sel.innerHTML = `<option value="">All Classes</option>`;
+         if (cls.error) {
+           console.log(cls.error);
+         } else {
+           cls.forEach(c => {
+             const opt = document.createElement('option');
+             opt.value = c;
+             opt.textContent = c;
+             sel.appendChild(opt);
+           });
+         }
+         }).getClassList();
+         loadDueFees();
+         }
+         function closeDueFees() {
+         hideAllSections();
+         document.getElementById('ifId').classList.remove('hidden');
+         }
+         function loadDueFees() {
+         const userRole = document.getElementById('userRole').value;
+         google.script.run.withSuccessHandler(function(res){
+         if (res.error) {
+           Swal.fire({ icon:'error', title:'Due Fees Error', text: res.error });
+           return;
+         }
+         document.getElementById('dueTotalFees').textContent = res.summary.totalFees;
+         document.getElementById('dueTotalPaid').textContent = res.summary.totalPaid;
+         document.getElementById('dueTotalDue').textContent = res.summary.totalDue;
+         document.getElementById('dueFullyPaidCount').textContent = res.summary.fullyPaidCount;
+         
+         dueFeesData = res.data; // store globally
+         renderDueFeesTable(dueFeesData);
+         }).getDueFeesData(userRole);
+         }
+         function renderDueFeesTable(dataArray) {
+         let h = `<table class='min-w-full'>
          <thead class='bg-gray-50'>
            <tr>
              <th class='px-4 py-2 text-left'>Student ID</th>
@@ -1426,8 +1137,8 @@
              <th class='px-4 py-2 text-left'>Due</th>
            </tr>
          </thead><tbody>`;
-    dataArray.forEach((d) => {
-      h += `<tr class='border-b'>
+         dataArray.forEach(d=>{
+         h += `<tr class='border-b'>
            <td class='px-4 py-2'>${d.studentId}</td>
            <td class='px-4 py-2'>${d.studentName}</td>
            <td class='px-4 py-2'>${d.className}</td>
@@ -1435,147 +1146,117 @@
            <td class='px-4 py-2'>${d.sumPaid}</td>
            <td class='px-4 py-2 text-red-600'>${d.dueFees}</td>
          </tr>`;
-    });
-    h += "</tbody></table>";
-    document.getElementById("dueFeesTableContainer").innerHTML = h;
-  }
-  function filterDueFees() {
-    const inputVal = document
-      .getElementById("dueFeesSearch")
-      .value.toLowerCase();
-    const classVal = document
-      .getElementById("dueFeesClassSelect")
-      .value.toLowerCase();
-
-    const filtered = dueFeesData.filter((d) => {
-      // match search (across ID, name, fatherName, class, etc.)
-      let rowText = (
-        d.studentId +
-        " " +
-        d.studentName +
-        " " +
-        d.fatherName +
-        " " +
-        d.className
-      ).toLowerCase();
-      if (rowText.indexOf(inputVal) === -1) return false;
-
-      // match class filter
-      if (classVal && d.className.toLowerCase() !== classVal) return false;
-
-      return true;
-    });
-    renderDueFeesTable(filtered);
-  }
-
-  /******************************************
-   * 10) RECEIPT PRINTING
-   ******************************************/
-  let lastReceiptData = null;
-
-  function showReceipt(data) {
-    try {
-      // Store the data for later access
-      lastReceiptData = data;
-
-      // Fill receipt data
-      document.getElementById("receiptNumber").textContent =
-        data.transactionId || "N/A";
-      document.getElementById("receiptDate").textContent = data.date
-        ? formatDate(data.date)
-        : "________________";
-      document.getElementById("receiptStudentName").textContent =
-        data.studentName || "Not Provided";
-      document.getElementById("receiptCourse").textContent =
-        data.trade || "Not Specified";
-
-      // Format currency
-      const formatCurrency = (val) =>
-        val ? "₹" + parseFloat(val).toFixed(2) : "₹0.00";
-      document.getElementById("receiptTotalAmount").textContent =
-        formatCurrency(data.totalFees || 0);
-      document.getElementById("receiptPaidAmount").textContent = formatCurrency(
-        data.paidAmount || 0
-      );
-
-      // Calculate balance if not provided
-      const balance = (data.totalFees || 0) - (data.paidAmount || 0);
-      document.getElementById("receiptBalance").textContent =
-        formatCurrency(balance);
-
-      document.getElementById("receiptExamFees").textContent = data.examFees
-        ? formatCurrency(data.examFees)
-        : " ";
-      document.getElementById("receiptReceivedBy").textContent =
-        data.userName || "Administrator";
-
-      // Show receipt
-      hideAllSections();
-      document.getElementById("separateReceipt").classList.remove("hidden");
-    } catch (error) {
-      console.error("Error showing receipt:", error);
-      Swal.fire("Error", "Could not generate receipt", "error");
-      backToSlipForm();
-    }
-  }
-
-  function showLatestReceipt() {
-    if (!lastReceiptData) {
-      Swal.fire(
-        "Info",
-        "No recent receipt available. Please submit a payment first.",
-        "info"
-      );
-      return;
-    }
-    showReceipt(lastReceiptData);
-  }
-
-  function printReceipt() {
-    if (!lastReceiptData) {
-      Swal.fire("Info", "No receipt data available to print", "info");
-      return;
-    }
-
-    // Create a clone of the receipt to avoid affecting the original
-    const receipt = document.getElementById("separateReceipt").cloneNode(true);
-    receipt.classList.remove("hidden");
-    receipt.style.display = "block";
-
-    // Create a temporary container for printing
-    const printContainer = document.createElement("div");
-    printContainer.appendChild(receipt);
-    printContainer.style.position = "absolute";
-    printContainer.style.left = "-9999px";
-    document.body.appendChild(printContainer);
-
-    // Remove print button before printing
-    const printBtn = printContainer.querySelector(
-      'button[onclick="printReceipt()"]'
-    );
-    if (printBtn) printBtn.remove();
-
-    // Trigger print
-    window.print();
-
-    // Clean up
-    document.body.removeChild(printContainer);
-  }
-
-  function formatDate(dateString) {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-  // This JavaScript would go in your client-side HTML file, within <script> tags.
-  document.addEventListener("DOMContentLoaded", function () {
-    const logo = document.getElementById("logo-home-link");
+         });
+         h += "</tbody></table>";
+         document.getElementById('dueFeesTableContainer').innerHTML = h;
+         }
+         function filterDueFees() {
+         const inputVal = document.getElementById('dueFeesSearch').value.toLowerCase();
+         const classVal = document.getElementById('dueFeesClassSelect').value.toLowerCase();
+         
+         const filtered = dueFeesData.filter(d => {
+         // match search (across ID, name, fatherName, class, etc.)
+         let rowText = (d.studentId + " " + d.studentName + " " + d.fatherName + " " + d.className).toLowerCase();
+         if (rowText.indexOf(inputVal)===-1) return false;
+         
+         // match class filter
+         if (classVal && d.className.toLowerCase() !== classVal) return false;
+         
+         return true;
+         });
+         renderDueFeesTable(filtered);
+         }
+         
+         /******************************************
+         * 10) RECEIPT PRINTING
+         ******************************************/
+         let lastReceiptData = null;
+         
+         function showReceipt(data) {
+         try {
+         // Store the data for later access
+         lastReceiptData = data;
+         
+         // Fill receipt data
+         document.getElementById('receiptNumber').textContent = data.transactionId || 'N/A';
+         document.getElementById('receiptDate').textContent = data.date ? formatDate(data.date) : '________________';
+         document.getElementById('receiptStudentName').textContent = data.studentName || 'Not Provided';
+         document.getElementById('receiptCourse').textContent = data.trade || 'Not Specified';
+         
+         // Format currency
+         const formatCurrency = (val) => val ? '₹' + parseFloat(val).toFixed(2) : '₹0.00';
+         document.getElementById('receiptTotalAmount').textContent = formatCurrency(data.totalFees || 0);
+         document.getElementById('receiptPaidAmount').textContent = formatCurrency(data.paidAmount || 0);
+         
+         // Calculate balance if not provided
+         const balance = (data.totalFees || 0) - (data.paidAmount || 0);
+         document.getElementById('receiptBalance').textContent = formatCurrency(balance);
+         
+         document.getElementById('receiptExamFees').textContent = data.examFees ? formatCurrency(data.examFees) : ' ';
+         document.getElementById('receiptReceivedBy').textContent = data.userName || 'Administrator';
+         
+         // Show receipt
+         hideAllSections();
+         document.getElementById('separateReceipt').classList.remove('hidden');
+         
+         } catch (error) {
+         console.error('Error showing receipt:', error);
+         Swal.fire('Error', 'Could not generate receipt', 'error');
+         backToSlipForm();
+         }
+         }
+         
+         function showLatestReceipt() {
+         if (!lastReceiptData) {
+         Swal.fire('Info', 'No recent receipt available. Please submit a payment first.', 'info');
+         return;
+         }
+         showReceipt(lastReceiptData);
+         }
+         
+         function printReceipt() {
+         if (!lastReceiptData) {
+         Swal.fire('Info', 'No receipt data available to print', 'info');
+         return;
+         }
+         
+         // Create a clone of the receipt to avoid affecting the original
+         const receipt = document.getElementById('separateReceipt').cloneNode(true);
+         receipt.classList.remove('hidden');
+         receipt.style.display = 'block';
+         
+         // Create a temporary container for printing
+         const printContainer = document.createElement('div');
+         printContainer.appendChild(receipt);
+         printContainer.style.position = 'absolute';
+         printContainer.style.left = '-9999px';
+         document.body.appendChild(printContainer);
+         
+         // Remove print button before printing
+         const printBtn = printContainer.querySelector('button[onclick="printReceipt()"]');
+         if (printBtn) printBtn.remove();
+         
+         // Trigger print
+         window.print();
+         
+         // Clean up
+         document.body.removeChild(printContainer);
+         }
+         
+         function formatDate(dateString) {
+         if (!dateString) return '';
+         const date = new Date(dateString);
+         return date.toLocaleDateString('en-US', { 
+         year: 'numeric', 
+         month: 'short', 
+         day: 'numeric',
+         hour: '2-digit',
+         minute: '2-digit'
+         });
+         }
+         // This JavaScript would go in your client-side HTML file, within <script> tags.
+document.addEventListener('DOMContentLoaded', function() {
+    const logo = document.getElementById('logo-home-link');
 
     if (logo) {
         logo.addEventListener('click', function() {
@@ -1723,7 +1404,7 @@
 
 
          
-
+         const { jsPDF } = window.jspdf;
          
 // Show admission form
 // Declare a global variable for the timer to ensure it can be accessed and cleared.
@@ -2006,376 +1687,11 @@ function openAdmissionForm() {
          displayCurrentRecord();
          }
         }
-      };
-    
-
-  /******************************************
-   * 11) INITIALIZE
-   ******************************************/
-  //  updateGeneratedTime();
-
-  //  // Fill dropdowns function
-  //  function fillDropdowns() {
-  //  // Slip form
-  // //  const sessionEl = document.getElementById('session');
-  // //  sessionEl.innerHTML = '<option value="">Select Session</option>';
-  // //  dropdownData.sessions.forEach(s=>{
-  // //  const opt = document.createElement('option');
-  // //  opt.value=s; opt.textContent=s;
-  // //  sessionEl.appendChild(opt);
-  // //  });
-  //  const tradeEl = document.getElementById('trade');
-  //  tradeEl.innerHTML='<option value="">Select Course</option>';
-  //  dropdownData.trades.forEach(t=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=t; opt.textContent=t;
-  //  tradeEl.appendChild(opt);
-  //  });
-  //  const feesEl=document.getElementById('feesType');
-  //  feesEl.innerHTML='<option value="">Select Branch </option>';
-  //  dropdownData.feesTypes.forEach(f=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=f; opt.textContent=f;
-  //  feesEl.appendChild(opt);
-  //  });
-  //  const payEl=document.getElementById('paymentMode');
-  //  payEl.innerHTML='<option value="">Select Payment Mode</option>';
-  //  dropdownData.paymentModes.forEach(pm=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=pm; opt.textContent=pm;
-  //  payEl.appendChild(opt);
-  //  });
-
-  //  // Student form
-  //  const sessNew=document.getElementById('sessionNew');
-  //  sessNew.innerHTML='<option value="">Select Session</option>';
-  //  dropdownData.sessions.forEach(s=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=s; opt.textContent=s;
-  //  sessNew.appendChild(opt);
-  //  });
-  //  const tradeNew=document.getElementById('tradeNew');
-  //  tradeNew.innerHTML='<option value="">Select Course</option>';
-  //  dropdownData.trades.forEach(t=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=t; opt.textContent=t;
-  //  tradeNew.appendChild(opt);
-  //  });
-
-  //  // analytics
-  //  const aFees=document.getElementById('analyticsFeesTypeFilter');
-  //  aFees.innerHTML='<option value="">Branch </option>';
-  //  dropdownData.feesTypes.forEach(f=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=f; opt.textContent=f;
-  //  aFees.appendChild(opt);
-  //  });
-  //  const aPay=document.getElementById('analyticsPaymentModeFilter');
-  //  aPay.innerHTML='<option value="">All Payment Modes</option>';
-  //  dropdownData.paymentModes.forEach(pm=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=pm; opt.textContent=pm;
-  //  aPay.appendChild(opt);
-  //  });
-  //  }
-  // Show Slip by default on login
-  //  function openSlip(){
-  //  hideAllSections();
-  //  document.getElementById('slipFormSection').classList.remove('hidden');
-  //  }
-  //    function calculateMonthlyFees() {
-  //    // Get the value of admission fees
-  //    const admissionFees = parseFloat(document.getElementById('admission_fees').value) || 0;
-
-  //   // Calculate monthly fees as admission / 12
-  //   const monthlyFees = admissionFees / 12;
-
-  //   document.getElementById('total').value = admissionFees;
-
-  //   // Update the monthly fees input field
-  //   document.getElementById('monthly_fees').value = monthlyFees.toFixed(2); // Format to two decimal places
-  //  }
-  //  function saveDataToSheet() {
-  //  // Collect values from input fields
-  //  const data = [
-  //    document.getElementById("jan_25").value,
-  //    document.getElementById("feb_25").value,
-  //    document.getElementById("mar_25").value,
-  //    document.getElementById("apr_25").value,
-  //    document.getElementById("may_25").value,
-  //    document.getElementById("jun_25").value,
-  //    document.getElementById("jul_25").value,
-  //    document.getElementById("aug_25").value,
-  //    document.getElementById("sep_25").value,
-  //    document.getElementById("oct_25").value,
-  //    document.getElementById("nov_25").value,
-  //    document.getElementById("dec_25").value
-  //  ];
-  //  // Call Apps Script function to save data
-  //  google.script.run.saveData(data);
-  //  alert('Data saved successfully!');
-  //  }
-
-  function openInquiryForm() {
-    console.log("Inquiry Form button clicked");
-    hideAllSections();
-    document.getElementById("ifId").classList.remove("hidden");
-
-    // 1. Get the stored branch from the hidden input
-    const userBranch = document.getElementById("userBranch").value;
-
-    // 2. Get the branch input element in your inquiry form
-    const branchInput = document.getElementById("branch22");
-
-    // 3. Set its value directly
-    if (userBranch) {
-      branchInput.value = userBranch;
-    } else {
-      branchInput.value = ""; // Or some default value
-    }
-  }
-
-  const { jsPDF } = window.jspdf;
+          
 
 
-  // Show admission form
-  function openAdmissionForm() {
-    window.scrollTo(0, 0);
-    console.log("Admission Form button clicked");
-    hideAllSections();
-    const section = document.getElementById("admissionFormSection");
-    if (section) section.classList.remove("hidden");
-    else console.error("Admission form section not found!");
-
-    document.getElementById("Student_namee").value =
-      sessionStorage.getItem("tempText");
-    updateCourseDetails();
-    updateYearPaymentOptions();
-    updatePaymentFields();
-    storePayementType();
-  }
-
-
-  // Handle admission form submission
-  document.addEventListener("DOMContentLoaded", function () {
-    const admissionBtn = document.getElementById("admissionBtn");
-    if (admissionBtn) {
-      admissionBtn.addEventListener("click", openAdmissionForm);
-    } else {
-      console.error("Admission button not found!");
-    }
-
-    const form = document.getElementById("admissionForm");
-    const submitBtn = document.getElementById("submitButton");
-
-    if (submitBtn && form) {
-      submitBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-          if (!data[key]) data[key] = [];
-          data[key].push(value);
-        });
-
-        console.log("Submitting data:", data);
-        google.script.run.withSuccessHandler(onSuccess).submitForm(data);
-      });
-    }
-  });
-
-  // Handle success
-  function onSuccess() {
-    alert("Form submitted successfully!");
-    generatePDFAdmission();
-  }
-
-  // Generate PDF
-  function generatePDFAdmission() {
-    const element = document.getElementById("admissionFormSection"); // or 'slipFormSection' if needed
-    const options = {
-      scale: 3,
-      useCORS: true,
-      letterRendering: true,
-      onclone: (clonedDoc) => {
-        clonedDoc.querySelectorAll("input, select").forEach((el) => {
-          el.style.paddingTop = "2px";
-          el.style.paddingBottom = "2px";
-        });
-      },
-    };
-
-    html2canvas(element, options).then((canvas) => {
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      if (imgHeight > 297) {
-        const pageHeight = 297;
-        let position = 0;
-
-        while (position < imgHeight) {
-          pdf.addImage(
-            canvas,
-            "PNG",
-            0,
-            position === 0 ? 0 : -position,
-            imgWidth,
-            imgHeight
-          );
-          position += pageHeight;
-          if (position < imgHeight) pdf.addPage();
-        }
-      } else {
-        pdf.addImage(canvas, "PNG", 0, 0, imgWidth, imgHeight);
-      }
-
-      const studentName =
-        document.querySelector('input[name="student_name"]').value || "Student";
-      pdf.save(`${studentName}_AdmissionForm.pdf`);
-    });
-
-    // Initialize jsPDF
-    const { jsPDF } = window.jspdf;
-
-    // Data management variables
-    let formData = [];
-    let currentRecordIndex = 0;
-
-    // DOM Ready Handler
-
-    // Fetch data from Google Sheets
-    function fetchData() {
-      const detailsDiv = document.getElementById("details");
-      detailsDiv.innerHTML = '<p class="text-center py-4">Loading data...</p>';
-
-      if (typeof google === "undefined" || !google.script.run) {
-        showError({ message: "Google Apps Script not available" });
-        return;
-      }
-
-      google.script.run
-        .withSuccessHandler(displayFetchedData)
-        .withFailureHandler(showError)
-        .getData();
-    }
-
-    function showError(error) {
-      document.getElementById("details").innerHTML = `
-         <p class="text-red-500 text-center py-4">
-           Error: ${error.message || "Failed to load data"}
-         </p>`;
-    }
-
-    function displayFetchedData(fetchedData) {
-      if (!fetchedData || fetchedData.length < 2) {
-        document.getElementById("details").innerHTML = `
-           <p class="text-center py-4">No data available</p>`;
-        return;
-      }
-
-      formData = fetchedData;
-      currentRecordIndex = 1; // Skip header row
-      displayCurrentRecord();
-
-      // Show the container if hidden
-      document.getElementById("ifId").classList.add("hidden");
-      document.getElementById("container").classList.remove("hidden");
-    }
-
-    function displayCurrentRecord() {
-      const outputDiv = document.getElementById("output");
-      const detailsDiv = document.getElementById("details");
-      const emiDiv = document.getElementById("emiOutput");
-
-      // Clear previous content
-      outputDiv.innerHTML = "";
-      detailsDiv.innerHTML = "";
-      emiDiv.innerHTML = "";
-
-      if (formData.length > 1 && currentRecordIndex < formData.length) {
-        const record = formData[currentRecordIndex];
-        const headers = formData[0];
-
-        // Display basic details
-        const detailFields = [
-          { label: "Serial no", index: 0 },
-          { label: "Name", index: 1 },
-          { label: "Email", index: 2 },
-          { label: "Phone", index: 3 },
-          { label: "Address", index: 4 },
-        ];
-
-        detailFields.forEach((field) => {
-          if (record[field.index] !== undefined) {
-            const div = document.createElement("div");
-            div.className = "py-2 border-b border-gray-100";
-            div.textContent = `${field.label}: ${record[field.index] || "-"}`;
-            detailsDiv.appendChild(div);
-          }
-        });
-
-        // Add payable information
-        const payableDiv = document.createElement("div");
-        payableDiv.className = "py-3 mt-3 font-bold border-t border-gray-200";
-        payableDiv.textContent = "Payable to: Shelar Training Institute";
-        detailsDiv.appendChild(payableDiv);
-
-        // Create main fees table (columns 5-8)
-        createDataTable(outputDiv, headers.slice(5, 9), record.slice(5, 9));
-
-        // Create EMI table if data exists (columns 9+)
-        if (record.length > 9) {
-          createDataTable(emiDiv, headers.slice(9), record.slice(9));
-        }
-      }
-
-      // Update navigation buttons
-      document.getElementById("prevButton").style.display =
-        currentRecordIndex <= 1 ? "none" : "block";
-      document.getElementById("nextButton").style.display =
-        currentRecordIndex >= formData.length - 1 ? "none" : "block";
-    }
-
-    function createDataTable(container, headers, data) {
-      const table = document.createElement("table");
-      const headerRow = document.createElement("tr");
-
-      headers.forEach((header) => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-      });
-      table.appendChild(headerRow);
-
-      const dataRow = document.createElement("tr");
-      data.forEach((cell) => {
-        const td = document.createElement("td");
-        td.textContent = cell || "-";
-        dataRow.appendChild(td);
-      });
-      table.appendChild(dataRow);
-
-      container.appendChild(table);
-    }
-
-    function nextPage() {
-      if (currentRecordIndex < formData.length - 1) {
-        currentRecordIndex++;
-        displayCurrentRecord();
-      }
-    }
-
-    function prevPage() {
-      if (currentRecordIndex > 1) {
-        currentRecordIndex--;
-        displayCurrentRecord();
-      }
-    }
-
-    // PDF Generation
-    /*function generatePDFInquire() {
+         // PDF Generation
+         /*function generatePDFInquire() {
          const formElement = document.getElementById('ifId');
          const options = {
          scale: 2,
@@ -2409,9 +1725,10 @@ function openAdmissionForm() {
          });
          });
          }*/
-  }
+         }
 
-  /*
+
+/*
 document.addEventListener('DOMContentLoaded', function () {
   const inquiryForm = document.getElementById('ifId'); // Replace with your form's ID
   if (inquiryForm) {
@@ -2419,15 +1736,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 }); */
 
-  function submitInquiryForm(e) {
-    e.preventDefault();
-    // console.log("Hello88 - Form submission started");
+function submitInquiryForm(e) {
 
-    //const formData = Object.fromEntries(new FormData(document.getElementById('ifId')));
-    // console.log(formData);
+  
+  e.preventDefault();
+ // console.log("Hello88 - Form submission started");
 
-    // Call Apps Script function to generate PDF
-    /*google.script.run
+  //const formData = Object.fromEntries(new FormData(document.getElementById('ifId')));
+  // console.log(formData);
+
+  // Call Apps Script function to generate PDF
+  /*google.script.run
     .withSuccessHandler(() => {
       alert('Form submitted and PDF generated!');
     })
@@ -2437,505 +1756,392 @@ document.addEventListener('DOMContentLoaded', function () {
     .generatePDFInquire(formData);
 */
 
-    // Validate terms checkbox
-    const agreeCheckbox = document.getElementById("agree1");
-    if (!agreeCheckbox?.checked) {
-      console.log("Validation failed: Checkbox not checked");
-      document.getElementById("agreeError1").textContent =
-        "Please agree to the terms";
-      return; // Stops here if checkbox is unchecked
-    } else {
-      document.getElementById("agreeError1").textContent = "";
+  // Validate terms checkbox
+  const agreeCheckbox = document.getElementById('agree1');
+  if (!agreeCheckbox?.checked) {
+    console.log("Validation failed: Checkbox not checked");
+    document.getElementById('agreeError1').textContent = 'Please agree to the terms';
+    return; // Stops here if checkbox is unchecked
+  } else {
+    document.getElementById('agreeError1').textContent = '';
+  }
+
+  const submitBtn = document.getElementById('submitButton2');
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+  submitBtn.disabled = true;
+
+  // Hardcoded test data (or collect from form)
+const formValues = {
+      date: document.getElementById('date')?.value || new Date().toISOString().split('T')[0],
+      fullName: document.getElementById('fullName')?.value.trim() || '',
+      qualification: document.getElementById('qualification')?.value.trim() || '',
+      phoneNo: document.getElementById('phoneNo')?.value.trim() || '',
+      whatsappNo: document.getElementById('whatsappNo')?.value.trim() || '',
+      parentsNo: document.getElementById('parentsNo')?.value.trim() || '',
+      email: document.getElementById('email')?.value.trim() || '',
+      age: document.getElementById('age')?.value.trim() || '',
+      address: document.getElementById('address')?.value.trim() || '',
+      interestedCourse: document.getElementById('interestedCourse')?.value.trim() || '',
+      inquiryTakenBy: document.getElementById('inquiryTakenBy')?.value.trim() || '',
+      branch: document.getElementById('branch22')?.value.trim() || ''
     }
 
-    const submitBtn = document.getElementById("submitButton2");
-    submitBtn.innerHTML =
-      '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-    submitBtn.disabled = true;
+  console.log("Form Values:", formValues); // This MUST appear if execution reaches here
 
-    // Hardcoded test data (or collect from form)
-    const formValues = {
-      date:
-        document.getElementById("date")?.value ||
-        new Date().toISOString().split("T")[0],
-      fullName: document.getElementById("fullName")?.value.trim() || "",
-      qualification:
-        document.getElementById("qualification")?.value.trim() || "",
-      phoneNo: document.getElementById("phoneNo")?.value.trim() || "",
-      whatsappNo: document.getElementById("whatsappNo")?.value.trim() || "",
-      parentsNo: document.getElementById("parentsNo")?.value.trim() || "",
-      email: document.getElementById("email")?.value.trim() || "",
-      age: document.getElementById("age")?.value.trim() || "",
-      address: document.getElementById("address")?.value.trim() || "",
-      interestedCourse:
-        document.getElementById("interestedCourse")?.value.trim() || "",
-      inquiryTakenBy:
-        document.getElementById("inquiryTakenBy")?.value.trim() || "",
-      branch: document.getElementById("branch22")?.value.trim() || "",
-    };
-
-    console.log("Form Values:", formValues); // This MUST appear if execution reaches here
-
-    // Send data to Google Apps Script
-    google.script.run
-      .withSuccessHandler((response) => {
-        console.log("Server Response:", response); // Log response from Google Apps Script
-        if (response.success) {
-          Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: response.message,
-            confirmButtonColor: "#1e3a8a",
-          }).then(() => {
-            document.getElementById("ifId")?.reset();
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Validation Error",
-            text: response.message,
-            confirmButtonColor: "#1e3a8a",
-          });
-        }
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit';
-        submitBtn.disabled = false;
-      })
-      .withFailureHandler((error) => {
-        console.error("Script Error:", error); // Log full error
+  // Send data to Google Apps Script
+  google.script.run
+    .withSuccessHandler((response) => {
+      console.log("Server Response:", response); // Log response from Google Apps Script
+      if (response.success) {
         Swal.fire({
-          icon: "error",
-          title: "Script Error",
-          text: error.message || "An unexpected error occurred.",
-          confirmButtonColor: "#1e3a8a",
+          icon: 'success',
+          title: 'Success!',
+          text: response.message,
+          confirmButtonColor: '#1e3a8a',
+        }).then(() => {
+          document.getElementById('ifId')?.reset();
         });
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit';
-        submitBtn.disabled = false;
-      })
-      .processForm(formValues);
-  }
-</script>
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: response.message,
+          confirmButtonColor: '#1e3a8a',
+        });
+      }
+      submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit';
+      submitBtn.disabled = false;
+    })
+    .withFailureHandler((error) => {
+      console.error("Script Error:", error); // Log full error
+      Swal.fire({
+        icon: 'error',
+        title: 'Script Error',
+        text: error.message || 'An unexpected error occurred.',
+        confirmButtonColor: '#1e3a8a',
+      });
+      submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit';
+      submitBtn.disabled = false;
+    })
+    .processForm(formValues);
+}
+
+      </script>
 
 <!---------------------------Admission Form --------------------------->
 
-<script>
-  // Ensure jsPDF is available globally
+ <script>
+    // Ensure jsPDF is available globally
+    
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const savedCourse = sessionStorage.getItem("selectedCourse");
-    const courseSelect = document.getElementById("courseSelect");
-    if (savedCourse && courseSelect) {
-      courseSelect.value = savedCourse;
-    }
-    // Initialize payment type change handler
-    document.querySelectorAll('input[name="payment_type"]').forEach((radio) => {
-      radio.addEventListener("change", updatePaymentFields);
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize payment type change handler
+      document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
+        radio.addEventListener('change', updatePaymentFields);
+      });
 
-    updatePaymentFields(); // Initialize payment fields
-    updateCourseDetails(); // Initialize course details
+      // Initialize course year change handler
+      document.getElementById('courseYears').addEventListener('change', updateYearPaymentOptions);
 
-    // Initialize course year change handler
-    document
-      .getElementById("courseYears")
-      .addEventListener("change", updateYearPaymentOptions);
-
-    // Initialize year payment input handlers (delegated for dynamic elements)
-    document
-      .getElementById("yearPayments")
-      .addEventListener("input", function (event) {
-        if (
-          event.target.matches('[id^="year"][id$="_paid"]') ||
-          event.target.matches('[id^="year"][id$="_installments"]')
-        ) {
+      // Initialize year payment input handlers (delegated for dynamic elements)
+      document.getElementById('yearPayments').addEventListener('input', function(event) {
+        if (event.target.matches('[id^="year"][id$="_paid"]') || event.target.matches('[id^="year"][id$="_installments"]')) {
           calculateDueFees();
         }
       });
 
-    courseSelect.addEventListener("change", function () {
-      sessionStorage.setItem("selectedCourse", this.value);
-      updateCourseDetails(); // Trigger input updates when dropdown is manually changed
-    });
-  });
-  function storePayementType() {
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedPaymentType = sessionStorage.getItem("paytype");
-
-      if (savedPaymentType) {
-        const matchingRadio = document.querySelector(
-          `input[name="payment_type"][value="${savedPaymentType}"]`
-        );
-        if (matchingRadio) {
-          matchingRadio.checked = true;
-
-          // Optional: manually trigger any onchange logic (if needed)
-          matchingRadio.dispatchEvent(new Event("change"));
-        }
-      }
+      updatePaymentFields(); // Initialize payment fields
+      updateCourseDetails(); // Initialize course details
     });
 
-    const saved = sessionStorage.getItem("paytype");
-    console.log("Retrieved paytype from session:", saved);
+    const courseData1= {
+      anm_nursing: { duration: "2 years", fees: "₹50,000" },
+      gnm_nursing: { duration: "3 years", fees: "₹60,000" },
+      dmlt: { duration: "2 years", fees: "₹45,000" },
+      ot_technician: { duration: "1 year", fees: "₹40,000" },
+      general_nursing: { duration: "2 years", fees: "₹55,000" },
+      beautician: { duration: "6 months", fees: "₹25,000" },
+      electrician: { duration: "1 year", fees: "₹30,000" },
+      mobile_repairing: { duration: "3 months", fees: "₹15,000" },
+      ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
+      automobile: { duration: "1 year", fees: "₹35,000" }
+    };
 
-    if (saved) {
-      const radioToSelect = document.querySelector(
-        `input[name="payment_type"][value="${saved}"]`
-      );
-      if (radioToSelect) {
-        radioToSelect.checked = true;
-        radioToSelect.dispatchEvent(new Event("change")); // trigger onchange like manually selecting it
-      } else {
-        console.warn("No matching radio found for:", saved);
-      }
-    }
-  }
+    function updateCourseDetails() {
+      const select = document.getElementById('courseSelect');
+      const value = select.value;
+      const durationDiv = document.getElementById('courseDuration');
+      const feesDiv = document.getElementById('courseFees');
+      const yearsSelect = document.getElementById('courseYears');
 
-  const courseData1 = {
-    anm_nursing: { duration: "2 years", fees: "₹50,000", total: "₹100000" },
-    gnm_nursing: { duration: "3 years", fees: "₹60,000", total: "₹180000" },
-    dmlt: { duration: "2 years", fees: "₹45,000", total: "₹90000" },
-    ot_technician: { duration: "1 year", fees: "₹40,000", total: "₹40000" },
-    general_nursing: { duration: "2 years", fees: "₹55,000", total: "₹110000" },
-    beautician: { duration: "6 months", fees: "₹25,000", total: "₹25000" },
-    electrician: { duration: "1 year", fees: "₹30,000", total: "₹30000" },
-    mobile_repairing: {
-      duration: "3 months",
-      fees: "₹15,000",
-      total: "₹15000",
-    },
-    ac_refrigerator: { duration: "6 months", fees: "₹20,000", total: "₹20000" },
-    automobile: { duration: "1 year", fees: "₹35,000", total: "₹35000" },
-  };
+      if (courseData[value]) {
+        durationDiv.textContent = courseData[value].duration;
+        feesDiv.textContent = courseData[value].fees;
 
-  function updateCourseDetails() {
-    const select = document.getElementById("courseSelect");
-    const value = select.value;
-    const durationDiv = document.getElementById("courseDuration");
-    const feesDiv = document.getElementById("courseFees");
-    const yearsSelect = document.getElementById("courseYears");
-
-    if (courseData1[value]) {
-      durationDiv.textContent = courseData1[value].duration;
-      feesDiv.textContent = courseData1[value].fees;
-
-      // Set course years based on duration
-      if (courseData1[value].duration.includes("2")) {
-        yearsSelect.value = "2";
-      } else if (courseData1[value].duration.includes("3")) {
-        yearsSelect.value = "3";
-      } else {
-        yearsSelect.value = "1";
-      }
-    } else {
-      durationDiv.textContent = "";
-      feesDiv.textContent = "";
-      yearsSelect.value = "1"; // Default to 1 year if no course is selected
-    }
-    updateYearPaymentOptions(); // Recalculate options based on new years
-  }
-
-  function updatePaymentFields() {
-    const paymentType = document.querySelector(
-      'input[name="payment_type"]:checked'
-    ).value;
-    // No need to hide/show `paymentFields` or `emiFields` as they are now combined
-    // `yearPayments` will be updated by `updateYearPaymentOptions`
-    updateYearPaymentOptions();
-  }
-
-  function updateYearPaymentOptions() {
-    const courseYears =
-      parseInt(document.getElementById("courseYears").value) || 0;
-    const paymentType = document.querySelector(
-      'input[name="payment_type"]:checked'
-    ).value;
-    const yearPaymentsDiv = document.getElementById("yearPayments");
-    const courseFeesText = document.getElementById("courseFees").textContent;
-    const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
-
-    yearPaymentsDiv.innerHTML = ""; // Clear previous year inputs
-
-    if (courseYears > 0) {
-      for (let i = 1; i <= courseYears; i++) {
-        const yearDiv = document.createElement("div");
-        yearDiv.className = "flex items-center mb-2";
-
-        if (paymentType === "emi") {
-          yearDiv.innerHTML = `
-                <label class="w-1/4">Year ${i} EMI:</label>
-                <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
-                  <option value="0">Select Installment</option>
-                  <option value="6">6 Installments</option>
-                  <option value="12">12 Installments</option>
-                </select>
-                <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
-                <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
-            2
-          )}</span>
-              `;
+        // Set course years based on duration
+        if (courseData[value].duration.includes('2')) {
+          yearsSelect.value = '2';
+        } else if (courseData[value].duration.includes('3')) {
+          yearsSelect.value = '3';
         } else {
-          yearDiv.innerHTML = `
-                <label class="w-1/4">Year ${i} Fees:</label>
-                <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
-                <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${
-            i > 1 ? "disabled" : ""
-          } value="0">
-                <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
-            2
-          )}</span>
-              `;
+          yearsSelect.value = '1';
         }
-        yearPaymentsDiv.appendChild(yearDiv);
+      } else {
+        durationDiv.textContent = '';
+        feesDiv.textContent = '';
+        yearsSelect.value = '1'; // Default to 1 year if no course is selected
       }
+      updateYearPaymentOptions(); // Recalculate options based on new years
     }
-    calculateDueFees();
-  }
 
-  function calculateInstallment(year) {
-    const installments = parseInt(
-      document.getElementById(`year${year}_installments`).value
-    );
-    const courseFeesText = document.getElementById("courseFees").textContent;
-    const totalFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
-    let installmentAmount = 0;
-
-    if (installments > 0) {
-      installmentAmount = Math.ceil(totalFees / installments);
+    function updatePaymentFields() {
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      // No need to hide/show `paymentFields` or `emiFields` as they are now combined
+      // `yearPayments` will be updated by `updateYearPaymentOptions`
+      updateYearPaymentOptions();
     }
-    document.getElementById(`year${year}_paid`).value =
-      installmentAmount.toFixed(2);
-    calculateDueFees();
-  }
 
-  function calculateDueFees() {
-    const courseYears =
-      parseInt(document.getElementById("courseYears").value) || 0;
-    const paymentType = document.querySelector(
-      'input[name="payment_type"]:checked'
-    ).value;
-    const courseFeesText = document.getElementById("courseFees").textContent;
-    const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
+    function updateYearPaymentOptions() {
+      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      const yearPaymentsDiv = document.getElementById('yearPayments');
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
 
-    for (let i = 1; i <= courseYears; i++) {
-      const paidElement = document.getElementById(`year${i}_paid`);
-      const dueElement = document.getElementById(`year${i}_due`);
-      let total = courseFees; // Default to courseFees for EMI and partial
+      yearPaymentsDiv.innerHTML = ''; // Clear previous year inputs
 
-      if (paymentType !== "emi") {
-        // For full/partial, total is from the readonly input
-        const totalElement = document.getElementById(`year${i}_total`);
-        if (totalElement) {
-          total = parseFloat(totalElement.value) || 0;
+      if (courseYears > 0) {
+        for (let i = 1; i <= courseYears; i++) {
+          const yearDiv = document.createElement('div');
+          yearDiv.className = 'flex items-center mb-2';
+
+          if (paymentType === 'emi') {
+            yearDiv.innerHTML = `
+              <label class="w-1/4">Year ${i} EMI:</label>
+              <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
+                <option value="0">Select Installment</option>
+                <option value="6">6 Installments</option>
+                <option value="12">12 Installments</option>
+              </select>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
+              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(2)}</span>
+            `;
+          } else {
+            yearDiv.innerHTML = `
+              <label class="w-1/4">Year ${i} Fees:</label>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
+              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${i > 1 ? 'disabled' : ''} value="0">
+              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(2)}</span>
+            `;
+          }
+          yearPaymentsDiv.appendChild(yearDiv);
         }
       }
+      calculateDueFees();
+    }
 
-      if (paidElement && dueElement) {
-        const paid = parseFloat(paidElement.value) || 0;
-        let due = total - paid;
+    function calculateInstallment(year) {
+      const installments = parseInt(document.getElementById(`year${year}_installments`).value);
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const totalFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+      let installmentAmount = 0;
 
-        if (paymentType === "emi") {
-          const installmentsSelect = document.getElementById(
-            `year${i}_installments`
-          );
-          const selectedInstallments = parseInt(installmentsSelect.value);
-          if (selectedInstallments > 0) {
-            const totalForYear = courseFees; // Total for EMI is always full course fees for that year
-            const installmentPerMonth = (
-              totalForYear / selectedInstallments
-            ).toFixed(2);
-            const paidAmount = parseFloat(paidElement.value) || 0;
-            due = totalForYear - paidAmount;
-            dueElement.textContent = `Due: ₹${due.toFixed(
-              2
-            )} (EMI: ${selectedInstallments} x ₹${installmentPerMonth})`;
+      if (installments > 0) {
+        installmentAmount = Math.ceil(totalFees / installments);
+      }
+      document.getElementById(`year${year}_paid`).value = installmentAmount.toFixed(2);
+      calculateDueFees();
+    }
+
+    function calculateDueFees() {
+      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
+
+      for (let i = 1; i <= courseYears; i++) {
+        const paidElement = document.getElementById(`year${i}_paid`);
+        const dueElement = document.getElementById(`year${i}_due`);
+        let total = courseFees; // Default to courseFees for EMI and partial
+
+        if (paymentType !== 'emi') { // For full/partial, total is from the readonly input
+          const totalElement = document.getElementById(`year${i}_total`);
+          if (totalElement) {
+            total = parseFloat(totalElement.value) || 0;
+          }
+        }
+
+        if (paidElement && dueElement) {
+          const paid = parseFloat(paidElement.value) || 0;
+          let due = total - paid;
+
+          if (paymentType === 'emi') {
+            const installmentsSelect = document.getElementById(`year${i}_installments`);
+            const selectedInstallments = parseInt(installmentsSelect.value);
+            if (selectedInstallments > 0) {
+              const totalForYear = courseFees; // Total for EMI is always full course fees for that year
+              const installmentPerMonth = (totalForYear / selectedInstallments).toFixed(2);
+              const paidAmount = parseFloat(paidElement.value) || 0;
+              due = totalForYear - paidAmount;
+              dueElement.textContent = `Due: ₹${due.toFixed(2)} (EMI: ${selectedInstallments} x ₹${installmentPerMonth})`;
+            } else {
+               dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
+            }
+          } else if (paymentType === 'partial' && due > 0) {
+            const emiAmount = (due / 11).toFixed(2);
+            dueElement.textContent = `Due: ₹${due.toFixed(2)} (EMI: 11 x ₹${emiAmount})`;
           } else {
             dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
           }
-        } else if (paymentType === "partial" && due > 0) {
-          const emiAmount = (due / 11).toFixed(2);
-          dueElement.textContent = `Due: ₹${due.toFixed(
-            2
-          )} (EMI: 11 x ₹${emiAmount})`;
-        } else {
-          dueElement.textContent = `Due: ₹${due.toFixed(2)}`;
-        }
 
-        // Enable next year only if current year is fully paid (for full/partial)
-        if (i < courseYears && paymentType !== "emi") {
-          const nextPaidElement = document.getElementById(`year${i + 1}_paid`);
-          if (nextPaidElement) {
-            nextPaidElement.disabled = due > 0;
-            if (due > 0) {
-              nextPaidElement.value = "";
+          // Enable next year only if current year is fully paid (for full/partial)
+          if (i < courseYears && paymentType !== 'emi') {
+            const nextPaidElement = document.getElementById(`year${i + 1}_paid`);
+            if (nextPaidElement) {
+              nextPaidElement.disabled = due > 0;
+              if (due > 0) {
+                nextPaidElement.value = '';
+              }
             }
           }
         }
       }
     }
-  }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+    function handleSubmit(event) {
+      event.preventDefault();
 
-    const form = event.target;
-    const formData = new FormData(form);
-    const formObject = {};
+      const form = event.target;
+      const formData = new FormData(form);
+      const formObject = {};
 
-    formData.forEach((value, key) => {
-      if (key === "agree") {
-        formObject[key] = document.getElementById("agree").checked;
-      } else {
-        formObject[key] = value;
+      formData.forEach((value, key) => {
+        if (key === 'agree') {
+          formObject[key] = document.getElementById('agree').checked;
+        } else {
+          formObject[key] = value;
+        }
+      });
+
+      // Add course details
+      formObject.courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      formObject.courseFees = document.getElementById('courseFees').textContent.trim();
+      formObject.courseDuration = document.getElementById('courseDuration').textContent.trim();
+
+      // Add year-specific payment data
+      const courseYears = formObject.courseYears;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+
+      for (let i = 1; i <= courseYears; i++) {
+        if (paymentType === 'emi') {
+          formObject[`year${i}_installments`] = getValue(`year${i}_installments`);
+          formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
+          formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
+        } else {
+          formObject[`year${i}_total`] = getValue(`year${i}_total`);
+          formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
+          formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
+        }
       }
-    });
 
-    // Add course details
-    formObject.courseYears =
-      parseInt(document.getElementById("courseYears").value) || 0;
-    formObject.courseFees = document
-      .getElementById("courseFees")
-      .textContent.trim();
-    formObject.courseDuration = document
-      .getElementById("courseDuration")
-      .textContent.trim();
-
-    // Add year-specific payment data
-    const courseYears = formObject.courseYears;
-    const paymentType = document.querySelector(
-      'input[name="payment_type"]:checked'
-    ).value;
-
-    for (let i = 1; i <= courseYears; i++) {
-      if (paymentType === "emi") {
-        formObject[`year${i}_installments`] = getValue(`year${i}_installments`);
-        formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
-        formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
-      } else {
-        formObject[`year${i}_total`] = getValue(`year${i}_total`);
-        formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
-        formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
-      }
+      // Submit to Google Apps Script
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .submitForm(formObject);
     }
 
-    // Submit to Google Apps Script
-    google.script.run
-      .withSuccessHandler(onSuccess)
-      .withFailureHandler(onFailure)
-      .submitForm(formObject);
-  }
+    // Helper functions
+    function getValue(id) {
+      const element = document.getElementById(id);
+      return element ? element.value : '';
+    }
 
-  // Helper functions
-  function getValue(id) {
-    const element = document.getElementById(id);
-    return element ? element.value : "";
-  }
+    function getDueValue(id) {
+      const element = document.getElementById(id);
+      return element ? element.textContent.replace(/[^\d.]/g, '') : '';
+    }
 
-  function getDueValue(id) {
-    const element = document.getElementById(id);
-    return element ? element.textContent.replace(/[^\d.]/g, "") : "";
-  }
+    function onSuccess(result) {
+      Swal.fire({
+        title: 'Success!',
+        text: result.message,
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        generatePDF();
+      });
+    }
 
-  function onSuccess(result) {
-    Swal.fire({
-      title: "Success!",
-      text: result.message,
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then(() => {
-      generatePDF();
-    });
-  }
+    function onFailure(error) {
+      Swal.fire({
+        title: 'Error!',
+        text: error.message,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
 
-  function onFailure(error) {
-    Swal.fire({
-      title: "Error!",
-      text: error.message,
-      icon: "error",
-      confirmButtonText: "OK",
-    });
-  }
-
-  function generatePDF() {
-    const element = document.getElementById("slipForm");
-    const options = {
-      scale: 3,
-      useCORS: true,
-      letterRendering: true,
-      onclone: (clonedDoc) => {
-        clonedDoc.querySelectorAll("input, select").forEach((element) => {
-          // Apply minimal padding to elements for better PDF rendering
-          element.style.paddingTop = "2px";
-          element.style.paddingBottom = "2px";
-          element.style.paddingLeft = "2px";
-          element.style.paddingRight = "2px";
-        });
-        // Hide buttons and other non-essential elements for the PDF
-        clonedDoc.getElementById("submitButton").style.display = "none";
-        // Hide radio buttons and checkboxes by setting their container to display: none
-        clonedDoc
-          .querySelectorAll('input[type="radio"], input[type="checkbox"]')
-          .forEach((el) => {
-            el.closest("label").style.display = "none";
+    function generatePDF() {
+      const element = document.getElementById('slipForm');
+      const options = {
+        scale: 3,
+        useCORS: true,
+        letterRendering: true,
+        onclone: (clonedDoc) => {
+          clonedDoc.querySelectorAll('input, select').forEach(element => {
+            // Apply minimal padding to elements for better PDF rendering
+            element.style.paddingTop = '2px';
+            element.style.paddingBottom = '2px';
+            element.style.paddingLeft = '2px';
+            element.style.paddingRight = '2px';
           });
-        // Ensure border-bottom is visible for inputs that use it
-        clonedDoc.querySelectorAll(".border-b").forEach((el) => {
-          el.style.borderBottomWidth = "1px";
-          el.style.borderColor = "black";
-        });
-      },
-    };
-
-    html2canvas(element, options).then((canvas) => {
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let position = 0;
-
-      // Calculate the number of pages needed
-      const numPages = Math.ceil(imgHeight / pageHeight);
-
-      for (let i = 0; i < numPages; i++) {
-        const sX = 0; // start X
-        const sY = i * pageHeight * (canvas.width / imgWidth); // start Y based on page
-        const sWidth = canvas.width; // slice width
-        const sHeight = Math.min(
-          pageHeight * (canvas.width / imgWidth),
-          canvas.height - sY
-        ); // slice height, cap at remaining canvas height
-
-        // Create a temporary canvas to hold the sliced portion
-        const sliceCanvas = document.createElement("canvas");
-        sliceCanvas.width = sWidth;
-        sliceCanvas.height = sHeight;
-        const sliceContext = sliceCanvas.getContext("2d");
-        sliceContext.drawImage(
-          canvas,
-          sX,
-          sY,
-          sWidth,
-          sHeight,
-          0,
-          0,
-          sWidth,
-          sHeight
-        );
-
-        if (i > 0) {
-          pdf.addPage();
+          // Hide buttons and other non-essential elements for the PDF
+          clonedDoc.getElementById('submitButton').style.display = 'none';
+          // Hide radio buttons and checkboxes by setting their container to display: none
+          clonedDoc.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+            el.closest('label').style.display = 'none';
+          });
+          // Ensure border-bottom is visible for inputs that use it
+          clonedDoc.querySelectorAll('.border-b').forEach(el => {
+            el.style.borderBottomWidth = '1px';
+            el.style.borderColor = 'black';
+          });
         }
-        pdf.addImage(
-          sliceCanvas.toDataURL("image/png"),
-          "PNG",
-          0,
-          0,
-          imgWidth,
-          (sliceCanvas.height * imgWidth) / sliceCanvas.width
-        );
-      }
+      };
 
-      const studentName =
-        document.querySelector('input[name="student_name"]').value || "Student";
-      pdf.save(`${studentName}_AdmissionForm.pdf`);
-    });
-  }
-</script>
+      html2canvas(element, options).then(canvas => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let position = 0;
+
+        // Calculate the number of pages needed
+        const numPages = Math.ceil(imgHeight / pageHeight);
+
+        for (let i = 0; i < numPages; i++) {
+          const sX = 0; // start X
+          const sY = i * pageHeight * (canvas.width / imgWidth); // start Y based on page
+          const sWidth = canvas.width; // slice width
+          const sHeight = Math.min(pageHeight * (canvas.width / imgWidth), canvas.height - sY); // slice height, cap at remaining canvas height
+
+          // Create a temporary canvas to hold the sliced portion
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width = sWidth;
+          sliceCanvas.height = sHeight;
+          const sliceContext = sliceCanvas.getContext('2d');
+          sliceContext.drawImage(canvas, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+          if (i > 0) {
+            pdf.addPage();
+          }
+          pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, (sliceCanvas.height * imgWidth) / sliceCanvas.width);
+        }
+
+        const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
+        pdf.save(`${studentName}_AdmissionForm.pdf`);
+      });
+    }
+
+  </script>
