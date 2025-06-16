@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiry Details - STI Shelare Training Institute</title>
+    <style>
+        /* General Body and Font Styling */
+        body {
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #eef2f9; /* Lighter, cooler background */
+            color: #333d4f;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Main container for centering content for screen view */
+        .page-container {
+            padding: 2rem;
+        }
+
+        /* The main content block, styled for an A4-like appearance */
+        .content-wrapper {
+            max-width: 21cm; /* A4 width */
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(120deg, #1c3d7e 0%, #2e6cdf 100%);
+            color: #ffffff;
+            padding: 2rem; /* 32px */
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .header-main {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem; /* 24px */
+        }
+
+        .logo-container {
+            width: 52px;
+            height: 52px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-right: 1rem; /* 16px */
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+        
+        .institute-title {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .institute-address {
+            font-size: 0.875rem; /* 14px */
+            opacity: 0.9;
+            margin: 0.25rem 0 0;
+        }
+        
+        .header-details {
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+        }
+        
+        .header-details .title {
+            color: #f1c40f; /* Gold color for emphasis */
+            font-weight: 600;
+            font-size: 1.25rem; /* 20px */
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .header-details .contact p {
+            font-size: 0.9rem; /* 14.4px */
+            margin: 0.25rem 0;
+            opacity: 0.95;
+        }
+
+        /* Body/Data Section */
+        .data-body {
+            padding: 2rem; /* 32px */
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.75rem; /* 28px */
+        }
+
+        .field-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            font-size: 0.8rem; /* 12.8px */
+            font-weight: 700;
+            color: #1c3d7e; 
+            margin-bottom: 0.5rem; /* 8px */
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-value {
+            font-size: 1rem; /* 16px */
+            padding-bottom: 0.5rem; /* 8px */
+            border-bottom: 1px solid #e0e0e0;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+        
+        .field-value.address {
+            white-space: pre-wrap; /* To respect newlines in the address */
+            line-height: 1.5;
+        }
+        
+        .contact-section {
+            background-color: #f1f5f9;
+            padding: 1.5rem; /* 24px */
+            border-radius: 8px;
+            border-left: 5px solid #2e6cdf;
+        }
+        
+        .contact-section-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            color: #1c3d7e;
+            margin: 0 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #d1d9e4;
+        }
+
+        /* Responsive Adjustments for wider screens */
+        @media (min-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .header-main {
+                margin-bottom: 0;
+            }
+            .header-details {
+                text-align: right;
+                border-top: none;
+                padding-top: 0;
+            }
+            .data-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .contact-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Print-specific styles for A4 paper */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                background-color: #ffffff;
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                print-color-adjust: exact; /* Firefox, Edge */
+            }
+            .page-container {
+                padding: 0;
+            }
+            .content-wrapper {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+            }
+            .header {
+                padding: 1.5cm;
+            }
+            .data-body {
+                padding: 1.5cm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div class="page-container">
+            <div class="content-wrapper">
+                <div class="header">
+                    <div class="header-content">
+                        <div class="header-main">
+                            <div class="logo-container">
+                                <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo" class="logo">
+                            </div>
+                            <div>
+                                <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
+                                <p class="institute-address">C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)</p>
+                            </div>
+                        </div>
+                        <div class="header-details">
+                            <div class="title">INQUIRY DETAILS</div>
+                            <div class="contact">
+                                <p>+91 9967288158</p>
+                                <p>+91 7400406467</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-body">
+                    <div class="data-grid field-group">
+                        <div>
+                            <p class="field-label">Date</p>
+                            <div class="field-value" id="date">15-Jun-2025</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Full Name</p>
+                            <div class="field-value" id="fullName">John Doe</div>
+                        </div>
+                    </div>
+
+                    <div class="data-grid field-group">
+                        <div>
+                            <p class="field-label">Qualification</p>
+                            <div class="field-value" id="qualification">Bachelor of Engineering</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Age</p>
+                            <div class="field-value" id="age">23</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-section field-group">
+                        <h3 class="contact-section-title">Contact Information</h3>
+                        <div class="data-grid contact-grid">
+                            <div>
+                                <p class="field-label">Phone</p>
+                                <div class="field-value" id="phoneNo">9876543210</div>
+                            </div>
+                            <div>
+                                <p class="field-label">WhatsApp</p>
+                                <div class="field-value" id="whatsappNo">9876543210</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Parents No</p>
+                                <div class="field-value" id="parentsNo">8765432109</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.75rem;">
+                            <p class="field-label">Email</p>
+                            <div class="field-value" id="email">john.doe@example.com</div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <p class="field-label">Address</p>
+                        <div class="field-value address" id="address">123, ABC Apartments,
+Main Street,
+Mumbai, Maharashtra - 400070</div>
+                    </div>
+
+                    <div class="data-grid field-group">
+                        <div>
+                            <p class="field-label">Interested Course</p>
+                            <div class="field-value" id="interestedCourse">Advanced Diploma in Industrial Safety</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Inquiry Taken By</p>
+                            <div class="field-value" id="inquiryTakenBy">Mr. A. Shelare</div>
+                        </div>
+                         <div>
+                            <p class="field-label">Branch</p>
+                            <div class="field-value" id="branch22">Kurla (East)</div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+        </div>
+    </main>
+
+</body>
+</html>

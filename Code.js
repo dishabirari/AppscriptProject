@@ -2,6 +2,7 @@
  * MAIN HTML ENTRY POINT
  ************************************************/
 
+var ss = SpreadsheetApp.getActiveSpreadsheet();
 //Heloooo// i am yoooo// i am hitanshu // yooo again //Heloooo// i am yoooo harshhhhhhh////harsh//heth//kk
 
 
@@ -21,21 +22,26 @@ function include(filename) {
  ************************************************/
 function loginUser(loginData) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("LOGIN");
-    if (!sheet) return { success: false, error: "LOGIN sheet not found." };
+    if (!sheet) {
+      return { success: false, error: "LOGIN sheet not found." };
+    }
 
     var data = sheet.getDataRange().getValues();
-    // Header: [ username, password, role ]
+    // header: [username, password, role, branch]
     for (var i = 1; i < data.length; i++) {
       var username = String(data[i][0]).trim();
       var password = String(data[i][1]).trim();
-      var role = (data[i][2] || "").toLowerCase().trim();
+      var role = (data[i][2] || "").toString().toLowerCase().trim();
+      var branch = String(data[i][3]).trim(); // Get the branch from Column D
 
       if (username === loginData.username && password === loginData.password) {
-        return { success: true, userName: username, role: role };
+        // Include the branch in the return object
+        return { success: true, userName: username, role: role, branch: branch };
       }
     }
+
     return { success: false, error: "Invalid username or password." };
   } catch (err) {
     return { success: false, error: err.toString() };
@@ -47,7 +53,7 @@ function loginUser(loginData) {
  ************************************************/
 function getDropdownData() {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("DROPDOWN");
     if (!sheet) return { error: "DROPDOWN sheet not found." };
 
@@ -88,7 +94,7 @@ function getDropdownData() {
  ************************************************/
 function getNextStudentId() {
   // We'll parse the STUDENT DATA sheet, find the highest ID that matches ST###, increment
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheet = ss.getSheetByName("STUDENT DATA");
   if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -114,7 +120,7 @@ function getNextStudentId() {
  * AUTO-INCREMENT TRANSACTION ID
  ************************************************/
 function getNextTransactionId() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheet = ss.getSheetByName("FEES");
   if (!sheet) return { error: "FEES sheet not found." };
 
@@ -139,7 +145,7 @@ function getNextTransactionId() {
  ************************************************/
 function submitData(formData) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return "Error: FEES sheet not found.";
 
@@ -192,11 +198,12 @@ function submitData(formData) {
   }
 }
 
+/************************************************
+ * Inquiry Form: SUBMIT
+ ************************************************/
 function submitInquiryData(formData2) {
   try {
-    var ss = SpreadsheetApp.openById(
-      "1ywNQ0XNgvOsG4nokF800BcfCsCzHvGzENY2Vudf5u90"
-    );
+
     var sheet = ss.getSheetByName("INQUIRY FORM");
     if (!sheet) return "Error: DF sheet not found.";
 
@@ -253,7 +260,7 @@ function updateData(formData, userRole) {
     return "Error: You don't have permission to update fee data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return "Error: FEES sheet not found.";
 
@@ -307,7 +314,7 @@ function updateData(formData, userRole) {
 
 function getStudentSession(studentId) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -339,7 +346,7 @@ function getStudentSession(studentId) {
 
 function getOldFees(studentId) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return { error: "FEES sheet not found." };
 
@@ -378,7 +385,7 @@ function getOldFees(studentId) {
 
 function getRecord(rowNumber) {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("FEES");
     if (!sheet) return { error: "FEES sheet not found." };
 
@@ -406,7 +413,7 @@ function addStudentData(studentData, userRole) {
     return "Error: You don't have permission to add new student data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return "Error: STUDENT DATA sheet not found.";
 
@@ -440,7 +447,7 @@ function addStudentData(studentData, userRole) {
 
 function getStudentList() {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -470,7 +477,7 @@ function updateStudentData(studentData, userRole) {
     return "Error: You don't have permission to update student data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return "Error: STUDENT DATA sheet not found.";
 
@@ -508,7 +515,7 @@ function deleteStudentData(rowNumber, userRole) {
     return "Error: You don't have permission to delete student data.";
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return "Error: STUDENT DATA sheet not found.";
 
@@ -545,7 +552,7 @@ function getAnalyticsData(
     lineData: {},
   };
 
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheetStudents = ss.getSheetByName("STUDENT DATA");
   var sheetFees = ss.getSheetByName("FEES");
   if (!sheetStudents || !sheetFees) {
@@ -646,7 +653,7 @@ function getAnalyticsData(
  ************************************************/
 function getClassList() {
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    
     var sheet = ss.getSheetByName("STUDENT DATA");
     if (!sheet) return { error: "STUDENT DATA sheet not found." };
 
@@ -666,7 +673,7 @@ function getClassMonthDashboard(selectedClass, selectedMonth, userRole) {
   if (!userRole || userRole.toLowerCase() !== "admin") {
     return { error: "You don't have permission to view dashboard." };
   }
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheetStudents = ss.getSheetByName("STUDENT DATA");
   var sheetFees = ss.getSheetByName("FEES");
   if (!sheetStudents || !sheetFees) {
@@ -753,7 +760,7 @@ function getDueFeesData(userRole) {
   if (!userRole || userRole.toLowerCase() !== "admin") {
     return { error: "You don't have permission to view Due Fees." };
   }
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
   var sheetStudents = ss.getSheetByName("STUDENT DATA");
   var sheetFees = ss.getSheetByName("FEES");
   if (!sheetStudents || !sheetFees) {
@@ -827,190 +834,214 @@ function getDueFeesData(userRole) {
                 ADMISSION FORM                
 **********************************************/
 
-function submitForm(data) {
-  if (!data || typeof data !== "object") {
-    return "Invalid data received!";
-  }
+// function submitForm(data) {
+//   if (!data || typeof data !== "object") {
+//     return "Invalid data received!";
+//   }
 
-  const spreadsheet = SpreadsheetApp.openById(
-    "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY"
-  );
-  const sheet = spreadsheet.getSheetByName("AdmissionData");
-  const sheetName = "AdmissionData"; // Name of the sheet where data will be stored
-  const ss = SpreadsheetApp.openById(
-    "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY"
-  );
-  console.log(JSON.stringify(data, null, 1));
 
-  // Define the headers if the sheet is empty
-  if (sheet.getLastRow() === 0) {
-    const headers = [
-      "Receipt Number",
-      "Student Name",
-      "Course Name",
-      "Branch",
-      "Course Duration",
-      "Admission Fees",
-      "Monthly Fees",
-      "jan_25",
-      "feb_25",
-      "mar_25",
-      "apr_25",
-      "may_25",
-      "jun_25",
-      "jul_25",
-      "aug_25",
-      "sep_25",
-      "oct_25",
-      "nov_25",
-      "dec_25",
-      "jan_26",
-      "feb_26",
-      "mar_26",
-      "apr_26",
-      "may_26",
-      "jun_26",
-      "jul_26",
-      "aug_26",
-      "sep_26",
-      "oct_26",
-      "nov_26",
-      "dec_26",
-      "jan_27",
-      "feb_27",
-      "mar_27",
-      "apr_27",
-      "may_27",
-      "jun_27",
-      "jul_27",
-      "aug_27",
-      "sep_27",
-      "oct_27",
-      "nov_27",
-      "dec_27",
-      "jan_28",
-      "feb_28",
-      "mar_28",
-      "apr_28",
-      "may_28",
-      "jun_28",
-      "jul_28",
-      "aug_28",
-      "sep_28",
-      "oct_28",
-      "nov_28",
-      "dec_28",
-      "I Am Mr./Ms.",
-      "Mother/Father/Husband/Sister/Brother of",
-      "Agree to Terms",
-    ];
+//   const sheet = ss.getSheetByName("AdmissionData");
 
-    sheet.appendRow(headers);
-  }
-  // Prepare the row data with proper fallbacks
-  const rowData = [
-    data?.recipt_number?.[0] || "",
-    data?.student_name?.[0] || "",
-    data?.course_name?.[0] || "",
-    data?.branch?.[0] || "",
-    data?.course_duration?.[0] || "",
-    data?.admission_fees?.[0] ? Number(data.admission_fees[0]) : 0,
-    data?.monthly_fees?.[0] || "",
-    data?.jan_25?.[0] || "",
-    data?.feb_25?.[0] || "",
-    data?.mar_25?.[0] || "",
-    data?.apr_25?.[0] || "",
-    data?.may_25?.[0] || "",
-    data?.jun_25?.[0] || "",
-    data?.jul_25?.[0] || "",
-    data?.aug_25?.[0] || "",
-    data?.sep_25?.[0] || "",
-    data?.oct_25?.[0] || "",
-    data?.nov_25?.[0] || "",
-    data?.dec_25?.[0] || "",
-    data?.jan_26?.[0] || "",
-    data?.feb_26?.[0] || "",
-    data?.mar_26?.[0] || "",
-    data?.apr_26?.[0] || "",
-    data?.may_26?.[0] || "",
-    data?.jun_26?.[0] || "",
-    data?.jul_26?.[0] || "",
-    data?.aug_26?.[0] || "",
-    data?.sep_26?.[0] || "",
-    data?.oct_26?.[0] || "",
-    data?.nov_26?.[0] || "",
-    data?.dec_26?.[0] || "",
-    data?.jan_27?.[0] || "",
-    data?.feb_27?.[0] || "",
-    data?.mar_27?.[0] || "",
-    data?.apr_27?.[0] || "",
-    data?.may_27?.[0] || "",
-    data?.jun_27?.[0] || "",
-    data?.jul_27?.[0] || "",
-    data?.aug_27?.[0] || "",
-    data?.sep_27?.[0] || "",
-    data?.oct_27?.[0] || "",
-    data?.nov_27?.[0] || "",
-    data?.dec_27?.[0] || "",
-    data?.jan_28?.[0] || "",
-    data?.feb_28?.[0] || "",
-    data?.mar_28?.[0] || "",
-    data?.apr_28?.[0] || "",
-    data?.may_28?.[0] || "",
-    data?.jun_28?.[0] || "",
-    data?.jul_28?.[0] || "",
-    data?.aug_28?.[0] || "",
-    data?.sep_28?.[0] || "",
-    data?.oct_28?.[0] || "",
-    data?.nov_28?.[0] || "",
-    data?.dec_28?.[0] || "",
-    data?.["I Am Mr./Ms."]?.[0] || "",
-    data?.["Mother / Father / Husband / Sister / Brother of"]?.[0] || "",
-    data?.agree ? "Yes" : "No",
-  ];
-  // Append the row data to the sheet
 
-  try {
-    sheet.appendRow(rowData);
-    console.log("Row appended successfully");
-    generatePDF();
-    return "Data saved successfully!";
-  } catch (error) {
-    console.error("Error saving data:", error);
-    return "Error saving data: " + error.message;
-  }
-}
-function saveAdmissionData(data) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet =
-      ss.getSheetByName("Admissions") || ss.insertSheet("Admissions");
 
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(Object.keys(data));
-    }
+//   console.log(JSON.stringify(data, null, 1));
 
-    sheet.appendRow(Object.values(data));
-    return "Data saved successfully!";
-  } catch (error) {
-    throw new Error("Failed to save: " + error.message);
-  }
-}
+//   // Define the headers if the sheet is empty
+//   if (sheet.getLastRow() === 0) {
+//     const headers = [
+//       "Receipt Number",
+//       "Student Name",
+//       "Course Name",
+//       "Branch",
+//       "Course Duration",
+//       "Admission Fees",
+//       "Monthly Fees",
+//       "jan_25",
+//       "feb_25",
+//       "mar_25",
+//       "apr_25",
+//       "may_25",
+//       "jun_25",
+//       "jul_25",
+//       "aug_25",
+//       "sep_25",
+//       "oct_25",
+//       "nov_25",
+//       "dec_25",
+//       "jan_26",
+//       "feb_26",
+//       "mar_26",
+//       "apr_26",
+//       "may_26",
+//       "jun_26",
+//       "jul_26",
+//       "aug_26",
+//       "sep_26",
+//       "oct_26",
+//       "nov_26",
+//       "dec_26",
+//       "jan_27",
+//       "feb_27",
+//       "mar_27",
+//       "apr_27",
+//       "may_27",
+//       "jun_27",
+//       "jul_27",
+//       "aug_27",
+//       "sep_27",
+//       "oct_27",
+//       "nov_27",
+//       "dec_27",
+//       "jan_28",
+//       "feb_28",
+//       "mar_28",
+//       "apr_28",
+//       "may_28",
+//       "jun_28",
+//       "jul_28",
+//       "aug_28",
+//       "sep_28",
+//       "oct_28",
+//       "nov_28",
+//       "dec_28",
+//       "I Am Mr./Ms.",
+//       "Mother/Father/Husband/Sister/Brother of",
+//       "Agree to Terms",
+//     ];
+
+//     sheet.appendRow(headers);
+//   }
+//   // Prepare the row data with proper fallbacks
+//   const rowData = [
+//     data?.recipt_number?.[0] || "",
+//     data?.student_name?.[0] || "",
+//     data?.course_name?.[0] || "",
+//     data?.branch?.[0] || "",
+//     data?.course_duration?.[0] || "",
+//     data?.admission_fees?.[0] ? Number(data.admission_fees[0]) : 0,
+//     data?.monthly_fees?.[0] || "",
+//     data?.jan_25?.[0] || "",
+//     data?.feb_25?.[0] || "",
+//     data?.mar_25?.[0] || "",
+//     data?.apr_25?.[0] || "",
+//     data?.may_25?.[0] || "",
+//     data?.jun_25?.[0] || "",
+//     data?.jul_25?.[0] || "",
+//     data?.aug_25?.[0] || "",
+//     data?.sep_25?.[0] || "",
+//     data?.oct_25?.[0] || "",
+//     data?.nov_25?.[0] || "",
+//     data?.dec_25?.[0] || "",
+//     data?.jan_26?.[0] || "",
+//     data?.feb_26?.[0] || "",
+//     data?.mar_26?.[0] || "",
+//     data?.apr_26?.[0] || "",
+//     data?.may_26?.[0] || "",
+//     data?.jun_26?.[0] || "",
+//     data?.jul_26?.[0] || "",
+//     data?.aug_26?.[0] || "",
+//     data?.sep_26?.[0] || "",
+//     data?.oct_26?.[0] || "",
+//     data?.nov_26?.[0] || "",
+//     data?.dec_26?.[0] || "",
+//     data?.jan_27?.[0] || "",
+//     data?.feb_27?.[0] || "",
+//     data?.mar_27?.[0] || "",
+//     data?.apr_27?.[0] || "",
+//     data?.may_27?.[0] || "",
+//     data?.jun_27?.[0] || "",
+//     data?.jul_27?.[0] || "",
+//     data?.aug_27?.[0] || "",
+//     data?.sep_27?.[0] || "",
+//     data?.oct_27?.[0] || "",
+//     data?.nov_27?.[0] || "",
+//     data?.dec_27?.[0] || "",
+//     data?.jan_28?.[0] || "",
+//     data?.feb_28?.[0] || "",
+//     data?.mar_28?.[0] || "",
+//     data?.apr_28?.[0] || "",
+//     data?.may_28?.[0] || "",
+//     data?.jun_28?.[0] || "",
+//     data?.jul_28?.[0] || "",
+//     data?.aug_28?.[0] || "",
+//     data?.sep_28?.[0] || "",
+//     data?.oct_28?.[0] || "",
+//     data?.nov_28?.[0] || "",
+//     data?.dec_28?.[0] || "",
+//     data?.["I Am Mr./Ms."]?.[0] || "",
+//     data?.["Mother / Father / Husband / Sister / Brother of"]?.[0] || "",
+//     data?.agree ? "Yes" : "No",
+//   ];
+//   // Append the row data to the sheet
+
+//   try {
+//     sheet.appendRow(rowData);
+//     console.log("Row appended successfully");
+//     generatePDF();
+//     return "Data saved successfully!";
+//   } catch (error) {
+//     console.error("Error saving data:", error);
+//     return "Error saving data: " + error.message;
+//   }
+// }
+// function saveAdmissionData(data) {
+//   try {
+//     co
+//     const sheet = ss.getSheetByName("Admissions") || ss.insertSheet("Admissions");
+
+//     if (sheet.getLastRow() === 0) {
+//       sheet.appendRow(Object.keys(data));
+//     }
+
+//     sheet.appendRow(Object.values(data));
+//     return "Data saved successfully!";
+//   } catch (error) {
+//     throw new Error("Failed to save: " + error.message);
+//   }
+// }
 
 function processForm(formData) {
-  console.log("workingg....");
-  const spreadsheetId = "1ywNQ0XNgvOsG4nokF800BcfCsCzHvGzENY2Vudf5u90"; // replace with your ID
-  const ss = SpreadsheetApp.openById(spreadsheetId); // this accesses the spreadsheet
-  const sheet = ss.getSheetById(658585387); // access a specific sheet
+  console.log("Processing form...");
 
-  try {
-    const requiredFields = [
-      "fullName",
-      "phoneNo",
-      "whatsappNo",
-      "parentsNo",
-      "address",
-    ];
+  const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("DF"); // Update if your sheet name is different
+
+
+  // Step 1: Populate the HTML template with form data
+ // --- Start of Corrected Code ---
+
+  // Step 1: Read the raw HTML and inject data
+  // Get the HTML content as a plain string.
+  let html = HtmlService.createHtmlOutputFromFile("ifrom").getContent();
+
+  // Iterate over your data object.
+Object.keys(formData).forEach(key => {
+  // This modified regex finds the div by its id, capturing the opening tag ($1),
+  // whatever is inside it (.*? as $2), and the closing tag ($3).
+  // The 's' flag allows '.' to match newline characters, which is crucial for multi-line fields like 'address'.
+  const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
+
+  // Get the value, ensuring it's a string.
+  const value = formData[key] || '';
+
+  // Replace the captured content ($2) with the new value.
+  // $1 is the opening tag and $3 is the closing tag, which are kept.
+  if (regex.test(html)) {
+      html = html.replace(regex, `$1${value}$3`);
+  }
+});
+
+  // Step 2: Convert the final HTML string to a PDF
+  const blob = Utilities.newBlob(html, 'text/html', 'inquiry.html');
+  const pdfBlob = blob.getAs('application/pdf').setName("Inquiry_Form_" + (formData.fullName || "User") + ".pdf");
+
+  // Step 3: Save the generated PDF to Google Drive
+  pdfFolder.createFile(pdfBlob);
+
+
+    try {
+    // Validation
+    const requiredFields = ["fullName", "phoneNo", "whatsappNo", "parentsNo", "address"];
     const missingFields = requiredFields.filter((field) => !formData[field]);
 
     if (missingFields.length > 0) {
@@ -1020,7 +1051,8 @@ function processForm(formData) {
       };
     }
 
-    const data = [
+    // 4. Append data to sheet
+    const rowData = [
       new Date(), // Timestamp
       formData.date || new Date().toISOString().split("T")[0],
       formData.fullName,
@@ -1036,13 +1068,14 @@ function processForm(formData) {
       formData.branch || "",
     ];
 
-    sheet.appendRow(data);
+    sheet.appendRow(rowData);
 
     return {
       success: true,
       message: "Inquiry submitted successfully!",
       studentName: formData.fullName,
     };
+
   } catch (e) {
     console.error("Error in processForm:", e);
     return {
@@ -1052,6 +1085,9 @@ function processForm(formData) {
     };
   }
 }
+
+
+
 
 // function getData() {
 //   const spreadsheetId = "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY";
@@ -1106,7 +1142,7 @@ function processForm(formData) {
 //         .text-right { text-align: right; }
 //         .section { margin: 20px 0; }
 //         .section-title {
-//           color: #1e3a8a;
+//           color:rgb(22, 63, 176);
 //           border-bottom: 1px solid #eee;
 //           padding-bottom: 5px;
 //           margin-bottom: 10px;
@@ -1205,14 +1241,12 @@ function processForm(formData) {
 
 function submitForm(formObject) {
   try {
-    const spreadsheetId = '1LY9jRUmIblUk_3e62GL_5jzyQwsA-TysboHRwbtnvho'; // Replace with your actual Spreadsheet ID
-    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
     const sheetName = 'Admissions';
-    let sheet = spreadsheet.getSheetByName(sheetName);
+    let sheet = ss.getSheetByName(sheetName);
 
     // Create sheet if it doesn't exist
     if (!sheet) {
-      sheet = spreadsheet.insertSheet(sheetName);
+      sheet = ss.insertSheet(sheetName);
     }
 
     // Define headers
@@ -1229,15 +1263,15 @@ function submitForm(formObject) {
       'Year 1 Total',
       'Year 1 Paid',
       'Year 1 Due',
-      'Year 1 Installments', // For EMI
+      // 'Year 1 Installments', // For EMI
       'Year 2 Total',
       'Year 2 Paid',
       'Year 2 Due',
-      'Year 2 Installments', // For EMI
+      // 'Year 2 Installments', // For EMI
       'Year 3 Total',
       'Year 3 Paid',
       'Year 3 Due',
-      'Year 3 Installments', // For EMI
+      // 'Year 3 Installments', // For EMI
       'Guardian Relation',
       'Guardian Name',
       'Agreement'
@@ -1292,3 +1326,41 @@ function submitForm(formObject) {
     return { status: 'error', message: 'Failed to save data: ' + error.message };
   }
 }
+
+
+// -------------------------------PDf Inquiry-----------------------------------//
+/*function generatePDFInquire(data) {
+  // Create a Google Doc from a template
+  const templateDocId = '1XsPRC0jpLWoq-BYs6Kn_nhz6gNEExGttv8BU8G9CWHg'; // Create a Google Doc template first and put its ID here
+  const folder = DriveApp.getFolderById('1gCAOCmFiAiNWLDxsGDx317C9erStV_NL'); // PDF save location
+
+  const doc = DocumentApp.openById(templateDocId);
+  const body = doc.getBody();
+
+  // Replace placeholders in template
+  body.replaceText('{{date}}', data.date || '');
+  body.replaceText('{{fullName}}', data.fullName || '');
+  body.replaceText('{{qualification}}', data.qualification || '');
+  body.replaceText('{{age}}', data.age || '');
+  body.replaceText('{{phoneNo}}', data.phoneNo || '');
+  body.replaceText('{{whatsappNo}}', data.whatsappNo || '');
+  body.replaceText('{{parentsNo}}', data.parentsNo || '');
+  body.replaceText('{{email}}', data.email || '');
+  body.replaceText('{{address}}', data.address || '');
+  body.replaceText('{{interestedCourse}}', data.interestedCourse || '');
+  body.replaceText('{{inquiryTakenBy}}', data.inquiryTakenBy || '');
+  body.replaceText('{{branch}}', data.branch || '');
+
+  doc.saveAndClose();
+
+  // Make a copy so the template is not overwritten
+  const pdfBlob = doc.getAs(MimeType.PDF);
+  folder.createFile(pdfBlob.setName(`Inquiry - ${data.fullName || "Unknown"}.pdf`));
+}
+
+function authorizeScript() {
+  // Dummy access to trigger OAuth scopes
+  const doc = DocumentApp.create("Test Auth Doc");
+  doc.getBody().appendParagraph("Authorization successful");
+  doc.saveAndClose();
+}*/

@@ -28,7 +28,7 @@
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!---------------------Admission Form End ----------------------------->
 
-<?!= include('Style'); ?>
+<?!= include('style'); ?>
     <!-- <style>
          body {
          font-family: 'Inter', sans-serif;
@@ -114,7 +114,7 @@
       }
          }
       </style> -->
-<?!= include('style'); ?>
+
 
   </head>
   <body class="bg-gray-100">
@@ -263,6 +263,7 @@
           <!-- HIDDEN INPUTS -->
           <input type="hidden" id="userName" />
           <input type="hidden" id="userRole" />
+          <input type="hidden" id="userBranch">
           <div id="slipFormSection"
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
             <div
@@ -1897,6 +1898,7 @@
       document.getElementById('userName').value = resp.userName;
       document.getElementById('userRole').value = resp.role;
       document.getElementById('userRoleDisplay').textContent = resp.role;
+      document.getElementById('userBranch').value = resp.branch;
 
       // Show Inquiry Form by default after login
       openInquiryForm();
@@ -2864,24 +2866,24 @@
         //  }
   
   
-                function openInquiryForm() {
+             function openInquiryForm() {
+  console.log("Inquiry Form button clicked");
+  hideAllSections(); 
+  document.getElementById('ifId').classList.remove('hidden');
 
-                const userRole = document.getElementById('userRole').value;
-                
-                console.log("Inquiry Form button clicked");
-                hideAllSections(); 
-                document.getElementById('ifId').classList.remove('hidden');
+  // 1. Get the stored branch from the hidden input
+  const userBranch = document.getElementById('userBranch').value;
+  
+  // 2. Get the branch input element in your inquiry form
+  const branchInput = document.getElementById("branch22");
 
-                const branchInput = document.getElementById("branch22");
-
-                if (userRole === 'admin') {
-                  branchInput.value = "Kurla";
-                } else if (userRole === 'user') {
-                  branchInput.value = "Thane";
-                } else {
-                  branchInput.value = "Unknown";
-                }
-              }
+  // 3. Set its value directly
+  if (userBranch) {
+    branchInput.value = userBranch;
+  } else {
+    branchInput.value = ""; // Or some default value
+  }
+}
 
 
 
@@ -3303,10 +3305,10 @@ const formValues = {
       updateYearPaymentOptions(); // Recalculate options based on new years
     }
 
-    function updatePaymentFields() {
+   /* function updatePaymentFields() {
       const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
-      // No need to hide/show `paymentFields` or `emiFields` as they are now combined
-      // `yearPayments` will be updated by `updateYearPaymentOptions`
+      
+      
       updateYearPaymentOptions();
     }
 
@@ -3347,9 +3349,9 @@ const formValues = {
         }
       }
       calculateDueFees();
-    }
+    } */
 
-    function calculateInstallment(year) {
+    /*function calculateInstallment(year) {
       const installments = parseInt(document.getElementById(`year${year}_installments`).value);
       const courseFeesText = document.getElementById('courseFees').textContent;
       const totalFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
@@ -3360,7 +3362,7 @@ const formValues = {
       }
       document.getElementById(`year${year}_paid`).value = installmentAmount.toFixed(2);
       calculateDueFees();
-    }
+    } 
 
     function calculateDueFees() {
       const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
@@ -3415,9 +3417,9 @@ const formValues = {
           }
         }
       }
-    }
+    } */
 
-    function handleSubmit(event) {
+    /*function handleSubmit(event) {
       event.preventDefault();
 
       const form = event.target;
@@ -3489,9 +3491,9 @@ const formValues = {
         icon: 'error',
         confirmButtonText: 'OK'
       });
-    }
-
-    function generatePDF() {
+    } */
+     
+    /*function generatePDF() { 
       const element = document.getElementById('slipForm');
       const options = {
         scale: 3,
@@ -3499,19 +3501,19 @@ const formValues = {
         letterRendering: true,
         onclone: (clonedDoc) => {
           clonedDoc.querySelectorAll('input, select').forEach(element => {
-            // Apply minimal padding to elements for better PDF rendering
+           
             element.style.paddingTop = '2px';
             element.style.paddingBottom = '2px';
             element.style.paddingLeft = '2px';
             element.style.paddingRight = '2px';
           });
-          // Hide buttons and other non-essential elements for the PDF
+        
           clonedDoc.getElementById('submitButton').style.display = 'none';
-          // Hide radio buttons and checkboxes by setting their container to display: none
+          
           clonedDoc.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
             el.closest('label').style.display = 'none';
           });
-          // Ensure border-bottom is visible for inputs that use it
+          
           clonedDoc.querySelectorAll('.border-b').forEach(el => {
             el.style.borderBottomWidth = '1px';
             el.style.borderColor = 'black';
@@ -3521,21 +3523,21 @@ const formValues = {
 
       html2canvas(element, options).then(canvas => {
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210; // A4 width in mm
-        const pageHeight = 297; // A4 height in mm
+        const imgWidth = 210; 
+        const pageHeight = 297; 
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         let position = 0;
 
-        // Calculate the number of pages needed
+        
         const numPages = Math.ceil(imgHeight / pageHeight);
 
         for (let i = 0; i < numPages; i++) {
-          const sX = 0; // start X
-          const sY = i * pageHeight * (canvas.width / imgWidth); // start Y based on page
-          const sWidth = canvas.width; // slice width
-          const sHeight = Math.min(pageHeight * (canvas.width / imgWidth), canvas.height - sY); // slice height, cap at remaining canvas height
+          const sX = 0;
+          const sY = i * pageHeight * (canvas.width / imgWidth); 
+          const sWidth = canvas.width; 
+          const sHeight = Math.min(pageHeight * (canvas.width / imgWidth), canvas.height - sY); 
 
-          // Create a temporary canvas to hold the sliced portion
+         
           const sliceCanvas = document.createElement('canvas');
           sliceCanvas.width = sWidth;
           sliceCanvas.height = sHeight;
@@ -3551,8 +3553,13 @@ const formValues = {
         const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
         pdf.save(`${studentName}_AdmissionForm.pdf`);
       });
-    }
-  </script> -->
+      } */
+  </script>
+  <?!= include('handlesubmit'); ?>
+  <?!= include('coursedetails'); ?>
+  <?!= include('installmentdue'); ?>
+  <?!= include('payment'); ?>
+  <?!= include('generatePDF'); ?>
 <!---------------------------Admission Form End--------------------------->
     </body>
   </html>

@@ -1,0 +1,181 @@
+<script>
+function generatePDF() {
+      const element = document.getElementById('slipForm');
+      const options = {
+        scale: 3,
+        useCORS: true,
+        letterRendering: true,
+        onclone: (clonedDoc) => {
+          clonedDoc.querySelectorAll('input, select').forEach(element => {
+            // Apply minimal padding to elements for better PDF rendering
+            element.style.paddingTop = '2px';
+            element.style.paddingBottom = '2px';
+            element.style.paddingLeft = '2px';
+            element.style.paddingRight = '2px';
+          });
+          // Hide buttons and other non-essential elements for the PDF
+          clonedDoc.getElementById('submitButton').style.display = 'none';
+          // Hide radio buttons and checkboxes by setting their container to display: none
+          clonedDoc.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+            el.closest('label').style.display = 'none';
+          });
+          // Ensure border-bottom is visible for inputs that use it
+          clonedDoc.querySelectorAll('.border-b').forEach(el => {
+            el.style.borderBottomWidth = '1px';
+            el.style.borderColor = 'black';
+          });
+        }
+      };
+
+      html2canvas(element, options).then(canvas => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let position = 0;
+
+        // Calculate the number of pages needed
+        const numPages = Math.ceil(imgHeight / pageHeight);
+
+        for (let i = 0; i < numPages; i++) {
+          const sX = 0; // start X
+          const sY = i * pageHeight * (canvas.width / imgWidth); // start Y based on page
+          const sWidth = canvas.width; // slice width
+          const sHeight = Math.min(pageHeight * (canvas.width / imgWidth), canvas.height - sY); // slice height, cap at remaining canvas height
+
+          // Create a temporary canvas to hold the sliced portion
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width = sWidth;
+          sliceCanvas.height = sHeight;
+          const sliceContext = sliceCanvas.getContext('2d');
+          sliceContext.drawImage(canvas, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+          if (i > 0) {
+            pdf.addPage();
+          }
+          pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, (sliceCanvas.height * imgWidth) / sliceCanvas.width);
+        }
+
+        const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
+        pdf.save(`${studentName}_AdmissionForm.pdf`);
+      });
+    }
+
+
+    function downloadPDF() {
+         const element = document.getElementById("slipFormSection");
+         const opt = {
+         margin: 0.5,
+         filename: 'FeeSlip.pdf',
+         image: { type: 'jpeg', quality: 0.98 },
+         html2canvas: { scale: 2 },
+         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+         };
+         html2pdf().set(opt).from(element).save().then(() => {
+         Swal.fire({ icon: 'success', title: 'PDF Downloaded', text: 'Fee slip PDF downloaded.', timer: 1500, showConfirmButton: false });
+         });
+         }
+         
+
+
+         function generatePDFAdmission() {
+         const element = document.getElementById('admissionFormSection'); // or 'slipFormSection' if needed
+         const options = {
+         scale: 3,
+         useCORS: true,
+         letterRendering: true,
+         onclone: (clonedDoc) => {
+         clonedDoc.querySelectorAll('input, select').forEach(el => {
+           el.style.paddingTop = '2px';
+           el.style.paddingBottom = '2px';
+         });
+         }
+         };
+         
+         html2canvas(element, options).then(canvas => {
+         const pdf = new jsPDF('p', 'mm', 'a4');
+         const imgWidth = 210;
+         const imgHeight = (canvas.height * imgWidth) / canvas.width;
+         
+         if (imgHeight > 297) {
+         const pageHeight = 297;
+         let position = 0;
+         
+         while (position < imgHeight) {
+           pdf.addImage(canvas, 'PNG', 0, position === 0 ? 0 : -position, imgWidth, imgHeight);
+           position += pageHeight;
+           if (position < imgHeight) pdf.addPage();
+         }
+         } else {
+         pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
+         }
+         
+         const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
+         pdf.save(`${studentName}_AdmissionForm.pdf`);
+         });
+         
+         
+         
+        // Initialize jsPDF
+         const { jsPDF } = window.jspdf;
+         
+         // Data management variables
+         let formData = [];
+         let currentRecordIndex = 0;
+         
+         // DOM Ready Handler
+         
+         // Fetch data from Google Sheets
+        }
+         
+      function generatePDFInquire() {
+    const formElement = document.getElementById('ifId');
+    const options = {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: true,
+        letterRendering: true
+    };
+
+    html2canvas(formElement, options).then(canvas => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 190; // A4 width - margins
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+
+        const studentName = document.getElementById('fullName').value || 'Student';
+        pdf.save(`${studentName.replace(/\s+/g, '_')}_Inquiry_Form.pdf`);
+
+        // Removed the lines that hide the form and show a 'container'
+        // If you want a success message, you'd show a modal/sweetalert here
+        Swal.fire({
+            icon: 'success',
+            title: 'PDF Generated!',
+            text: 'Your Inquiry Form PDF has been downloaded.',
+            confirmButtonColor: '#1e3a8a',
+        });
+
+    }).catch(err => {
+        console.error('PDF generation error:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'PDF Error',
+            text: 'Failed to generate PDF',
+            confirmButtonColor: '#1e3a8a',
+        });
+    });
+}
+
+
+
+
+
+
+
+
+         
+        
+    </script>
