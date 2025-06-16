@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Receipt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 960px;
+            margin: auto;
+            padding: 0 16px;
+        }
+        .receipt-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header-bg {
+            background-color: #1a237e; /* Dark blue, adjust as needed */
+            color: #fff;
+            padding: 24px;
+        }
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        @media (min-width: 768px) {
+            .header-content {
+                flex-direction: row;
+            }
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        @media (min-width: 768px) {
+            .logo-section {
+                margin-bottom: 0;
+            }
+        }
+        .logo-wrapper {
+            width: 48px;
+            height: 48px;
+            background-color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 16px;
+        }
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        .institute-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        @media (min-width: 768px) {
+            .institute-name {
+                font-size: 28px;
+            }
+        }
+        .institute-address {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        @media (min-width: 768px) {
+            .institute-address {
+                font-size: 14px;
+            }
+        }
+        .receipt-info {
+            text-align: center;
+        }
+        @media (min-width: 768px) {
+            .receipt-info {
+                text-align: right;
+            }
+        }
+        .receipt-title {
+            color: #facc15; /* Yellow */
+            font-weight: 500;
+        }
+        .contact-info {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        .details-section {
+            padding: 24px;
+            background-color: #f9fafb; /* Gray-50 */
+        }
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .section-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .detail-item {
+            margin-bottom: 20px;
+        }
+        .detail-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4b5563; /* Gray-700 */
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .detail-icon {
+            color: #1a237e; /* Blue-900 */
+            margin-right: 8px;
+        }
+        .detail-value {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db; /* Gray-300 */
+            background-color: #fff;
+            color: #1f2937; /* Gray-900 */
+            min-height: 40px; /* Ensure consistent height */
+            display: flex;
+            align-items: center;
+        }
+        .payment-type-options {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .payment-type-option {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: #e0e7ff; /* Blue-100 */
+            color: #1a237e;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .payment-type-option.selected {
+            background-color: #bfdbfe; /* Blue-200 for selected */
+            border: 1px solid #3b82f6; /* Blue-500 */
+        }
+        .payment-info-box {
+            background-color: #eff6ff; /* Blue-50 */
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .payment-info-title {
+            color: #1a237e; /* Blue-900 */
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        @media (min-width: 768px) {
+            .payment-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .signature-section {
+            background-color: #f9fafb;
+            padding: 16px;
+            border-top: 1px solid #e5e7eb; /* Gray-200 */
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .signature-block {
+            text-align: center;
+            margin: 10px;
+        }
+        .signature-line {
+            font-style: italic;
+            color: #4b5563; /* Gray-700 */
+            margin-bottom: 4px;
+        }
+        .signature-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a237e; /* Blue-900 */
+        }
+        .dashed-border {
+            border-top: 1px dashed #facc15; /* Yellow-500 */
+            margin-top: 16px;
+            padding-top: 16px;
+        }
+        .consent-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        @media (min-width: 768px) {
+            .consent-section {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            font-size: 14px;
+            color: #4b5563; /* Gray-700 */
+        }
+        .checkbox-custom {
+            height: 16px;
+            width: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            margin-right: 8px;
+            display: inline-block;
+            vertical-align: middle;
+            background-color: #fff;
+            position: relative;
+        }
+        .checkbox-custom.checked:after {
+            content: '\2713'; /* Checkmark character */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: #facc15; /* Yellow-500 */
+        }
+        .error-message {
+            color: #ef4444; /* Red-500 */
+            font-size: 12px;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .btn {
+            padding: 8px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Blue-500 */
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Blue-600 */
+        }
+        .btn-secondary {
+            color: #2563eb; /* Blue-600 */
+            border: 1px solid #2563eb;
+            background-color: #fff;
+        }
+        .btn-secondary:hover {
+            background-color: #eff6ff; /* Blue-50 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="receipt-card">
+            <div class="header-bg">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <div class="logo-wrapper">
+                            <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo" class="logo-image">
+                        </div>
+                        <div>
+                            <h1 class="institute-name">STI SHELAR TRAINING INSTITUTE</h1>
+                            <p class="institute-address">
+                                <i class="fas fa-map-marker-alt mr-1"></i> C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="receipt-info">
+                        <p class="receipt-title">
+                            <i class="fas fa-file-alt mr-1"></i> ADMISSION RECEIPT
+                        </p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-phone-alt mr-1"></i> +91 9967288158</p>
+                            <p><i class="fas fa-phone-alt mr-1"></i> +91 7400406467</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <div class="section-grid">
+                    <div class="detail-item">
+                        <label class="detail-label">
+                            <i class="fas fa-receipt detail-icon"></i>Receipt Number
+                            <div id="receipt_number"></div>
+                        </label>
+                        <div id="display_receipt_number" class="detail-value"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label">
+                            <i class="fas fa-user detail-icon"></i>Student Name
+                            <div id="Student_namee"></div>
+                        </label>
+                        <div id="display_student_name" class="detail-value"></div>
+                    </div>
+                </div>
+
+                <div class="section-grid">
+                    <div class="detail-item">
+                        <label class="detail-label">
+                            <i class="fas fa-book-open detail-icon"></i>Course Name
+                             <div id="courseSelect"></div>
+                        </label>
+                        <div id="display_course_name" class="detail-value"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label">
+                            <i class="fas fa-credit-card detail-icon"></i>Payment Type
+                            <div id="payment_type"></div>
+                        </label>
+                        <div id="display_payment_type" class="payment-type-options">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="payment-info-box">
+                    <h3 class="payment-info-title">
+                        <i class="fas fa-money-check-alt mr-2"></i>Payment Information
+                        <div id="paymentDetails"></div>
+                    </h3>
+                    <div class="payment-grid">
+                        <div class="detail-item">
+                            <label class="detail-label">
+                                <i class="fas fa-wallet detail-icon"></i>Payment Method
+                                <div id="payment_method"></div>
+                            </label>
+                            <div id="display_payment_method" class="detail-value"></div>
+                        </div>
+                        <div class="detail-item">
+                            <label class="detail-label">
+                                <i class="fas fa-calendar-day detail-icon"></i>Course Years 
+                            <div id="courseYears"></div>
+                            </label>
+                            <div id="display_course_years" class="detail-value"></div>
+                        </div>
+                    </div>
+                    <div id="display_year_payments" style="margin-top: 8px;">
+                        </div>
+                </div>
+
+                <div class="section-grid">
+                    <div class="detail-item">
+                        <label class="detail-label">
+                            <i class="fas fa-clock detail-icon"></i>Course Duration
+                        <div id="courseDuration"></div>
+                        </label>
+                        <div id="display_course_duration" class="detail-value" style="background-color: #f3f4f6;"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label">
+                            <i class="fas fa-dollar-sign detail-icon"></i>Course Fees
+                           
+                        </label>
+                        <div id="display_course_fees" class="detail-value"></div>
+                        <div id="courseFees"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <label class="detail-label">
+                        <i class="fas fa-user-shield detail-icon"></i>Guardian Information
+                    </label>
+                    <div id="display_guardian_relation" class="detail-value" style="margin-bottom: 8px;"></div>
+                    <div id="display_guardian_name" class="detail-value"></div>
+                    <div id="GuardianInformation"></div>
+                </div>
+                <div class="dashed-border">
+                    <div class="consent-section">
+                        <div class="mb-4">
+                            <label class="checkbox-label">
+                                <div id="display_agree_checkbox" class="checkbox-custom"></div>
+                                <span class="ml-2">I agree to the terms and conditions</span>
+                            </label>
+                            <div id="display_agree_error" class="error-message"></div>
+                        </div>
+                        <div class="button-group">
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-block">
+                    <div class="signature-line">______________________</div>
+                    <div class="signature-label">PARENT SIGNATURE</div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-line">______________________</div>
+                    <div class="signature-label">STUDENT SIGNATURE</div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-line">______________________</div>
+                    <div class="signature-label">MANAGER SIGNATURE</div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-line">______________________</div>
+                    <div class="signature-label">DIRECTOR SIGNATURE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
