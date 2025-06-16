@@ -2136,21 +2136,21 @@ function openAdmissionForm() {
 
   const { jsPDF } = window.jspdf;
 
-  // Show admission form
-  function openAdmissionForm() {
-    window.scrollTo(0, 0);
-    console.log("Admission Form button clicked");
-    hideAllSections();
-    const section = document.getElementById("admissionFormSection");
-    if (section) section.classList.remove("hidden");
-    else console.error("Admission form section not found!");
+  // // Show admission form
+  // function openAdmissionForm() {
+  //   window.scrollTo(0, 0);
+  //   console.log("Admission Form button clicked");
+  //   hideAllSections();
+  //   const section = document.getElementById("admissionFormSection");
+  //   if (section) section.classList.remove("hidden");
+  //   else console.error("Admission form section not found!");
 
-    document.getElementById("Student_namee").value =
-      sessionStorage.getItem("tempText");
-    updateCourseDetails();
-    updateYearPaymentOptions();
-    updatePaymentFields();
-  }
+  //   document.getElementById("Student_namee").value =
+  //     sessionStorage.getItem("tempText");
+  //   updateCourseDetails();
+  //   updateYearPaymentOptions();
+  //   updatePaymentFields();
+  // }
 
   // Handle admission form submission
   document.addEventListener("DOMContentLoaded", function () {
