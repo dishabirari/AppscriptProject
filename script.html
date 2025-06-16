@@ -40,7 +40,7 @@
     document
       .getElementById("coursePaySelect")
       .addEventListener("change", updateCoursePayDetails);
-    selectPayment("full");
+    // selectPayment("full");
   });
 
   // Update course details when selection changes
@@ -381,22 +381,51 @@
     // document.getElementById("courseFees").value = sessionStorage.getItem("Bc");
   }
 
+  // function copyCoursePay() {
+  //   sessionStorage.setItem(
+  //     "A",
+  //     document.getElementById("coursePaySelect").value
+  //   );
+  //   document.getElementById("courseSelect").value = sessionStorage.getItem("A");
+
+  //   sessionStorage.setItem(
+  //     "paytype",
+  //     document.getElementById("Coursepayment_type").value
+  //   );
+  //   document.getElementById("payment_type").value =
+  //     sessionStorage.getItem("paytype");
+  //   console.log(sessionStorage.getItem("paytype"));
+  //   updateCourseDetails();
+  //   updateYearPaymentOptions();
+  //   updatePaymentFields();
+  // }
   function copyCoursePay() {
+    // Store coursePaySelect value
     sessionStorage.setItem(
       "A",
       document.getElementById("coursePaySelect").value
     );
     document.getElementById("courseSelect").value = sessionStorage.getItem("A");
 
-    sessionStorage.setItem(
-      "B",
-      document.getElementById("Coursepayment_type").value
+    // Get selected payment type
+    const selectedRadio = document.querySelector(
+      'input[name="Coursepayment_type"]:checked'
     );
-    document.getElementById("payment_type").value = sessionStorage.getItem("B");
+
+    if (!selectedRadio) {
+      alert("Please select a payment type.");
+      return;
+    }
+
+    sessionStorage.setItem("paytype", selectedRadio.value);
+    console.log("Payment type selected:", selectedRadio.value);
+
+    // Call the rest
     updateCourseDetails();
     updateYearPaymentOptions();
     updatePaymentFields();
   }
+
   /******************************************
    * 2) LOGIN / LOGOUT
    ******************************************/
@@ -2112,6 +2141,22 @@ document.addEventListener('DOMContentLoaded', function () {
       sessionStorage.setItem("selectedCourse", this.value);
       updateCourseDetails(); // Trigger input updates when dropdown is manually changed
     });
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedPaymentType = sessionStorage.getItem("paytype");
+
+    if (savedPaymentType) {
+      const matchingRadio = document.querySelector(
+        `input[name="payment_type"][value="${savedPaymentType}"]`
+      );
+      if (matchingRadio) {
+        matchingRadio.checked = true;
+
+        // Optional: manually trigger any onchange logic (if needed)
+        matchingRadio.dispatchEvent(new Event("change"));
+      }
+    }
   });
 
   const courseData1 = {
