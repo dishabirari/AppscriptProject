@@ -1578,26 +1578,436 @@
     const logo = document.getElementById("logo-home-link");
 
     if (logo) {
-      logo.addEventListener("click", function () {
-        // Call the same function that your "Inquiry Form" sidebar button uses
-        // Based on your screenshot, it looks like openInquiryForm()
-        if (typeof openInquiryForm === "function") {
-          openInquiryForm();
-        } else {
-          console.error(
-            "openInquiryForm() function not found. Please ensure it's defined."
-          );
-          // Fallback for debugging, or if content is fetched via server
-          google.script.run
-            .withSuccessHandler(function (htmlContent) {
-              document.getElementById("mainContentArea").innerHTML =
-                htmlContent; // Assuming a main content div
-            })
-            .getInquiryFormContent(); // Example of a server-side function
-        }
-      });
+        logo.addEventListener('click', function() {
+            // Call the same function that your "Inquiry Form" sidebar button uses
+            // Based on your screenshot, it looks like openInquiryForm()
+            if (typeof openInquiryForm === 'function') {
+                openInquiryForm();
+            } else {
+                console.error("openInquiryForm() function not found. Please ensure it's defined.");
+                // Fallback for debugging, or if content is fetched via server
+                google.script.run.withSuccessHandler(function(htmlContent) {
+                    document.getElementById('mainContentArea').innerHTML = htmlContent; // Assuming a main content div
+                }).getInquiryFormContent(); // Example of a server-side function
+            }
+        });
     }
-  });
+});
+         
+         /******************************************
+         * 11) INITIALIZE
+         ******************************************/
+        //  updateGeneratedTime();
+         
+        //  // Fill dropdowns function
+        //  function fillDropdowns() {
+        //  // Slip form
+        // //  const sessionEl = document.getElementById('session');
+        // //  sessionEl.innerHTML = '<option value="">Select Session</option>';
+        // //  dropdownData.sessions.forEach(s=>{
+        // //  const opt = document.createElement('option');
+        // //  opt.value=s; opt.textContent=s;
+        // //  sessionEl.appendChild(opt);
+        // //  });
+        //  const tradeEl = document.getElementById('trade');
+        //  tradeEl.innerHTML='<option value="">Select Course</option>';
+        //  dropdownData.trades.forEach(t=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=t; opt.textContent=t;
+        //  tradeEl.appendChild(opt);
+        //  });
+        //  const feesEl=document.getElementById('feesType');
+        //  feesEl.innerHTML='<option value="">Select Branch </option>';
+        //  dropdownData.feesTypes.forEach(f=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=f; opt.textContent=f;
+        //  feesEl.appendChild(opt);
+        //  });
+        //  const payEl=document.getElementById('paymentMode');
+        //  payEl.innerHTML='<option value="">Select Payment Mode</option>';
+        //  dropdownData.paymentModes.forEach(pm=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=pm; opt.textContent=pm;
+        //  payEl.appendChild(opt);
+        //  });
+         
+        //  // Student form
+        //  const sessNew=document.getElementById('sessionNew');
+        //  sessNew.innerHTML='<option value="">Select Session</option>';
+        //  dropdownData.sessions.forEach(s=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=s; opt.textContent=s;
+        //  sessNew.appendChild(opt);
+        //  });
+        //  const tradeNew=document.getElementById('tradeNew');
+        //  tradeNew.innerHTML='<option value="">Select Course</option>';
+        //  dropdownData.trades.forEach(t=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=t; opt.textContent=t;
+        //  tradeNew.appendChild(opt);
+        //  });
+         
+        //  // analytics
+        //  const aFees=document.getElementById('analyticsFeesTypeFilter');
+        //  aFees.innerHTML='<option value="">Branch </option>';
+        //  dropdownData.feesTypes.forEach(f=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=f; opt.textContent=f;
+        //  aFees.appendChild(opt);
+        //  });
+        //  const aPay=document.getElementById('analyticsPaymentModeFilter');
+        //  aPay.innerHTML='<option value="">All Payment Modes</option>';
+        //  dropdownData.paymentModes.forEach(pm=>{
+        //  const opt=document.createElement('option');
+        //  opt.value=pm; opt.textContent=pm;
+        //  aPay.appendChild(opt);
+        //  });
+        //  }
+         // Show Slip by default on login
+        //  function openSlip(){
+        //  hideAllSections();
+        //  document.getElementById('slipFormSection').classList.remove('hidden');
+        //  }
+        //    function calculateMonthlyFees() {
+        //    // Get the value of admission fees
+        //    const admissionFees = parseFloat(document.getElementById('admission_fees').value) || 0;
+         
+        //   // Calculate monthly fees as admission / 12
+        //   const monthlyFees = admissionFees / 12;
+         
+        //   document.getElementById('total').value = admissionFees;
+         
+        //   // Update the monthly fees input field
+        //   document.getElementById('monthly_fees').value = monthlyFees.toFixed(2); // Format to two decimal places
+        //  }
+        //  function saveDataToSheet() {
+        //  // Collect values from input fields
+        //  const data = [
+        //    document.getElementById("jan_25").value,
+        //    document.getElementById("feb_25").value,
+        //    document.getElementById("mar_25").value,
+        //    document.getElementById("apr_25").value,
+        //    document.getElementById("may_25").value,
+        //    document.getElementById("jun_25").value,
+        //    document.getElementById("jul_25").value,
+        //    document.getElementById("aug_25").value,
+        //    document.getElementById("sep_25").value,
+        //    document.getElementById("oct_25").value,
+        //    document.getElementById("nov_25").value,
+        //    document.getElementById("dec_25").value
+        //  ];
+        //  // Call Apps Script function to save data
+        //  google.script.run.saveData(data);
+        //  alert('Data saved successfully!');
+        //  }
+  
+  
+  function openInquiryForm() {
+  console.log("Inquiry Form button clicked");
+  hideAllSections(); 
+  document.getElementById('ifId').classList.remove('hidden');
+
+  // 1. Get the stored branch from the hidden input
+  const userBranch = document.getElementById('userBranch').value;
+
+  // 2. Get the branch input element in your inquiry form
+  const branchInput = document.getElementById("branch22");
+
+  // 3. Set its value directly
+  if (userBranch) {
+    branchInput.value = userBranch;
+  } else {
+    branchInput.value = ""; // Or some default value
+  }
+}
+
+
+         
+
+         
+// Show admission form
+// Declare a global variable for the timer to ensure it can be accessed and cleared.
+// --- Place this script tag in your main HTML file ---
+
+// Declare this variable in the global scope of your script.
+let receiptLockTimer = null;
+
+
+/**
+ * Opens the admission form and handles the auto-generation of the receipt number
+ * with a 5-second timer for user override.
+ */
+function openAdmissionForm() {
+  console.log("Admission Form button clicked");
+  hideAllSections();
+  
+  const section = document.getElementById('admissionFormSection');
+  if (!section) {
+    console.error("Admission form section not found!");
+    return;
+  }
+  section.classList.remove('hidden');
+
+  const receiptInput = document.getElementById('receipt_number');
+  if (!receiptInput) {
+    console.error("Receipt number input field not found!");
+    return;
+  }
+
+  // 1. Reset the input field's state each time the form is opened.
+  receiptInput.readOnly = false; 
+  receiptInput.value = "Generating..."; // Show immediate feedback.
+
+  // 2. Clear any lingering timers from previous times the form was opened.
+  clearTimeout(receiptLockTimer);
+
+  // 3. Call the backend script to fetch the number.
+  google.script.run.withSuccessHandler(function(newReceiptNumber) {
+    
+    // 4. Populate the input field as soon as the number is received.
+    receiptInput.value = newReceiptNumber;
+    console.log(`Populated receipt number: ${newReceiptNumber}. Field will lock in 5 seconds if not edited.`);
+
+    // 5. Set a 5-second timer. If it completes, the field becomes read-only.
+    receiptLockTimer = setTimeout(() => {
+      receiptInput.readOnly = true;
+      console.log(`Receipt number ${newReceiptNumber} is now locked.`);
+    }, 5000); // 5000 milliseconds = 5 seconds
+
+    // 6. Listen for the *very first* input from the user.
+    // The { once: true } option automatically removes the listener after it runs once.
+    receiptInput.addEventListener('input', () => {
+      console.log("User is typing. Cancelling the auto-lock timer.");
+      // If the user starts typing, cancel the timer that would have locked the field.
+      clearTimeout(receiptLockTimer);
+    }, { once: true });
+
+  }).withFailureHandler(function(error) {
+    console.error("Error fetching receipt number: " + error.message);
+    receiptInput.value = "Error fetching number";
+  }).getNextReceiptNumber();
+}
+
+
+
+
+
+
+        
+         
+         // Handle admission form submission
+         document.addEventListener('DOMContentLoaded', function () {
+         const admissionBtn = document.getElementById('admissionBtn');
+         if (admissionBtn) {
+         admissionBtn.addEventListener('click', openAdmissionForm);
+         } else {
+         console.error("Admission button not found!");
+         }
+         
+         const form = document.getElementById('admissionForm');
+         const submitBtn = document.getElementById('submitButton');
+         
+         if (submitBtn && form) {
+         submitBtn.addEventListener('click', function (e) {
+         e.preventDefault();
+         
+         const formData = new FormData(form);
+         const data = {};
+         formData.forEach((value, key) => {
+           if (!data[key]) data[key] = [];
+           data[key].push(value);
+         });
+         
+         console.log("Submitting data:", data);
+         google.script.run.withSuccessHandler(onSuccess).submitForm(data);
+         });
+         }
+         });
+         
+         // Handle success
+         function onSuccess() {
+         alert('Form submitted successfully!');
+         generatePDFAdmission();
+         }
+         
+         // Generate PDF
+         function generatePDFAdmission() {
+         const element = document.getElementById('admissionFormSection'); // or 'slipFormSection' if needed
+         const options = {
+         scale: 3,
+         useCORS: true,
+         letterRendering: true,
+         onclone: (clonedDoc) => {
+         clonedDoc.querySelectorAll('input, select').forEach(el => {
+           el.style.paddingTop = '2px';
+           el.style.paddingBottom = '2px';
+         });
+         }
+         };
+         
+         html2canvas(element, options).then(canvas => {
+         const pdf = new jsPDF('p', 'mm', 'a4');
+         const imgWidth = 210;
+         const imgHeight = (canvas.height * imgWidth) / canvas.width;
+         
+         if (imgHeight > 297) {
+         const pageHeight = 297;
+         let position = 0;
+         
+         while (position < imgHeight) {
+           pdf.addImage(canvas, 'PNG', 0, position === 0 ? 0 : -position, imgWidth, imgHeight);
+           position += pageHeight;
+           if (position < imgHeight) pdf.addPage();
+         }
+         } else {
+         pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
+         }
+         
+         const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
+         pdf.save(`${studentName}_AdmissionForm.pdf`);
+         });
+         
+         
+         
+        // Initialize jsPDF
+         const { jsPDF } = window.jspdf;
+         
+         // Data management variables
+         let formData = [];
+         let currentRecordIndex = 0;
+         
+         // DOM Ready Handler
+         
+         // Fetch data from Google Sheets
+         function fetchData() {
+         const detailsDiv = document.getElementById('details');
+         detailsDiv.innerHTML = '<p class="text-center py-4">Loading data...</p>';
+         
+         if (typeof google === 'undefined' || !google.script.run) {
+         showError({message: "Google Apps Script not available"});
+         return;
+         }
+         
+         google.script.run
+         .withSuccessHandler(displayFetchedData)
+         .withFailureHandler(showError)
+         .getData();
+         }
+         
+         function showError(error) {
+         document.getElementById('details').innerHTML = `
+         <p class="text-red-500 text-center py-4">
+           Error: ${error.message || 'Failed to load data'}
+         </p>`;
+         }
+         
+         function displayFetchedData(fetchedData) {
+         if (!fetchedData || fetchedData.length < 2) {
+         document.getElementById('details').innerHTML = `
+           <p class="text-center py-4">No data available</p>`;
+         return;
+         }
+         
+         formData = fetchedData;
+         currentRecordIndex = 1; // Skip header row
+         displayCurrentRecord();
+         
+         // Show the container if hidden
+         document.getElementById('ifId').classList.add('hidden');
+         document.getElementById('container').classList.remove('hidden');
+         }
+         
+         function displayCurrentRecord() {
+         const outputDiv = document.getElementById('output');
+         const detailsDiv = document.getElementById('details');
+         const emiDiv = document.getElementById('emiOutput');
+         
+         // Clear previous content
+         outputDiv.innerHTML = '';
+         detailsDiv.innerHTML = '';
+         emiDiv.innerHTML = '';
+         
+         if (formData.length > 1 && currentRecordIndex < formData.length) {
+         const record = formData[currentRecordIndex];
+         const headers = formData[0];
+         
+         // Display basic details
+         const detailFields = [
+           {label: "Serial no", index: 0},
+           {label: "Name", index: 1},
+           {label: "Email", index: 2},
+           {label: "Phone", index: 3},
+           {label: "Address", index: 4}
+         ];
+         
+         detailFields.forEach(field => {
+           if (record[field.index] !== undefined) {
+             const div = document.createElement('div');
+             div.className = 'py-2 border-b border-gray-100';
+             div.textContent = `${field.label}: ${record[field.index] || '-'}`;
+             detailsDiv.appendChild(div);
+           }
+         });
+         
+         // Add payable information
+         const payableDiv = document.createElement('div');
+         payableDiv.className = 'py-3 mt-3 font-bold border-t border-gray-200';
+         payableDiv.textContent = "Payable to: Shelar Training Institute";
+         detailsDiv.appendChild(payableDiv);
+         
+         // Create main fees table (columns 5-8)
+         createDataTable(outputDiv, headers.slice(5, 9), record.slice(5, 9));
+         
+         // Create EMI table if data exists (columns 9+)
+         if (record.length > 9) {
+           createDataTable(emiDiv, headers.slice(9), record.slice(9));
+         }
+         }
+         
+         // Update navigation buttons
+         document.getElementById('prevButton').style.display = 
+         currentRecordIndex <= 1 ? 'none' : 'block';
+         document.getElementById('nextButton').style.display = 
+         currentRecordIndex >= formData.length - 1 ? 'none' : 'block';
+         }
+         
+         function createDataTable(container, headers, data) {
+         const table = document.createElement('table');
+         const headerRow = document.createElement('tr');
+         
+         headers.forEach(header => {
+         const th = document.createElement('th');
+         th.textContent = header;
+         headerRow.appendChild(th);
+         });
+         table.appendChild(headerRow);
+         
+         const dataRow = document.createElement('tr');
+         data.forEach(cell => {
+         const td = document.createElement('td');
+         td.textContent = cell || '-';
+         dataRow.appendChild(td);
+         });
+         table.appendChild(dataRow);
+         
+         container.appendChild(table);
+         }
+         
+         function nextPage() {
+         if (currentRecordIndex < formData.length - 1) {
+         currentRecordIndex++;
+         displayCurrentRecord();
+         }
+         }
+         
+         function prevPage() {
+         if (currentRecordIndex > 1) {
+         currentRecordIndex--;
+         displayCurrentRecord();
+         }
+        }
+      };
+    
 
   /******************************************
    * 11) INITIALIZE
@@ -1727,6 +2137,7 @@
 
   const { jsPDF } = window.jspdf;
 
+
   // Show admission form
   function openAdmissionForm() {
     window.scrollTo(0, 0);
@@ -1743,6 +2154,7 @@
     updatePaymentFields();
     storePayementType();
   }
+
 
   // Handle admission form submission
   document.addEventListener("DOMContentLoaded", function () {
