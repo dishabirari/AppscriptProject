@@ -1383,7 +1383,7 @@ document.addEventListener('DOMContentLoaded', function() {
         //  }
   
   
-             function openInquiryForm() {
+  function openInquiryForm() {
   console.log("Inquiry Form button clicked");
   hideAllSections(); 
   document.getElementById('ifId').classList.remove('hidden');
@@ -1406,14 +1406,74 @@ document.addEventListener('DOMContentLoaded', function() {
          
          const { jsPDF } = window.jspdf;
          
-         // Show admission form
-         function openAdmissionForm() {
-         console.log("Admission Form button clicked");
-         hideAllSections();
-         const section = document.getElementById('admissionFormSection');
-         if (section) section.classList.remove('hidden');
-         else console.error("Admission form section not found!");
-         }
+// Show admission form
+// Declare a global variable for the timer to ensure it can be accessed and cleared.
+// --- Place this script tag in your main HTML file ---
+
+// Declare this variable in the global scope of your script.
+let receiptLockTimer = null;
+
+
+/**
+ * Opens the admission form and handles the auto-generation of the receipt number
+ * with a 5-second timer for user override.
+ */
+function openAdmissionForm() {
+  console.log("Admission Form button clicked");
+  hideAllSections();
+  
+  const section = document.getElementById('admissionFormSection');
+  if (!section) {
+    console.error("Admission form section not found!");
+    return;
+  }
+  section.classList.remove('hidden');
+
+  const receiptInput = document.getElementById('receipt_number');
+  if (!receiptInput) {
+    console.error("Receipt number input field not found!");
+    return;
+  }
+
+  // 1. Reset the input field's state each time the form is opened.
+  receiptInput.readOnly = false; 
+  receiptInput.value = "Generating..."; // Show immediate feedback.
+
+  // 2. Clear any lingering timers from previous times the form was opened.
+  clearTimeout(receiptLockTimer);
+
+  // 3. Call the backend script to fetch the number.
+  google.script.run.withSuccessHandler(function(newReceiptNumber) {
+    
+    // 4. Populate the input field as soon as the number is received.
+    receiptInput.value = newReceiptNumber;
+    console.log(`Populated receipt number: ${newReceiptNumber}. Field will lock in 5 seconds if not edited.`);
+
+    // 5. Set a 5-second timer. If it completes, the field becomes read-only.
+    receiptLockTimer = setTimeout(() => {
+      receiptInput.readOnly = true;
+      console.log(`Receipt number ${newReceiptNumber} is now locked.`);
+    }, 5000); // 5000 milliseconds = 5 seconds
+
+    // 6. Listen for the *very first* input from the user.
+    // The { once: true } option automatically removes the listener after it runs once.
+    receiptInput.addEventListener('input', () => {
+      console.log("User is typing. Cancelling the auto-lock timer.");
+      // If the user starts typing, cancel the timer that would have locked the field.
+      clearTimeout(receiptLockTimer);
+    }, { once: true });
+
+  }).withFailureHandler(function(error) {
+    console.error("Error fetching receipt number: " + error.message);
+    receiptInput.value = "Error fetching number";
+  }).getNextReceiptNumber();
+}
+
+
+
+
+
+
         
          
          // Handle admission form submission
