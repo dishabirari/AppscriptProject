@@ -39,7 +39,8 @@
       google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .submitForm(formObject);
+        // .submitForm(formObject);
+        .admissionprocessForm(formObject);
     }
 
     // Helper functions

@@ -1364,3 +1364,342 @@ function authorizeScript() {
   doc.getBody().appendParagraph("Authorization successful");
   doc.saveAndClose();
 }*/
+// function processAdmissionForm(formData) {
+//   console.log("Processing Admission Form...");
+
+//   // IMPORTANT: Replace 'YOUR_ADMISSION_PDF_FOLDER_ID' with your actual Google Drive Folder ID
+//   const pdfFolder = DriveApp.getFolderById(Iffolderid); 
+//   // IMPORTANT: Replace 'AdmissionSheetName' with the actual name of your Google Sheet tab
+//   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AdmissionSheetName");
+
+//   // Step 1: Read the raw HTML template content
+//   // Make sure your HTML file is named 'admissionform.html' in the Apps Script project
+//   let html = HtmlService.createHtmlOutputFromFile("aAdmission").getContent();
+
+//   // --- Start of Data Injection into HTML ---
+
+//   // Basic fields directly mapped to their IDs in the HTML
+//   // We will directly replace the content of the <div> with the corresponding ID.
+//   const fieldsToPopulate = {
+//     'display_receipt_number': formData.receiptNumber || 'N/A',
+//     'display_student_name': formData.studentName || 'N/A',
+//     'display_course_name': formData.courseName || 'N/A',
+//     'display_payment_method': formData.paymentMethod || 'N/A',
+//     'display_course_years': formData.courseYears || 'N/A',
+//     'display_course_duration': formData.courseDuration || 'N/A',
+//     'display_course_fees': '₹' + (formData.totalCourseFees || '0'),
+//     'display_guardian_name': formData.guardianName || 'N/A', // Assuming guardianName holds the actual name
+//   };
+
+//   Object.keys(fieldsToPopulate).forEach(id => {
+//     const value = fieldsToPopulate[id];
+//     // This regex looks for the div with the specific ID and replaces its *entire* content.
+//     // The 's' flag ensures that `.` matches newlines, allowing for multi-line content if needed.
+//     const regex = new RegExp(`(<div[^>]*id="${id}"[^>]*>)(.*?)(</div>)`, 's');
+//     if (regex.test(html)) {
+//       html = html.replace(regex, `$1${value}$3`);
+//     } else {
+//       console.warn(`Warning: ID "${id}" not found in HTML template.`);
+//     }
+//   });
+
+
+//   // Special handling for 'display_payment_type' (checkboxes/options)
+//   // This assumes formData will have boolean values like fullPayment, partialPayment, fullEmi
+//   let paymentTypeHtml = '';
+//   if (formData.fullPayment) {
+//     paymentTypeHtml += `<div class="payment-type-option selected">Full Payment</div>`;
+//   }
+//   if (formData.partialPayment) {
+//     paymentTypeHtml += `<div class="payment-type-option selected">Partial Payment</div>`;
+//   }
+//   if (formData.fullEmi) {
+//     paymentTypeHtml += `<div class="payment-type-option selected">Full EMI</div>`;
+//   }
+//   // If none are selected, you might want a default or just leave it blank
+//   if (!paymentTypeHtml) {
+//     paymentTypeHtml = `<div class="payment-type-option">N/A</div>`;
+//   }
+//   const paymentTypeRegex = /(<div[^>]*id="display_payment_type"[^>]*>)(.*?)(<\/div>)/s;
+//   if (paymentTypeRegex.test(html)) {
+//     html = html.replace(paymentTypeRegex, `$1${paymentTypeHtml}$3`);
+//   }
+
+
+//   // Special handling for 'display_year_payments' (dynamic rows for fees/due)
+//   let yearPaymentsHtml = '';
+//   if (formData.courseYears === '1 Year' || formData.courseYears === '2 Year' || formData.courseYears === '3 Year') {
+//     yearPaymentsHtml += `
+//       <div class="payment-grid">
+//         <div class="detail-item">
+//           <label class="detail-label">Year 1 Fees</label>
+//           <div class="detail-value">₹${formData.year1Fees || '0'}</div>
+//         </div>
+//         <div class="detail-item">
+//           <label class="detail-label">Year 1 Due</label>
+//           <div class="detail-value">₹${formData.amountDue1 || '0'}</div>
+//         </div>
+//       </div>
+//     `;
+//   }
+//   if (formData.courseYears === '2 Year' || formData.courseYears === '3 Year') {
+//     yearPaymentsHtml += `
+//       <div class="payment-grid">
+//         <div class="detail-item">
+//           <label class="detail-label">Year 2 Fees</label>
+//           <div class="detail-value">₹${formData.year2Fees || '0'}</div>
+//         </div>
+//         <div class="detail-item">
+//           <label class="detail-label">Year 2 Due</label>
+//           <div class="detail-value">₹${formData.amountDue2 || '0'}</div>
+//         </div>
+//       </div>
+//     `;
+//   }
+//   if (formData.courseYears === '3 Year') {
+//     yearPaymentsHtml += `
+//       <div class="payment-grid">
+//         <div class="detail-item">
+//           <label class="detail-label">Year 3 Fees</label>
+//           <div class="detail-value">₹${formData.year3Fees || '0'}</div>
+//         </div>
+//         <div class="detail-item">
+//           <label class="detail-label">Year 3 Due</label>
+//           <div class="detail-value">₹${formData.amountDue3 || '0'}</div>
+//         </div>
+//       </div>
+//     `;
+//   }
+//   const yearPaymentsRegex = /(<div[^>]*id="display_year_payments"[^>]*>)(.*?)(<\/div>)/s;
+//   if (yearPaymentsRegex.test(html)) {
+//     html = html.replace(yearPaymentsRegex, `$1${yearPaymentsHtml}$3`);
+//   }
+
+//   // Special handling for 'display_guardian_relation'
+//   // This assumes formData will contain fields like guardianType (e.g., "Mother", "Father")
+//   // and studentName (the student's full name from the form)
+//   const guardianRelationText = `I Am Mr./Ms. ${formData.guardianName || 'N/A'} (Relation: ${formData.guardianRelation || 'N/A'}) of ${formData.studentName || 'N/A'}`;
+//   const guardianRelationRegex = /(<div[^>]*id="display_guardian_relation"[^>]*>)(.*?)(<\/div>)/s;
+//   if (guardianRelationRegex.test(html)) {
+//     html = html.replace(guardianRelationRegex, `$1${guardianRelationText}$3`);
+//   }
+
+//   // Special handling for 'display_agree_checkbox'
+//   // This will add the 'checked' class if formData.agreeToTerms is true
+//   const agreeCheckboxHtml = formData.agreeToTerms ? '<div class="checkbox-custom checked"></div>' : '<div class="checkbox-custom"></div>';
+//   const agreeCheckboxRegex = /(<div[^>]*id="display_agree_checkbox"[^>]*>)(.*?)(<\/div>)/s;
+//   if (agreeCheckboxRegex.test(html)) {
+//     html = html.replace(agreeCheckboxRegex, `$1${agreeCheckboxHtml}$3`);
+//   }
+
+//   // Hide the 'error' div if no error, otherwise populate it
+//   const agreeErrorHtml = formData.agreeToTerms ? '' : '<div class="error-message">Please agree to the terms and conditions.</div>';
+//   const agreeErrorRegex = /(<div[^>]*id="display_agree_error"[^>]*>)(.*?)(<\/div>)/s;
+//   if (agreeErrorRegex.test(html)) {
+//     html = html.replace(agreeErrorRegex, `$1${agreeErrorHtml}$3`);
+//   }
+//   // --- End of Data Injection ---
+
+
+//   // Step 2: Convert the final HTML string to a PDF
+//   // Using the student's name and receipt number for a descriptive file name
+//   const pdfFileName = `Admission_Receipt_${formData.studentName || "Student"}_${formData.receiptNumber || "NoReceipt"}.pdf`;
+//   const blob = Utilities.newBlob(html, 'text/html', 'admission_receipt.html');
+//   const pdfBlob = blob.getAs('application/pdf').setName(pdfFileName);
+
+//   // Step 3: Save the generated PDF to Google Drive
+//   pdfFolder.createFile(pdfBlob);
+
+//   try {
+//     // Validation: Adapt required fields for the admission form
+//     const requiredFields = [
+//       "studentName", "courseName", "receiptNumber", "totalCourseFees",
+//       "paymentMethod", "courseYears", "guardianName", "guardianRelation",
+//       "phoneNo" // Assuming phoneNo is still a critical contact for admission
+//       // Add other critical fields as per your admission process
+//     ];
+//     const missingFields = requiredFields.filter((field) => !formData[field]);
+
+//     if (missingFields.length > 0) {
+//       return {
+//         success: false,
+//         message: `Missing required fields for admission: ${missingFields.join(", ")}`,
+//       };
+//     }
+
+//     // You might also want to validate 'agreeToTerms'
+//     if (!formData.agreeToTerms) {
+//         return {
+//             success: false,
+//             message: "Please agree to the terms and conditions to proceed with admission."
+//         };
+//     }
+
+
+//     // 4. Append data to Google Sheet
+//     // Adapt rowData to match your Admission Sheet columns.
+//     // This is just an example; ensure it aligns with your actual sheet structure.
+//     const rowData = [
+//       new Date(), // Timestamp of submission
+//       formData.receiptNumber || '',
+//       formData.date || new Date().toISOString().split("T")[0], // Date of receipt/admission
+//       formData.studentName || '',
+//       formData.courseName || '',
+//       formData.courseDuration || '',
+//       formData.totalCourseFees || '',
+//       formData.paymentTypeSelection || '', // This is missing from your initial formData example, but present in receipt template
+//       formData.paymentMethod || '',
+//       formData.year1Fees || '',
+//       formData.amountDue1 || '',
+//       formData.year2Fees || '',
+//       formData.amountDue2 || '',
+//       formData.year3Fees || '',
+//       formData.amountDue3 || '',
+//       formData.guardianName || '',
+//       formData.guardianRelation || '',
+//       formData.phoneNo || '',
+//       formData.email || '', // Assuming you'd have email for admission
+//       formData.address || '', // Assuming you'd have address for admission
+//       // Add more fields here as per your sheet columns
+//     ];
+
+//     sheet.appendRow(rowData);
+
+//     return {
+//       success: true,
+//       message: "Admission form submitted and receipt generated successfully!",
+//       studentName: formData.studentName,
+//       receiptNumber: formData.receiptNumber,
+//       pdfLink: pdfBlob.getUrl(), // Return the URL of the generated PDF
+//     };
+
+//   } catch (e) {
+//     console.error("Error in processAdmissionForm:", e);
+//     return {
+//       success: false,
+//       message: "An error occurred while processing your admission form.",
+//       error: e.message,
+//     };
+//   }
+// }
+
+
+function admissionprocessForm(formData) {
+  console.log("Processing form...");
+
+  const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions"); // Update if your sheet name is different
+
+
+  // Step 1: Populate the HTML template with form data
+ // --- Start of Corrected Code ---
+
+  // Step 1: Read the raw HTML and inject data
+  // Get the HTML content as a plain string.
+  let html = HtmlService.createHtmlOutputFromFile("aAdmission").getContent();
+
+  // Iterate over your data object.
+Object.keys(formData).forEach(key => {
+  // This modified regex finds the div by its id, capturing the opening tag ($1),
+  // whatever is inside it (.*? as $2), and the closing tag ($3).
+  // The 's' flag allows '.' to match newline characters, which is crucial for multi-line fields like 'address'.
+  const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
+
+  // Get the value, ensuring it's a string.
+  const value = formData[key] || '';
+
+  // Replace the captured content ($2) with the new value.
+  // $1 is the opening tag and $3 is the closing tag, which are kept.
+  if (regex.test(html)) {
+      html = html.replace(regex, `$1${value}$3`);
+  }
+});
+
+  // Step 2: Convert the final HTML string to a PDF
+  const blob = Utilities.newBlob(html, 'text/html', 'admission.html');
+  const pdfBlob = blob.getAs('application/pdf').setName("Admission_Form_" + (formData.fullName || "User") + ".pdf");
+
+  // Step 3: Save the generated PDF to Google Drive
+  pdfFolder.createFile(pdfBlob);
+
+
+      try {
+    // Validation: Adapt required fields for the admission form
+    const requiredFields = [
+      "studentName", "courseName", "receiptNumber", "totalCourseFees",
+      "paymentMethod", "courseYears", "guardianName", "guardianRelation",
+      "phoneNo" // Assuming phoneNo is still a critical contact for admission
+      // Add other critical fields as per your admission process
+    ];
+    const missingFields = requiredFields.filter((field) => !formData[field]);
+
+    if (missingFields.length > 0) {
+      return {
+        success: false,
+        message: `Missing required fields for admission: ${missingFields.join(", ")}`,
+      };
+    }
+
+    // You might also want to validate 'agreeToTerms'
+    if (!formData.agreeToTerms) {
+        return {
+            success: false,
+            message: "Please agree to the terms and conditions to proceed with admission."
+        };
+    }
+
+
+    // 4. Append data to Google Sheet
+    // Adapt rowData to match your Admission Sheet columns.
+    // This is just an example; ensure it aligns with your actual sheet structure.
+    const rowData = [
+      timestamp,
+      formData.receipt_number || '',
+      formData.student_name || '',
+      formData.courseSelect || '',
+      formData.courseDuration || '',
+      formData.courseFees || '',
+      formData.payment_type || '',
+      formData.payment_method || '',
+      formData.paymentDetails || '',
+      formData.courseYears || '',
+      // Year 1 data
+      formData.year1_total || '',
+      formData.year1_paid || '',
+      formData.year1_due || '',
+      formData.year1_installments || '',
+      // Year 2 data
+      formData.year2_total || '',
+      formData.year2_paid || '',
+      formData.year2_due || '',
+      formData.year2_installments || '',
+      // Year 3 data
+      formData.year3_total || '',
+      formData.year3_paid || '',
+      formData.year3_due || '',
+      formData.year3_installments || '',
+      formData.guardian_relation || '',
+      formData.guardian_name || '',
+      formData.agree ? 'Yes' : 'No'
+    ];
+    sheet.appendRow(rowData);
+
+    return {
+      success: true,
+      message: "Admission form submitted and receipt generated successfully!",
+      studentName: formData.studentName,
+      receiptNumber: formData.receiptNumber,
+      pdfLink: pdfBlob.getUrl(), // Return the URL of the generated PDF
+    };
+
+  } catch (e) {
+    console.error("Error in processAdmissionForm:", e);
+    return {
+      success: false,
+      message: "An error occurred while processing your admission form.",
+      error: e.message,
+    };
+  }
+}
+
+

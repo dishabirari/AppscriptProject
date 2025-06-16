@@ -1,31 +1,28 @@
 <script>
-  function updateCourseDetails() {
-    const select = document.getElementById("courseSelect");
-    const value = select.value;
-    const durationDiv = document.getElementById("courseDuration");
-    const feesDiv = document.getElementById("courseFees");
-    const yearsSelect = document.getElementById("courseYears");
+    function updateCourseDetails() {
+      const select = document.getElementById('courseSelect');
+      const value = select.value;
+      const durationDiv = document.getElementById('courseDuration');
+      const feesDiv = document.getElementById('courseFees');
+      const yearsSelect = document.getElementById('courseYears');
 
-    if (courseData[value]) {
-      durationDiv.textContent = courseData[value].duration;
-      feesDiv.textContent = courseData[value].fees;
-      document.getElementById("coursePeriod").value =
-        courseData[value].duration;
-      document.getElementById("courseFeeees").value = courseData[value].total;
+      if (courseData[value]) {
+        durationDiv.textContent = courseData[value].duration;
+        feesDiv.textContent = courseData[value].fees;
 
-      // Set course years based on duration
-      if (courseData[value].duration.includes("2")) {
-        yearsSelect.value = "2";
-      } else if (courseData[value].duration.includes("3")) {
-        yearsSelect.value = "3";
+        // Set course years based on duration
+        if (courseData[value].duration.includes('2')) {
+          yearsSelect.value = '2';
+        } else if (courseData[value].duration.includes('3')) {
+          yearsSelect.value = '3';
+        } else {
+          yearsSelect.value = '1';
+        }
       } else {
-        yearsSelect.value = "1";
+        durationDiv.textContent = '';
+        feesDiv.textContent = '';
+        yearsSelect.value = '1'; // Default to 1 year if no course is selected
       }
-    } else {
-      durationDiv.textContent = "";
-      feesDiv.textContent = "";
-      yearsSelect.value = "1"; // Default to 1 year if no course is selected
+      updateYearPaymentOptions(); // Recalculate options based on new years
     }
-    updateYearPaymentOptions(); // Recalculate options based on new years
-  }
 </script>
