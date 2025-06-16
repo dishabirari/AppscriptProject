@@ -424,6 +424,7 @@
     updateCourseDetails();
     updateYearPaymentOptions();
     updatePaymentFields();
+    storePayementType();
   }
 
   /******************************************
@@ -2136,21 +2137,24 @@ function openAdmissionForm() {
 
   const { jsPDF } = window.jspdf;
 
-  // // Show admission form
-  // function openAdmissionForm() {
-  //   window.scrollTo(0, 0);
-  //   console.log("Admission Form button clicked");
-  //   hideAllSections();
-  //   const section = document.getElementById("admissionFormSection");
-  //   if (section) section.classList.remove("hidden");
-  //   else console.error("Admission form section not found!");
 
-  //   document.getElementById("Student_namee").value =
-  //     sessionStorage.getItem("tempText");
-  //   updateCourseDetails();
-  //   updateYearPaymentOptions();
-  //   updatePaymentFields();
-  // }
+  // Show admission form
+  function openAdmissionForm() {
+    window.scrollTo(0, 0);
+    console.log("Admission Form button clicked");
+    hideAllSections();
+    const section = document.getElementById("admissionFormSection");
+    if (section) section.classList.remove("hidden");
+    else console.error("Admission form section not found!");
+
+    document.getElementById("Student_namee").value =
+      sessionStorage.getItem("tempText");
+    updateCourseDetails();
+    updateYearPaymentOptions();
+    updatePaymentFields();
+    storePayementType();
+  }
+
 
   // Handle admission form submission
   document.addEventListener("DOMContentLoaded", function () {
@@ -2552,22 +2556,38 @@ document.addEventListener('DOMContentLoaded', function () {
       updateCourseDetails(); // Trigger input updates when dropdown is manually changed
     });
   });
+  function storePayementType() {
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedPaymentType = sessionStorage.getItem("paytype");
 
-  window.addEventListener("DOMContentLoaded", () => {
-    const savedPaymentType = sessionStorage.getItem("paytype");
+      if (savedPaymentType) {
+        const matchingRadio = document.querySelector(
+          `input[name="payment_type"][value="${savedPaymentType}"]`
+        );
+        if (matchingRadio) {
+          matchingRadio.checked = true;
 
-    if (savedPaymentType) {
-      const matchingRadio = document.querySelector(
-        `input[name="payment_type"][value="${savedPaymentType}"]`
+          // Optional: manually trigger any onchange logic (if needed)
+          matchingRadio.dispatchEvent(new Event("change"));
+        }
+      }
+    });
+
+    const saved = sessionStorage.getItem("paytype");
+    console.log("Retrieved paytype from session:", saved);
+
+    if (saved) {
+      const radioToSelect = document.querySelector(
+        `input[name="payment_type"][value="${saved}"]`
       );
-      if (matchingRadio) {
-        matchingRadio.checked = true;
-
-        // Optional: manually trigger any onchange logic (if needed)
-        matchingRadio.dispatchEvent(new Event("change"));
+      if (radioToSelect) {
+        radioToSelect.checked = true;
+        radioToSelect.dispatchEvent(new Event("change")); // trigger onchange like manually selecting it
+      } else {
+        console.warn("No matching radio found for:", saved);
       }
     }
-  });
+  }
 
   const courseData1 = {
     anm_nursing: { duration: "2 years", fees: "₹50,000", total: "₹100000" },
@@ -2641,28 +2661,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (paymentType === "emi") {
           yearDiv.innerHTML = `
-              <label class="w-1/4">Year ${i} EMI:</label>
-              <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
-                <option value="0">Select Installment</option>
-                <option value="6">6 Installments</option>
-                <option value="12">12 Installments</option>
-              </select>
-              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
-              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
+                <label class="w-1/4">Year ${i} EMI:</label>
+                <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
+                  <option value="0">Select Installment</option>
+                  <option value="6">6 Installments</option>
+                  <option value="12">12 Installments</option>
+                </select>
+                <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
+                <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
             2
           )}</span>
-            `;
+              `;
         } else {
           yearDiv.innerHTML = `
-              <label class="w-1/4">Year ${i} Fees:</label>
-              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
-              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${
+                <label class="w-1/4">Year ${i} Fees:</label>
+                <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
+                <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${
             i > 1 ? "disabled" : ""
           } value="0">
-              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
+                <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
             2
           )}</span>
-            `;
+              `;
         }
         yearPaymentsDiv.appendChild(yearDiv);
       }
