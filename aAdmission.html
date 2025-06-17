@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -437,5 +437,741 @@
             </div>
         </div>
     </div>
+</body>
+</html> -->
+<!-- <!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  .header-bg {
+    background-color: #1a237e; /* Dark blue */
+    color: white;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  @media (min-width: 768px) {
+    .header-bg {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  .logo-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 768px) {
+    .logo-section {
+      margin-bottom: 0;
+    }
+  }
+  .logo-box {
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin-right: 16px;
+  }
+  .logo-box img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+  .institute-info h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.2;
+  }
+  @media (min-width: 768px) {
+    .institute-info h1 {
+      font-size: 28px;
+    }
+  }
+  .institute-info p {
+    font-size: 12px;
+    opacity: 0.9;
+    margin: 4px 0 0;
+  }
+  @media (min-width: 768px) {
+    .institute-info p {
+      font-size: 14px;
+    }
+  }
+  .receipt-details {
+    text-align: center;
+  }
+  @media (min-width: 768px) {
+    .receipt-details {
+      text-align: right;
+    }
+  }
+  .receipt-title {
+    color: #fcd34d; /* Yellow-300 */
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .contact-info {
+    font-size: 10px;
+    margin-top: 8px;
+  }
+  .contact-info p {
+    margin: 2px 0;
+  }
+
+  .content-section {
+    padding: 24px;
+    background-color: #f9fafb; /* Gray-50 */
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media (min-width: 768px) {
+    .info-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .info-item {
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #e5e7eb; /* Gray-200 */
+  }
+  .info-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563; /* Gray-700 */
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .info-label i {
+    color: #1a237e; /* Blue-900 */
+    margin-right: 8px;
+  }
+  .info-value {
+    font-size: 16px;
+    color: #1f2937; /* Gray-800 */
+    padding-left: 30px; /* Aligns with icon */
+  }
+
+  .payment-details-section {
+    background-color: #eff6ff; /* Blue-50 */
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .payment-details-section h3 {
+    color: #1a237e; /* Blue-900 */
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+  }
+  .payment-details-section h3 i {
+    margin-right: 8px;
+  }
+  .payment-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .payment-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .year-payment-sub-section {
+    border-left: 2px solid #bfdbfe; /* Blue-200 */
+    padding-left: 10px;
+    margin-top: 10px;
+  }
+  .year-payment-sub-section p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #374151; /* Gray-700 */
+  }
+  .year-payment-sub-section p strong {
+    color: #1a237e;
+  }
+
+  .signature-section {
+    background-color: #f9fafb; /* Gray-50 */
+    padding: 16px;
+    border-top: 1px solid #e5e7eb; /* Gray-200 */
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .signature-block {
+    text-align: center;
+    margin: 10px 15px;
+    min-width: 150px;
+  }
+  .signature-line {
+    font-style: italic;
+    color: #4b5563; /* Gray-700 */
+    margin-bottom: 4px;
+    border-bottom: 1px dashed #9ca3af; /* Gray-400 for dashed line */
+    display: inline-block;
+    width: 100%;
+  }
+  .signature-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a237e; /* Blue-900 */
+  }
+
+  /* Font Awesome simulation for PDF generation */
+  .fas {
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+  }
+  .fa-map-marker-alt:before { content: "\f041"; }
+  .fa-file-alt:before { content: "\f15c"; }
+  .fa-phone-alt:before { content: "\f879"; }
+  .fa-receipt:before { content: "\f543"; }
+  .fa-user:before { content: "\f007"; }
+  .fa-book-open:before { content: "\f518"; }
+  .fa-credit-card:before { content: "\f09d"; }
+  .fa-wallet:before { content: "\f555"; }
+  .fa-calendar-day:before { content: "\f783"; }
+  .fa-money-check-alt:before { content: "\f53d"; }
+  .fa-clock:before { content: "\f017"; }
+  .fa-dollar-sign:before { content: "\f155"; }
+  .fa-user-shield:before { content: "\f50a"; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-bg">
+      <div class="logo-section">
+        <div class="logo-box">
+          <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo" />
+        </div>
+        <div class="institute-info">
+          <h1>STI SHELAR TRAINING INSTITUTE</h1>
+          <p><i class="fas fa-map-marker-alt mr-1"></i> C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)</p>
+        </div>
+      </div>
+      <div class="receipt-details">
+        <p class="receipt-title"><i class="fas fa-file-alt mr-1"></i> ADMISSION RECEIPT</p>
+        <div class="contact-info">
+          <p><i class="fas fa-phone-alt mr-1"></i> +91 9967288158</p>
+          <p><i class="fas fa-phone-alt mr-1"></i> +91 7400406467</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label"><i class="fas fa-receipt"></i>Receipt Number</div>
+          <div class="info-value" id="receipt_number"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label"><i class="fas fa-user"></i>Student Name</div>
+          <div class="info-value" id="student_name"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label"><i class="fas fa-book-open"></i>Course Name</div>
+          <div class="info-value" id="courseSelect"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label"><i class="fas fa-credit-card"></i>Payment Type</div>
+          <div class="info-value" id="payment_type"></div>
+        </div>
+      </div>
+
+      <div class="payment-details-section">
+        <h3><i class="fas fa-money-check-alt"></i>Payment Information</h3>
+        <div class="payment-grid">
+          <div class="info-item">
+            <div class="info-label"><i class="fas fa-wallet"></i>Payment Method</div>
+            <div class="info-value" id="payment_method"></div>
+          </div>
+          <div class="info-item">
+            <div class="info-label"><i class="fas fa-calendar-day"></i>Course Years</div>
+            <div class="info-value" id="courseYears"></div>
+          </div>
+        </div>
+        <div id="year1_payment_details" class="year-payment-sub-section" style="display: none;">
+          <p><strong>Year 1:</strong> Total: <span id="year1_total"></span>, Paid: <span id="year1_paid"></span>, Due: <span id="year1_due"></span>, Installments: <span id="year1_installments"></span></p>
+        </div>
+        <div id="year2_payment_details" class="year-payment-sub-section" style="display: none;">
+          <p><strong>Year 2:</strong> Total: <span id="year2_total"></span>, Paid: <span id="year2_paid"></span>, Due: <span id="year2_due"></span>, Installments: <span id="year2_installments"></span></p>
+        </div>
+        <div id="year3_payment_details" class="year-payment-sub-section" style="display: none;">
+          <p><strong>Year 3:</strong> Total: <span id="year3_total"></span>, Paid: <span id="year3_paid"></span>, Due: <span id="year3_due"></span>, Installments: <span id="year3_installments"></span></p>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label"><i class="fas fa-clock"></i>Course Duration</div>
+          <div class="info-value" id="coursePeriod"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label"><i class="fas fa-dollar-sign"></i>Total Course Fees</div>
+          <div class="info-value" id="courseFeeees"></div>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-label"><i class="fas fa-user-shield"></i>Guardian Information</div>
+        <div class="info-value" id="guardian_relation"></div>
+        <div class="info-value" id="guardian_name"></div>
+      </div>
+
+      <div style="border-top: 1px dashed #fcd34d; margin-top: 24px; padding-top: 16px;">
+        <div style="font-size: 12px; color: #4b5563; text-align: center; margin-bottom: 8px;">
+          <span id="agree"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="signature-section">
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signature-label">PARENT SIGNATURE</div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signature-label">STUDENT SIGNATURE</div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signature-label">MANAGER SIGNATURE</div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signature-label">DIRECTOR SIGNATURE</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<style>
+    /* General Body and Font Styling */
+    body {
+        font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
+        background-color: #eef2f9; /* Lighter, cooler background */
+        color: #333d4f;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    /* Main container for centering content for screen view */
+    .page-container {
+        padding: 2rem;
+    }
+
+    /* The main content block, styled for an A4-like appearance */
+    .content-wrapper {
+        max-width: 21cm; /* A4 width */
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Header Section */
+    .header {
+        background: linear-gradient(120deg, #1c3d7e 0%, #2e6cdf 100%);
+        color: #ffffff;
+        padding: 2rem; /* 32px */
+    }
+
+    .header-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .header-main {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem; /* 24px */
+    }
+
+    .logo-container {
+        width: 52px;
+        height: 52px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-right: 1rem; /* 16px */
+        flex-shrink: 0;
+    }
+
+    .logo {
+        width: 44px;
+        height: 44px;
+        object-fit: contain;
+    }
+    
+    .institute-title {
+        font-size: 1.5rem; /* 24px */
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    .institute-address {
+        font-size: 0.875rem; /* 14px */
+        opacity: 0.9;
+        margin: 0.25rem 0 0;
+    }
+    
+    .header-details {
+        text-align: left;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 1rem;
+    }
+    
+    .header-details .title {
+        color: #f1c40f; /* Gold color for emphasis */
+        font-weight: 600;
+        font-size: 1.25rem; /* 20px */
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .header-details .contact p {
+        font-size: 0.9rem; /* 14.4px */
+        margin: 0.25rem 0;
+        opacity: 0.95;
+    }
+
+    /* Body/Data Section */
+    .data-body {
+        padding: 2rem; /* 32px */
+    }
+
+    .data-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.75rem; /* 28px */
+    }
+
+    .field-group {
+        margin-bottom: 1.75rem;
+    }
+    
+    .field-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .field-label {
+        font-size: 0.8rem; /* 12.8px */
+        font-weight: 700;
+        color: #1c3d7e; 
+        margin-bottom: 0.5rem; /* 8px */
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .field-value {
+        font-size: 1rem; /* 16px */
+        padding-bottom: 0.5rem; /* 8px */
+        border-bottom: 1px solid #e0e0e0;
+        min-height: 24px;
+        word-wrap: break-word;
+    }
+    
+    .field-value.address {
+        white-space: pre-wrap; /* To respect newlines in the address */
+        line-height: 1.5;
+    }
+    
+    .contact-section {
+        background-color: #f1f5f9;
+        padding: 1.5rem; /* 24px */
+        border-radius: 8px;
+        border-left: 5px solid #2e6cdf;
+        margin-bottom: 1.75rem; /* Add margin for spacing before signature */
+    }
+    
+    .contact-section-title {
+        font-size: 1.25rem; /* 20px */
+        font-weight: 700;
+        color: #1c3d7e;
+        margin: 0 0 1.5rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #d1d9e4;
+    }
+
+    /* Additional styles for the year-payment-sub-section to match the new aesthetic */
+    .year-payment-sub-section {
+        background-color: #e6f0ff; /* A lighter blue to fit new palette */
+        padding: 1rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        border: 1px solid #c9dffc;
+    }
+    .year-payment-sub-section p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+        color: #4b5563;
+    }
+    .year-payment-sub-section p strong {
+        color: #1c3d7e;
+        margin-right: 0.5rem;
+    }
+
+
+    /* Signature Section */
+    .signature-section {
+        padding: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        background-color: #f9fafb; /* Consistent with previous light background */
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .signature-block {
+        text-align: center;
+        margin: 1.5rem 1rem;
+        flex: 1 1 200px; /* Allows flexibility while maintaining min-width */
+        max-width: 250px;
+    }
+
+    .signature-line {
+        border-bottom: 1px dashed #9ca3af;
+        margin-bottom: 0.5rem;
+        min-height: 1.5rem; /* Ensures space for a signature */
+    }
+
+    .signature-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1c3d7e;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+
+    /* Responsive Adjustments for wider screens */
+    @media (min-width: 768px) {
+        .header-content {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        .header-main {
+            margin-bottom: 0;
+        }
+        .header-details {
+            text-align: right;
+            border-top: none;
+            padding-top: 0;
+        }
+        .data-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .contact-grid { /* Not directly used in your HTML, but kept from provided CSS */
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    /* Print-specific styles for A4 paper */
+    @media print {
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            background-color: #ffffff;
+            -webkit-print-color-adjust: exact; /* Chrome, Safari */
+            print-color-adjust: exact; /* Firefox, Edge */
+        }
+        .page-container {
+            padding: 0;
+        }
+        .content-wrapper {
+            max-width: 100%;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+        }
+        .header {
+            padding: 1.5cm;
+        }
+        .data-body {
+            padding: 1.5cm;
+        }
+        /* Ensure Font Awesome icons print if they are web fonts; otherwise, they might not */
+        .fas {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+    
+    /* Font Awesome simulation for PDF generation */
+    /* IMPORTANT: For these to render, the PDF generation environment needs access to Font Awesome fonts.
+       If not rendering, consider replacing with image icons or removing them. */
+    .fas {
+      font-style: normal;
+      font-variant: normal;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+    }
+    .fa-map-marker-alt:before { content: "\f041"; }
+    .fa-file-alt:before { content: "\f15c"; }
+    .fa-phone-alt:before { content: "\f879"; }
+    .fa-receipt:before { content: "\f543"; }
+    .fa-user:before { content: "\f007"; }
+    .fa-book-open:before { content: "\f518"; }
+    .fa-credit-card:before { content: "\f09d"; }
+    .fa-wallet:before { content: "\f555"; }
+    .fa-calendar-day:before { content: "\f783"; }
+    .fa-money-check-alt:before { content: "\f53d"; }
+    .fa-clock:before { content: "\f017"; }
+    .fa-dollar-sign:before { content: "\f155"; }
+    .fa-user-shield:before { content: "\f50a"; }
+</style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-content">
+          <div class="header-main">
+            <div class="logo-container">
+              <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo" class="logo" />
+            </div>
+            <div>
+              <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
+              <p class="institute-address"><i class="fas fa-map-marker-alt"></i> C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)</p>
+            </div>
+          </div>
+          <div class="header-details">
+            <p class="title"><i class="fas fa-file-alt"></i> ADMISSION RECEIPT</p>
+            <div class="contact">
+              <p><i class="fas fa-phone-alt"></i> +91 9967288158</p>
+              <p><i class="fas fa-phone-alt"></i> +91 7400406467</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-body">
+        <div class="data-grid">
+          <div class="field-group">
+            <span class="field-label">Receipt Number</span>
+            <div class="field-value" id="receipt_number"></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Student Name</span>
+            <div class="field-value" id="student_name"></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Course Name</span>
+            <div class="field-value" id="courseSelect"></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Payment Type</span>
+            <div class="field-value" id="payment_type"></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Payment Method</span>
+            <div class="field-value" id="payment_method"></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Course Years</span>
+            <div class="field-value" id="courseYears"></div>
+          </div>
+        </div>
+
+        <div class="contact-section">
+          <h3 class="contact-section-title"><i class="fas fa-money-check-alt"></i> Payment Information</h3>
+          <div id="year1_payment_details" class="year-payment-sub-section" style="display: none;"></div>
+          <div id="year2_payment_details" class="year-payment-sub-section" style="display: none;"></div>
+          <div id="year3_payment_details" class="year-payment-sub-section" style="display: none;"></div>
+        </div>
+
+        <div class="data-grid">
+          <div class="field-group">
+            <span class="field-label">Course Duration</span>
+            <div class="field-value" id="coursePeriod"></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Total Course Fees</span>
+            <div class="field-value" id="courseFeeees"></div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Guardian Information</span>
+          <div class="field-value" id="guardian_relation"></div>
+          <div class="field-value" id="guardian_name"></div>
+        </div>
+
+        <div style="border-top: 1px dashed #f1c40f; margin-top: 2rem; padding-top: 1rem; text-align: center;">
+          <span id="agree" style="font-size: 0.9rem; color: #4b5563;"></span>
+        </div>
+      </div>
+
+      <div class="signature-section">
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <div class="signature-label">PARENT SIGNATURE</div>
+        </div>
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <div class="signature-label">STUDENT SIGNATURE</div>
+        </div>
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <div class="signature-label">MANAGER SIGNATURE</div>
+        </div>
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <div class="signature-label">DIRECTOR SIGNATURE</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
