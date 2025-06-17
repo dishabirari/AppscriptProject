@@ -41,6 +41,8 @@
         .withFailureHandler(onFailure)
         // .submitForm(formObject);
         .admissionprocessForm(formObject);
+        processForm(formData);
+
     }
 
     // Helper functions
@@ -73,4 +75,146 @@
         confirmButtonText: 'OK'
       });
     }
+   
+ let currentLoggedInUser = sessionStorage.getItem('loggedInUser') || '';
+
+    // Get references to DOM elements
+    const loginForm = document.getElementById('loginForm');
+    const inquiryFormSection = document.getElementById('inquiryFormSection');
+    const inquiryForm = document.getElementById('inquiryForm');
+
+    // Function to show custom alert modal
+    function showCustomAlert(title, message, isSuccess) {
+        const modal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const successIcon = document.getElementById('successPath');
+        const errorIcon = document.getElementById('errorPath');
+        const modalIcon = document.getElementById('modalIcon');
+
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+
+        // Reset icon visibility
+        successIcon.style.display = 'none';
+        errorIcon.style.display = 'none';
+        modalIcon.classList.remove('success', 'error');
+
+        if (isSuccess) {
+            successIcon.style.display = 'block';
+            modalIcon.classList.add('success');
+        } else {
+            errorIcon.style.display = 'block';
+            modalIcon.classList.add('error');
+        }
+
+        modal.style.display = 'flex'; // Show the modal
+    }
+
+    // Function to hide custom alert modal
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+        document.getElementById('customModal').style.display = 'none';
+    });
+
+    // Function to update UI based on login status
+    function updateUI() {
+        if (currentLoggedInUser) {
+            loginForm.style.display = 'none';
+            inquiryFormSection.style.display = 'block';
+        } else {
+            loginForm.style.display = 'block';
+            inquiryFormSection.style.display = 'none';
+        }
+    }
+
+    // --- Login Form Handling ---
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      console.log("Attempting login for:", username); // Debugging: log username
+
+      // Call the server-side loginUser function
+      google.script.run
+        .withSuccessHandler(function(response) {
+          console.log("Login Response (from server):", response); // Debugging: log server response
+          if (response.success) {
+            currentLoggedInUser = response.userName; // Store the logged-in user's name
+            sessionStorage.setItem('loggedInUser', currentLoggedInUser); // Store in session storage
+            console.log("Current Logged In User (after setting):", currentLoggedInUser); // Debugging
+            showCustomAlert("Login Successful", `Welcome, ${currentLoggedInUser}!`, true);
+            updateUI(); // Update UI after successful login
+          } else {
+            showCustomAlert("Login Failed", response.error, false);
+          }
+        })
+        .withFailureHandler(function(error) {
+          console.error("Login server error:", error);
+          showCustomAlert("Error", `An unexpected error occurred during login: ${error.message}`, false);
+        })
+        .loginUser({ username: username, password: password });
+    });
+
+
+    // --- Inquiry Form Handling ---
+    inquiryForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const formData = {};
+      new FormData(inquiryForm).forEach((value, key) => {
+        formData[key] = value;
+      });
+
+      // Add the logged-in user ID to the form data from sessionStorage
+      formData.loggedInUserId = currentLoggedInUser; // Use the value from the variable
+
+      console.log("Submitting Inquiry Form. loggedInUserId:", formData.loggedInUserId); // Debugging
+
+      // Call the server-side processForm function
+      google.script.run
+        .withSuccessHandler(function(response) {
+          console.log("Inquiry Form Response (from server):", response); // Debugging
+          if (response.success) {
+            showCustomAlert("Success!", `${response.message} Student: ${response.studentName}`, true);
+            inquiryForm.reset(); // Clear the form
+            // Optionally, clear sessionStorage and show login again if needed after submission
+            // sessionStorage.removeItem('loggedInUser');
+            // currentLoggedInUser = '';
+            // updateUI();
+          } else {
+            showCustomAlert("Error", `Error: ${response.message}`, false);
+          }
+        })
+        .withFailureHandler(function(error) {
+          console.error("Inquiry form server error:", error);
+          showCustomAlert("Error", `An unexpected error occurred: ${error.message}`, false);
+        })
+        .processForm(formData); // Call the server-side function
+    });
+
+    // --- Local PDF Download (client-side only, for testing HTML templating) ---
+    // Note: This is a client-side only PDF generation and will not save to Google Drive.
+    // The server-side processForm already handles saving to Google Drive.
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+      showCustomAlert("Feature Note", "This 'Download PDF' button is for client-side HTML preview and will not save to Google Drive. The 'Submit Inquiry' button handles PDF generation and saving to Drive.", false);
+      // In a real application, if you wanted client-side PDF generation,
+      // you would use a library like jsPDF or html2pdf.
+      // For this example, it's just a placeholder and reminder.
+    });
+
+    // Set today's date as default for the date field
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0!
+      const dd = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      document.getElementById('date').value = formattedDate;
+
+      // Initialize UI visibility based on whether user is already logged in
+      updateUI();
+    });
+
 </script>
