@@ -1120,134 +1120,264 @@ function getDueFeesData(userRole) {
 //     };
 //   }
 // }
-function processForm(formData) {
-  console.log("Processing form...");
+// function processForm(formData) {
+//   console.log("Processing form...");
 
-  // --- PDF Folder Setup ---
-  // IMPORTANT: Replace 'YOUR_PDF_FOLDER_ID_HERE' with the actual ID of your Google Drive folder.
-  const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw'; // <--- !!! REPLACE THIS !!! ---
-  let pdfFolder;
-  try {
-    pdfFolder = DriveApp.getFolderById(pdfFolderId);
-  } catch (e) {
-    console.error("Error getting PDF folder:", e);
-    // Log this error in audit log, as it's a critical operational issue
-    createAuditLogEntry("PDF Folder Access Error", "System", {
-      reason: `Failed to access PDF folder with ID: ${pdfFolderId}`,
-      error: e.message,
-      formDataSummary: {fullName: formData.fullName, email: formData.email}
-    });
-    return {
-      success: false,
-      message: `Failed to access PDF folder. Please check the ID and folder permissions.`,
-      error: e.message,
-    };
-  }
+//   // --- PDF Folder Setup ---
+//   // IMPORTANT: Replace 'YOUR_PDF_FOLDER_ID_HERE' with the actual ID of your Google Drive folder.
+//   const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw'; // <--- !!! REPLACE THIS !!! ---
+//   let pdfFolder;
+//   try {
+//     pdfFolder = DriveApp.getFolderById(pdfFolderId);
+//   } catch (e) {
+//     console.error("Error getting PDF folder:", e);
+//     // Log this error in audit log, as it's a critical operational issue
+//     createAuditLogEntry("PDF Folder Access Error", "System", {
+//       reason: `Failed to access PDF folder with ID: ${pdfFolderId}`,
+//       error: e.message,
+//       formDataSummary: {fullName: formData.fullName, email: formData.email}
+//     });
+//     return {
+//       success: false,
+//       message: `Failed to access PDF folder. Please check the ID and folder permissions.`,
+//       error: e.message,
+//     };
+//   }
 
-  // --- Sheet References ---
-  const dfSheet = ss.getSheetByName("DF");
-  if (!dfSheet) {
-    console.error("Error: 'DF' sheet not found.");
-    // Log this error
-    createAuditLogEntry("Sheet Not Found Error", "System", {
-      reason: "The 'DF' sheet was not found in the active spreadsheet.",
-      formDataSummary: {fullName: formData.fullName, email: formData.email}
-    });
-    return { success: false, message: "The 'DF' sheet was not found." };
-  }
+//   // --- Sheet References ---
+//   const dfSheet = ss.getSheetByName("DF");
+//   if (!dfSheet) {
+//     console.error("Error: 'DF' sheet not found.");
+//     // Log this error
+//     createAuditLogEntry("Sheet Not Found Error", "System", {
+//       reason: "The 'DF' sheet was not found in the active spreadsheet.",
+//       formDataSummary: {fullName: formData.fullName, email: formData.email}
+//     });
+//     return { success: false, message: "The 'DF' sheet was not found." };
+//   }
 
-  const auditLogSheet = ss.getSheetByName("AuditLog");
-  if (!auditLogSheet) {
-    console.error("Error: 'AuditLog' sheet not found.");
-    // Log this error (though it might fail if auditLogSheet itself is null)
-    // A simple console log is sufficient here if auditLogSheet is the issue.
-    return { success: false, message: "The 'AuditLog' sheet was not found. Cannot log audit entries." };
-  }
+//   const auditLogSheet = ss.getSheetByName("AuditLog");
+//   if (!auditLogSheet) {
+//     console.error("Error: 'AuditLog' sheet not found.");
+//     // Log this error (though it might fail if auditLogSheet itself is null)
+//     // A simple console log is sufficient here if auditLogSheet is the issue.
+//     return { success: false, message: "The 'AuditLog' sheet was not found. Cannot log audit entries." };
+//   }
 
-  // --- Determine User ID for Audit Log ---
-  // This is the crucial line: it takes the 'loggedInUserId' passed from the client-side.
-  // If it's not provided (e.g., user not logged in or a bug), it defaults to "Anonymous".
-  const userIdForAudit = formData.loggedInUserId || "Anonymous";
-  console.log(`processForm received loggedInUserId: ${userIdForAudit}`);
+//   // --- Determine User ID for Audit Log ---
+//   // This is the crucial line: it takes the 'loggedInUserId' passed from the client-side.
+//   // If it's not provided (e.g., user not logged in or a bug), it defaults to "Anonymous".
+//   const userIdForAudit = formData.loggedInUserId || "Anonymous";
+//   console.log(`processForm received loggedInUserId: ${userIdForAudit}`);
 
 
   
 
-  // --- Step 1: Populate the HTML template with form data ---
+//   // --- Step 1: Populate the HTML template with form data ---
+//   let htmlContent;
+//   try {
+//     htmlContent = HtmlService.createHtmlOutputFromFile("ifrom").getContent();
+//   } catch (e) {
+//     console.error("Error reading 'ifrom.html' template file:", e);
+//     createAuditLogEntry("HTML Template Error", userIdForAudit, {
+//       reason: "Failed to read 'ifrom.html' template file.",
+//       error: e.message,
+//       formDataSummary: {fullName: formData.fullName, email: formData.email}
+//     });
+//     return { success: false, message: "Failed to read 'ifrom.html' template." };
+//   }
+
+//   // Iterate over form data and inject into HTML
+//   Object.keys(formData).forEach(key => {
+//     // Regex to find divs by ID and replace their content
+//     const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
+//     const value = formData[key] || '';
+//     if (regex.test(htmlContent)) {
+//       htmlContent = htmlContent.replace(regex, `$1${value}$3`);
+//     }
+//   });
+
+//   // --- Step 2: Convert the final HTML string to a PDF Blob ---
+//   let pdfBlob;
+//   try {
+//     const tempBlob = Utilities.newBlob(htmlContent, 'text/html', 'inquiry_temp.html');
+//     pdfBlob = tempBlob.getAs('application/pdf').setName("Inquiry_Form_" + (formData.fullName || "User") + ".pdf");
+//   } catch (e) {
+//     console.error("Error converting HTML to PDF:", e);
+//     createAuditLogEntry("PDF Conversion Error", userIdForAudit, {
+//       reason: "An error occurred while converting the form data to a PDF.",
+//       error: e.message,
+//       formDataSummary: {fullName: formData.fullName, email: formData.email}
+//     });
+//     return { success: false, message: "An error occurred while converting to PDF." };
+//   }
+
+//   // --- Step 3: Save the generated PDF to Google Drive ---
+//   try {
+//     pdfFolder.createFile(pdfBlob);
+//     console.log(`PDF saved for ${formData.fullName}`);
+//   } catch (e) {
+//     console.error("Error saving PDF to Drive:", e);
+//     createAuditLogEntry("PDF Save Error", userIdForAudit, {
+//       reason: "Failed to save the generated PDF to Google Drive.",
+//       error: e.message,
+//       formDataSummary: {fullName: formData.fullName, email: formData.email}
+//     });
+//     return { success: false, message: "Failed to save PDF to Google Drive." };
+//   }
+
+//   // --- Step 4: Validate and Append Data to 'DF' Sheet ---
+//   try {
+//     const requiredFields = ["fullName", "phoneNo", "whatsappNo", "parentsNo", "address"];
+//     const missingFields = requiredFields.filter((field) => !formData[field]);
+
+//     if (missingFields.length > 0) {
+//       console.warn(`Missing required fields: ${missingFields.join(", ")}`);
+//       createAuditLogEntry("Form Validation Failed", userIdForAudit, {
+//         reason: `Missing required fields: ${missingFields.join(", ")}`,
+//         formDataDetails: JSON.stringify(formData)
+//       });
+//       return {
+//         success: false,
+//         message: `Missing required fields: ${missingFields.join(", ")}`,
+//       };
+//     }
+
+
+
+
+//     const rowData = [
+//       new Date(), // Timestamp
+//       formData.date || new Date().toISOString().split("T")[0],
+//       formData.fullName,
+//       formData.qualification || "",
+//       formData.phoneNo,
+//       formData.whatsappNo,
+//       formData.parentsNo,
+//       formData.email || "",
+//       formData.age || "",
+//       formData.address,
+//       formData.interestedCourse || "",
+//       formData.inquiryTakenBy || "",
+//       formData.branch || "",
+//     ];
+
+//     dfSheet.appendRow(rowData);
+//     console.log(`Inquiry data appended for ${formData.fullName}`);
+
+//     // --- Create Audit Log Entry for Successful Submission ---
+//     createAuditLogEntry("Inquiry Form Submission", userIdForAudit, {
+//       studentName: formData.fullName,
+//       interestedCourse: formData.interestedCourse,
+//       branch: formData.branch
+//     });
+
+//     return {
+//       success: true,
+//       message: "Inquiry submitted successfully!",
+//       studentName: formData.fullName,
+//     };
+
+//   } catch (e) {
+//     console.error("Error during form processing and sheet append:", e);
+//     createAuditLogEntry("Process Form Error", userIdForAudit, {
+//       error: e.message,
+//       formDataDetails: JSON.stringify(formData)
+//     });
+//     return {
+//       success: false,
+//       message: "An error occurred while processing your inquiry.",
+//       error: e.message,
+//     };
+//   }
+// }
+
+function processForm(formData) {
+  console.log("Processing form...");
+
+  const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw';
+  const userIdForAudit = formData.loggedInUserId || "Anonymous";
+
+  let pdfFolder;
+  try {
+    pdfFolder = DriveApp.getFolderById(pdfFolderId);
+  } catch (e) {
+    console.error("PDF folder access error:", e);
+    createAuditLogEntry("PDF Folder Access Error", userIdForAudit, {
+      error: e.message,
+      formDataSummary: { fullName: formData.fullName, email: formData.email }
+    });
+    return { success: false, message: "Cannot access PDF folder.", error: e.message };
+  }
+
+  
+  const dfSheet = ss.getSheetByName("DF");
+  if (!dfSheet) {
+    console.error("DF sheet not found.");
+    createAuditLogEntry("Sheet Not Found Error", userIdForAudit, {
+      reason: "DF sheet missing.",
+      formDataSummary: { fullName: formData.fullName }
+    });
+    return { success: false, message: "DF sheet not found." };
+  }
+
+  
   let htmlContent;
   try {
     htmlContent = HtmlService.createHtmlOutputFromFile("ifrom").getContent();
   } catch (e) {
-    console.error("Error reading 'ifrom.html' template file:", e);
+    console.error("HTML template error:", e);
     createAuditLogEntry("HTML Template Error", userIdForAudit, {
-      reason: "Failed to read 'ifrom.html' template file.",
-      error: e.message,
-      formDataSummary: {fullName: formData.fullName, email: formData.email}
+      error: e.message
     });
-    return { success: false, message: "Failed to read 'ifrom.html' template." };
+    return { success: false, message: "HTML template load failed." };
   }
 
-  // Iterate over form data and inject into HTML
+
   Object.keys(formData).forEach(key => {
-    // Regex to find divs by ID and replace their content
+
+
     const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
-    const value = formData[key] || '';
+
     if (regex.test(htmlContent)) {
-      htmlContent = htmlContent.replace(regex, `$1${value}$3`);
+      htmlContent = htmlContent.replace(regex, `$1${formData[key]}$3`);
     }
   });
 
-  // --- Step 2: Convert the final HTML string to a PDF Blob ---
+
+
   let pdfBlob;
   try {
-    const tempBlob = Utilities.newBlob(htmlContent, 'text/html', 'inquiry_temp.html');
-    pdfBlob = tempBlob.getAs('application/pdf').setName("Inquiry_Form_" + (formData.fullName || "User") + ".pdf");
-  } catch (e) {
-    console.error("Error converting HTML to PDF:", e);
-    createAuditLogEntry("PDF Conversion Error", userIdForAudit, {
-      reason: "An error occurred while converting the form data to a PDF.",
-      error: e.message,
-      formDataSummary: {fullName: formData.fullName, email: formData.email}
-    });
-    return { success: false, message: "An error occurred while converting to PDF." };
-  }
-
-  // --- Step 3: Save the generated PDF to Google Drive ---
-  try {
+    pdfBlob = Utilities.newBlob(htmlContent, 'text/html')
+      .getAs('application/pdf')
+      .setName("Inquiry_Form_" + (formData.fullName || "User") + ".pdf");
     pdfFolder.createFile(pdfBlob);
-    console.log(`PDF saved for ${formData.fullName}`);
+
   } catch (e) {
-    console.error("Error saving PDF to Drive:", e);
-    createAuditLogEntry("PDF Save Error", userIdForAudit, {
-      reason: "Failed to save the generated PDF to Google Drive.",
-      error: e.message,
-      formDataSummary: {fullName: formData.fullName, email: formData.email}
-    });
-    return { success: false, message: "Failed to save PDF to Google Drive." };
+    console.error("PDF conversion error:", e);
+    createAuditLogEntry("PDF Conversion Error", userIdForAudit, { error: e.message });
+    return { success: false, message: "PDF generation failed." };
   }
 
-  // --- Step 4: Validate and Append Data to 'DF' Sheet ---
+
   try {
     const requiredFields = ["fullName", "phoneNo", "whatsappNo", "parentsNo", "address"];
-    const missingFields = requiredFields.filter((field) => !formData[field]);
+    const missingFields = requiredFields.filter(field => !formData[field]);
 
+    
     if (missingFields.length > 0) {
-      console.warn(`Missing required fields: ${missingFields.join(", ")}`);
+
       createAuditLogEntry("Form Validation Failed", userIdForAudit, {
-        reason: `Missing required fields: ${missingFields.join(", ")}`,
-        formDataDetails: JSON.stringify(formData)
+        reason: `Missing: ${missingFields.join(", ")}`
       });
-      return {
-        success: false,
-        message: `Missing required fields: ${missingFields.join(", ")}`,
-      };
+      return { success: false, message: `Missing: ${missingFields.join(", ")}` };
     }
 
 
 
 
     const rowData = [
-      new Date(), // Timestamp
+      new Date(),
       formData.date || new Date().toISOString().split("T")[0],
       formData.fullName,
       formData.qualification || "",
@@ -1260,37 +1390,32 @@ function processForm(formData) {
       formData.interestedCourse || "",
       formData.inquiryTakenBy || "",
       formData.branch || "",
-    ];
+      userIdForAudit
+   
+   
+   ];
+
 
     dfSheet.appendRow(rowData);
-    console.log(`Inquiry data appended for ${formData.fullName}`);
-
-    // --- Create Audit Log Entry for Successful Submission ---
+  
     createAuditLogEntry("Inquiry Form Submission", userIdForAudit, {
       studentName: formData.fullName,
-      interestedCourse: formData.interestedCourse,
-      branch: formData.branch
+      interestedCourse: formData.interestedCourse
     });
 
     return {
       success: true,
       message: "Inquiry submitted successfully!",
-      studentName: formData.fullName,
-    };
-
+      studentName: formData.fullName
+ 
+   };
   } catch (e) {
-    console.error("Error during form processing and sheet append:", e);
-    createAuditLogEntry("Process Form Error", userIdForAudit, {
-      error: e.message,
-      formDataDetails: JSON.stringify(formData)
-    });
-    return {
-      success: false,
-      message: "An error occurred while processing your inquiry.",
-      error: e.message,
-    };
+    console.error("Final write error:", e);
+    createAuditLogEntry("Process Form Error", userIdForAudit, { error: e.message });
+    return { success: false, message: "Final write failed.", error: e.message };
   }
 }
+
 
 
 // function createAuditLogEntry(action, userId, additionalDetails = {}) {
@@ -1929,105 +2054,400 @@ function authorizeScript() {
 
 
 
+// function admissionprocessForm(formData) {
+//   console.log("Processing admission form...");
+
+//   const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
+//   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions"); // Assuming 'Admissions' sheet
+
+//   // --- Input Validation ---
+//   const requiredFields = [
+//     "student_name", "courseSelect", "receipt_number", "courseFeeees",
+//     "payment_method", "courseYears", "guardian_name", "guardian_relation",
+//     // Add other critical fields as per your admission process.
+//     // 'phoneNo' if it were in the HTML form and passed in formData
+//   ];
+//   const missingFields = requiredFields.filter((field) => !formData[field]);
+
+//   if (missingFields.length > 0) {
+//     return {
+//       success: false,
+//       message: `Missing required fields for admission: ${missingFields.map(f => f.replace(/_/g, ' ')).join(", ")}.`,
+//     };
+//   }
+
+//   if (!formData.agree) { // Assuming 'agree' is the name for your checkbox
+//     return {
+//       success: false,
+//       message: "Please agree to the terms and conditions to proceed with admission.",
+//     };
+//   }
+
+//   try {
+//     // 1. Get the HTML content as a plain string from 'aAdmission.html'
+//     let html = HtmlService.createHtmlOutputFromFile("aAdmission").getContent();
+
+//     // 2. Inject form data into the HTML template
+//     // This iterates over each key-value pair in formData and replaces the content
+//     // of matching <div> elements by ID in the HTML.
+//     Object.keys(formData).forEach(key => {
+//       const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
+//       const value = formData[key] || ''; // Ensure value is a string, default to empty
+
+//       if (key === 'agree') { // Special handling for the agreement checkbox
+//         html = html.replace(`<span id="${key}"></span>`, `<span id="${key}">${value ? 'Agreed to Terms & Conditions' : 'Did NOT Agree to Terms & Conditions'}</span>`);
+//       } else {
+//         if (regex.test(html)) {
+//           html = html.replace(regex, `$1${value}$3`);
+//         }
+//       }
+//     });
+
+//     // 3. Handle Year-Specific Payment Details Dynamically in HTML
+//     const numYears = parseInt(formData.courseYears, 10) || 1;
+
+//     for (let i = 1; i <= 3; i++) {
+//       const yearSectionId = `year${i}_payment_details`;
+//       const yearTotal = formData[`year${i}_total`] || 'N/A';
+//       const yearPaid = formData[`year${i}_paid`] || 'N/A';
+//       const yearDue = formData[`year${i}_due`] || 'N/A';
+//       const yearInstallments = formData[`year${i}_installments`] || 'N/A'; // For EMI
+
+//       if (i <= numYears) {
+//         // Construct the content for this year's payment details
+//         const yearContent = `
+//           <p><strong>Year ${i}:</strong> Total: ₹ ${yearTotal}, Paid: ₹ ${yearPaid}, Due: ₹ ${yearDue}, Installments: ${yearInstallments}</p>
+//         `;
+//         // Replace the hidden div with the visible, populated div
+//         html = html.replace(
+//           `<div id="${yearSectionId}" class="year-payment-sub-section" style="display: none;"></div>`,
+//           `<div id="${yearSectionId}" class="year-payment-sub-section" style="display: block;">${yearContent}</div>`
+//         );
+//       } else {
+//         // Ensure other year sections remain hidden or are removed if not applicable
+//         // This regex ensures it targets the specific year section placeholder even if it was intended to be hidden
+//         html = html.replace(
+//           new RegExp(`(<div[^>]*id="${yearSectionId}"[^>]*>)(.*?)(</div>)`, 's'),
+//           `<div id="${yearSectionId}" class="year-payment-sub-section" style="display: none;"></div>` // Keep it hidden and empty
+//         );
+//       }
+//     }
+
+//     // 4. Generate PDF
+//     const studentNameForPdf = formData.student_name ? formData.student_name.replace(/[^a-zA-Z0-9]/g, '_') : "Student";
+//     const pdfBlob = Utilities.newBlob(html, 'text/html', `Admission_Receipt_${studentNameForPdf}.html`)
+//                              .getAs('application/pdf')
+//                              .setName(`Admission_Receipt_${studentNameForPdf}_${new Date().toLocaleDateString('en-IN').replace(/\//g, '-')}.pdf`);
+
+//     const pdfFile = pdfFolder.createFile(pdfBlob);
+
+//     // 5. Append data to Google Sheet
+//     const timestamp = new Date();
+//     const rowData = [
+//       timestamp,
+//       formData.receipt_number || '',
+//       formData.student_name || '',
+//       formData.courseSelect || '',
+//       formData.coursePeriod || '', // Mapped from 'coursePeriod'
+//       formData.courseFeeees || '', // Mapped from 'courseFeeees' (Total Fees)
+//       formData.payment_type || '',
+//       formData.payment_method || '',
+
+//       formData.courseYears || '',
+
+//       formData.year1_total || '',
+//       formData.year1_paid || '',
+//       formData.year1_due || '',
+//       formData.year1_installments || '',
+
+//       formData.year2_total || '',
+//       formData.year2_paid || '',
+//       formData.year2_due || '',
+//       formData.year2_installments || '',
+
+//       formData.year3_total || '',
+//       formData.year3_paid || '',
+//       formData.year3_due || '',
+//       formData.year3_installments || '',
+
+//       formData.guardian_relation || '',
+//       formData.guardian_name || '',
+//       formData.agree ? 'Yes' : 'No'
+//     ];
+//     sheet.appendRow(rowData);
+
+//     console.log("Admission form processed successfully.");
+//     return {
+//       success: true,
+//       message: "Admission form submitted and receipt generated successfully!",
+//       studentName: formData.student_name,
+//       receiptNumber: formData.receipt_number,
+//       pdfLink: pdfFile.getUrl(), // Return the URL of the generated PDF
+//     };
+
+//   } catch (e) {
+//     console.error("Error in admissionprocessForm:", e.message, e.stack);
+//     return {
+//       success: false,
+//       message: "An error occurred while processing your admission form.",
+//       error: e.message,
+//     };
+//   }
+// }
+
+
+// function admissionprocessForm(formData) {
+//   console.log("Processing admission form...");
+
+//   const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw'; // Reuse Inquiry form folder
+//   const userIdForAudit = formData.loggedInUserId || "Anonymous"; // User tracker
+//   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions");
+
+//   if (!sheet) {
+//     console.error("Admissions sheet not found.");
+//     createAuditLogEntry("Sheet Not Found Error", userIdForAudit, {
+//       reason: "Admissions sheet is missing in the spreadsheet."
+//     });
+//     return { success: false, message: "Admissions sheet not found." };
+//   }
+
+//   const requiredFields = [
+//     "student_name", "courseSelect", "receipt_number", "courseFeeees",
+//     "payment_method", "courseYears", "guardian_name", "guardian_relation"
+//   ];
+//   const missingFields = requiredFields.filter((field) => !formData[field]);
+
+//   if (missingFields.length > 0) {
+//     const msg = `Missing required fields for admission: ${missingFields.map(f => f.replace(/_/g, ' ')).join(", ")}.`;
+//     createAuditLogEntry("Form Validation Failed", userIdForAudit, {
+//       missingFields,
+//       formDataSummary: { student: formData.student_name || "N/A" }
+//     });
+//     return { success: false, message: msg };
+//   }
+
+//   if (!formData.agree) {
+//     createAuditLogEntry("Terms Not Agreed", userIdForAudit, {
+//       student: formData.student_name,
+//       reason: "Terms and conditions not agreed."
+//     });
+//     return {
+//       success: false,
+//       message: "Please agree to the terms and conditions to proceed with admission."
+//     };
+//   }
+
+//   try {
+//     let html = HtmlService.createHtmlOutputFromFile("aAdmission").getContent();
+
+//     Object.keys(formData).forEach(key => {
+//       const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
+//       const value = formData[key] || '';
+//       if (key === 'agree') {
+//         html = html.replace(`<span id="${key}"></span>`, `<span id="${key}">${value ? 'Agreed to Terms & Conditions' : 'Did NOT Agree'}</span>`);
+//       } else if (regex.test(html)) {
+//         html = html.replace(regex, `$1${value}$3`);
+//       }
+//     });
+
+//     const numYears = parseInt(formData.courseYears, 10) || 1;
+//     for (let i = 1; i <= 3; i++) {
+//       const id = `year${i}_payment_details`;
+//       if (i <= numYears) {
+//         const yearContent = `
+//           <p><strong>Year ${i}:</strong> Total: ₹ ${formData[`year${i}_total`] || 'N/A'}, 
+//           Paid: ₹ ${formData[`year${i}_paid`] || 'N/A'}, 
+//           Due: ₹ ${formData[`year${i}_due`] || 'N/A'}, 
+//           Installments: ${formData[`year${i}_installments`] || 'N/A'}</p>
+//         `;
+//         html = html.replace(
+//           `<div id="${id}" class="year-payment-sub-section" style="display: none;"></div>`,
+//           `<div id="${id}" class="year-payment-sub-section" style="display: block;">${yearContent}</div>`
+//         );
+//       } else {
+//         html = html.replace(
+//           new RegExp(`(<div[^>]*id="${id}"[^>]*>)(.*?)(</div>)`, 's'),
+//           `<div id="${id}" class="year-payment-sub-section" style="display: none;"></div>`
+//         );
+//       }
+//     }
+
+//     const pdfBlob = Utilities.newBlob(html, 'text/html', 'Admission.html')
+//       .getAs('application/pdf')
+//       .setName(`Admission_Receipt_${formData.student_name.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toLocaleDateString('en-IN').replace(/\//g, '-')}.pdf`);
+//     const pdfFolder = DriveApp.getFolderById(pdfFolderId);
+//     const pdfFile = pdfFolder.createFile(pdfBlob);
+
+//     const rowData = [
+//       new Date(),
+//       formData.receipt_number || '',
+//       formData.student_name || '',
+//       formData.courseSelect || '',
+//       formData.coursePeriod || '',
+//       formData.courseFeeees || '',
+//       formData.payment_type || '',
+//       formData.payment_method || '',
+//       formData.courseYears || '',
+
+//       formData.year1_total || '',
+//       formData.year1_paid || '',
+//       formData.year1_due || '',
+//       formData.year1_installments || '',
+
+//       formData.year2_total || '',
+//       formData.year2_paid || '',
+//       formData.year2_due || '',
+//       formData.year2_installments || '',
+
+//       formData.year3_total || '',
+//       formData.year3_paid || '',
+//       formData.year3_due || '',
+//       formData.year3_installments || '',
+
+//       formData.guardian_relation || '',
+//       formData.guardian_name || '',
+//       formData.agree ? 'Yes' : 'No'
+//     ];
+//     sheet.appendRow(rowData);
+
+//     // Final audit log for successful admission
+//     createAuditLogEntry("Admission Form Submission", userIdForAudit, {
+//       student: formData.student_name,
+//       receiptNumber: formData.receipt_number,
+//       course: formData.courseSelect,
+//       branch: formData.branch || "N/A"
+//     });
+
+//     return {
+//       success: true,
+//       message: "Admission form submitted and receipt generated successfully!",
+//       studentName: formData.student_name,
+//       receiptNumber: formData.receipt_number,
+//       pdfLink: pdfFile.getUrl()
+//     };
+
+//   } catch (e) {
+//     console.error("Error in admissionprocessForm:", e.message);
+//     createAuditLogEntry("Admission Processing Error", userIdForAudit, {
+//       error: e.message,
+//       formDataSummary: { student: formData.student_name || "N/A" }
+//     });
+//     return {
+//       success: false,
+//       message: "An error occurred while processing your admission form.",
+//       error: e.message
+//     };
+//   }
+// }
 function admissionprocessForm(formData) {
   console.log("Processing admission form...");
 
-  const pdfFolder = DriveApp.getFolderById(Iffolderid); // PDF save location
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions"); // Assuming 'Admissions' sheet
+  const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw'; // Reuse Inquiry form folder
 
-  // --- Input Validation ---
+  // ✅ Ensure consistent, traceable user ID from login
+  const userIdForAudit = formData.loggedInUserId && formData.loggedInUserId.trim() !== "" 
+    ? formData.loggedInUserId.trim() 
+    : "Anonymous";
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions");
+
+  if (!sheet) {
+    console.error("Admissions sheet not found.");
+    createAuditLogEntry("Sheet Not Found Error", userIdForAudit, {
+      reason: "Admissions sheet is missing in the spreadsheet."
+    });
+    return { success: false, message: "Admissions sheet not found." };
+  }
+
   const requiredFields = [
     "student_name", "courseSelect", "receipt_number", "courseFeeees",
-    "payment_method", "courseYears", "guardian_name", "guardian_relation",
-    // Add other critical fields as per your admission process.
-    // 'phoneNo' if it were in the HTML form and passed in formData
+    "payment_method", "courseYears", "guardian_name", "guardian_relation"
   ];
   const missingFields = requiredFields.filter((field) => !formData[field]);
 
   if (missingFields.length > 0) {
-    return {
-      success: false,
-      message: `Missing required fields for admission: ${missingFields.map(f => f.replace(/_/g, ' ')).join(", ")}.`,
-    };
+    const msg = `Missing required fields for admission: ${missingFields.map(f => f.replace(/_/g, ' ')).join(", ")}.`;
+    createAuditLogEntry("Form Validation Failed", userIdForAudit, {
+      missingFields,
+      formDataSummary: { student: formData.student_name || "N/A" }
+    });
+    return { success: false, message: msg };
   }
 
-  if (!formData.agree) { // Assuming 'agree' is the name for your checkbox
+  if (!formData.agree) {
+    createAuditLogEntry("Terms Not Agreed", userIdForAudit, {
+      student: formData.student_name,
+      reason: "Terms and conditions not agreed."
+    });
     return {
       success: false,
-      message: "Please agree to the terms and conditions to proceed with admission.",
+      message: "Please agree to the terms and conditions to proceed with admission."
     };
   }
 
   try {
-    // 1. Get the HTML content as a plain string from 'aAdmission.html'
+    
     let html = HtmlService.createHtmlOutputFromFile("aAdmission").getContent();
 
-    // 2. Inject form data into the HTML template
-    // This iterates over each key-value pair in formData and replaces the content
-    // of matching <div> elements by ID in the HTML.
+
+
     Object.keys(formData).forEach(key => {
       const regex = new RegExp(`(<div[^>]*id="${key}"[^>]*>)(.*?)(</div>)`, 's');
-      const value = formData[key] || ''; // Ensure value is a string, default to empty
-
-      if (key === 'agree') { // Special handling for the agreement checkbox
-        html = html.replace(`<span id="${key}"></span>`, `<span id="${key}">${value ? 'Agreed to Terms & Conditions' : 'Did NOT Agree to Terms & Conditions'}</span>`);
-      } else {
-        if (regex.test(html)) {
-          html = html.replace(regex, `$1${value}$3`);
-        }
+      const value = formData[key] || '';
+      if (key === 'agree') {
+        html = html.replace(`<span id="${key}"></span>`, `<span id="${key}">${value ? 'Agreed to Terms & Conditions' : 'Did NOT Agree'}</span>`);
+      } else if (regex.test(html)) {
+        html = html.replace(regex, `$1${value}$3`);
       }
     });
 
-    // 3. Handle Year-Specific Payment Details Dynamically in HTML
+
+
+  
     const numYears = parseInt(formData.courseYears, 10) || 1;
 
     for (let i = 1; i <= 3; i++) {
-      const yearSectionId = `year${i}_payment_details`;
-      const yearTotal = formData[`year${i}_total`] || 'N/A';
-      const yearPaid = formData[`year${i}_paid`] || 'N/A';
-      const yearDue = formData[`year${i}_due`] || 'N/A';
-      const yearInstallments = formData[`year${i}_installments`] || 'N/A'; // For EMI
-
+      const id = `year${i}_payment_details`;
       if (i <= numYears) {
-        // Construct the content for this year's payment details
+
         const yearContent = `
-          <p><strong>Year ${i}:</strong> Total: ₹ ${yearTotal}, Paid: ₹ ${yearPaid}, Due: ₹ ${yearDue}, Installments: ${yearInstallments}</p>
+          <p><strong>Year ${i}:</strong> Total: ₹ ${formData[`year${i}_total`] || 'N/A'}, 
+          Paid: ₹ ${formData[`year${i}_paid`] || 'N/A'}, 
+          Due: ₹ ${formData[`year${i}_due`] || 'N/A'}, 
+          Installments: ${formData[`year${i}_installments`] || 'N/A'}</p>
         `;
-        // Replace the hidden div with the visible, populated div
+
         html = html.replace(
-          `<div id="${yearSectionId}" class="year-payment-sub-section" style="display: none;"></div>`,
-          `<div id="${yearSectionId}" class="year-payment-sub-section" style="display: block;">${yearContent}</div>`
+          `<div id="${id}" class="year-payment-sub-section" style="display: none;"></div>`,
+          `<div id="${id}" class="year-payment-sub-section" style="display: block;">${yearContent}</div>`
         );
       } else {
-        // Ensure other year sections remain hidden or are removed if not applicable
-        // This regex ensures it targets the specific year section placeholder even if it was intended to be hidden
+
         html = html.replace(
-          new RegExp(`(<div[^>]*id="${yearSectionId}"[^>]*>)(.*?)(</div>)`, 's'),
-          `<div id="${yearSectionId}" class="year-payment-sub-section" style="display: none;"></div>` // Keep it hidden and empty
+          new RegExp(`(<div[^>]*id="${id}"[^>]*>)(.*?)(</div>)`, 's'),
+          `<div id="${id}" class="year-payment-sub-section" style="display: none;"></div>`
         );
       }
     }
 
-    // 4. Generate PDF
-    const studentNameForPdf = formData.student_name ? formData.student_name.replace(/[^a-zA-Z0-9]/g, '_') : "Student";
-    const pdfBlob = Utilities.newBlob(html, 'text/html', `Admission_Receipt_${studentNameForPdf}.html`)
-                             .getAs('application/pdf')
-                             .setName(`Admission_Receipt_${studentNameForPdf}_${new Date().toLocaleDateString('en-IN').replace(/\//g, '-')}.pdf`);
-
+    const pdfBlob = Utilities.newBlob(html, 'text/html', 'Admission.html')
+      .getAs('application/pdf')
+      .setName(`Admission_Receipt_${formData.student_name.replace(/[^a-zA-Z0-9]/g, '_')}_${userIdForAudit}_${new Date().toLocaleDateString('en-IN').replace(/\//g, '-')}.pdf`);
+    const pdfFolder = DriveApp.getFolderById(pdfFolderId);
     const pdfFile = pdfFolder.createFile(pdfBlob);
 
-    // 5. Append data to Google Sheet
-    const timestamp = new Date();
+    
+    
     const rowData = [
-      timestamp,
+      new Date(),
       formData.receipt_number || '',
       formData.student_name || '',
       formData.courseSelect || '',
-      formData.coursePeriod || '', // Mapped from 'coursePeriod'
-      formData.courseFeeees || '', // Mapped from 'courseFeeees' (Total Fees)
+      formData.coursePeriod || '',
+      formData.courseFeeees || '',
       formData.payment_type || '',
       formData.payment_method || '',
-
+      
       formData.courseYears || '',
 
       formData.year1_total || '',
@@ -2051,24 +2471,34 @@ function admissionprocessForm(formData) {
     ];
     sheet.appendRow(rowData);
 
-    console.log("Admission form processed successfully.");
+    createAuditLogEntry("Admission Form Submission", userIdForAudit, {
+      student: formData.student_name,
+      receiptNumber: formData.receipt_number,
+      course: formData.courseSelect,
+      branch: formData.branch || "N/A"
+    });
     return {
       success: true,
       message: "Admission form submitted and receipt generated successfully!",
       studentName: formData.student_name,
       receiptNumber: formData.receipt_number,
-      pdfLink: pdfFile.getUrl(), // Return the URL of the generated PDF
+      pdfLink: pdfFile.getUrl()
     };
 
   } catch (e) {
-    console.error("Error in admissionprocessForm:", e.message, e.stack);
+    console.error("Error in admissionprocessForm:", e.message);
+    createAuditLogEntry("Admission Processing Error", userIdForAudit, {
+      error: e.message,
+      formDataSummary: { student: formData.student_name || "N/A" }
+    });
     return {
       success: false,
       message: "An error occurred while processing your admission form.",
-      error: e.message,
+      error: e.message
     };
   }
 }
+
 
 
 

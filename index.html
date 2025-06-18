@@ -264,7 +264,8 @@
           <input type="hidden" id="userName" />
           <input type="hidden" id="userRole" />
           <input type="hidden" id="userBranch">
-          <input type="hidden" id="loggedInUserId" />
+         <input type="hidden" id="loggedInUserId" name="loggedInUserId" />
+
           <div id="slipFormSection"
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
             <div
@@ -3238,12 +3239,12 @@ const formValues = {
     .processForm(formValues);
 }
 
-      </script>
+   
 
 <!---------------------------Admission Form --------------------------->
 
- <script>
-    // Ensure jsPDF is available globally
+
+    <!-- // Ensure jsPDF is available globally
     
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -3555,7 +3556,7 @@ const formValues = {
         pdf.save(`${studentName}_AdmissionForm.pdf`);
       });
       } */
-  </script>
+  </script> -->
   <?!= include('handlesubmit'); ?>
   <?!= include('coursedetails'); ?>
   <?!= include('installmentdue'); ?>
