@@ -486,8 +486,8 @@
           timer: 1500,
           showConfirmButton: false,
         });
-
-       
+      sessionStorage.setItem("loggedInUser", resp.userName);
+       document.getElementById("loggedInUserId").value = resp.userName; 
         document.getElementById("userName").value = resp.userName;
         document.getElementById("userRole").value = resp.role;
         document.getElementById("userRoleDisplay").textContent = resp.role;
@@ -1822,34 +1822,39 @@ function logout() {
     // storePaymentType();
   }
 
-  // Handle admission form submission
+  //Handle admission form submission
   document.addEventListener("DOMContentLoaded", function () {
-    const admissionBtn = document.getElementById("admissionBtn");
-    if (admissionBtn) {
-      admissionBtn.addEventListener("click", openAdmissionForm);
-    } else {
-      console.error("Admission button not found!");
-    }
+  const admissionBtn = document.getElementById("admissionBtn");
+  if (admissionBtn) {
+    admissionBtn.addEventListener("click", openAdmissionForm);
+  } else {
+    console.error("Admission button not found!");
+  }
 
-    const form = document.getElementById("admissionForm");
-    const submitBtn = document.getElementById("submitButton");
+  const form = document.getElementById("admissionForm");
+  const submitBtn = document.getElementById("submitButton");
 
-    if (submitBtn && form) {
-      submitBtn.addEventListener("click", function (e) {
-        e.preventDefault();
+  if (submitBtn && form) {
+    submitBtn.addEventListener("click", function (e) {
+      e.preventDefault();
 
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-          if (!data[key]) data[key] = [];
-          data[key].push(value);
-        });
-
-        console.log("Submitting data:", data);
-        google.script.run.withSuccessHandler(onSuccess).submitForm(data);
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        if (!data[key]) data[key] = [];
+        data[key].push(value);
       });
-    }
-  });
+console.log("loggedInUser in sessionStorage:", sessionStorage.getItem("loggedInUser"));
+      // ✅ Inject logged-in user ID
+     data.loggedInUserId = sessionStorage.getItem("loggedInUser") || document.getElementById("loggedInUserId").value || "Anonymous";
+
+
+      console.log("Submitting data:", data);
+      google.script.run.withSuccessHandler(onSuccess).submitForm(data);
+    });
+  }
+});
+
   function storePaymentType() {
     const saved = sessionStorage.getItem("paytype");
     console.log("Retrieved paytype from session:", saved);
