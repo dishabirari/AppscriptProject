@@ -1,162 +1,127 @@
 <div class="flex items-center justify-center bg-gray-100 p-4">
 
-    <form id="ifId" class="flex justify-center items-center bg-gray-100" onsubmit="submitInquiryForm(event)">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="bg-white rounded-xl shadow-xl">
-                <div class="header-bg text-white p-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-md">
-                                <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png"
-                                    alt="Logo" class="w-10 h-10 object-contain">
+  <form id="ifId" class="inquiry-form-container" onsubmit="submitInquiryForm(event)">
+        <div class="form-wrapper">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="header-main-content">
+                        <div class="header-logo-title">
+                            <div class="logo-container">
+                                <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo" class="logo-image">
                             </div>
                             <div>
-                                <h1 class="text-xl md:text-2xl font-bold">STI SHELAR TRAINING INSTITUTE</h1>
-                                <p class="text-xs md:text-sm opacity-90">
-                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
+                                <p class="institute-address">
+                                    <i class="fas fa-map-marker-alt"></i>
                                     C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)
                                 </p>
                             </div>
                         </div>
-                        <div class="text-center md:text-right">
-                            <p class="text-yellow-300 font-medium">
-                                <i class="fas fa-file-alt mr-1"></i> INQUIRY FORM
+                        <div class="header-contact-info">
+                            <p class="inquiry-label">
+                                <i class="fas fa-file-alt"></i> INQUIRY FORM
                             </p>
-                            <div class="mt-2 text-xs">
-                                <p><i class="fas fa-phone-alt mr-1"></i> +91 9967288158</p>
-                                <p><i class="fas fa-phone-alt mr-1"></i> +91 7400406467</p>
+                            <div class="contact-numbers">
+                                <p><i class="fas fa-phone-alt"></i> +91 9967288158</p>
+                                <p><i class="fas fa-phone-alt"></i> +91 7400406467</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex items-start justify-center p-6 bg-gray-50">
-                    <div id="InquiryForm" class="space-y-5">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div class="form-body">
+                    <div id="InquiryForm" class="form-fields-grid">
+                        <div class="form-row">
                             <div>
-                                <label for="date" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-calendar-alt text-blue-900 mr-2"></i>Date
-                                </label>
-                                <input type="date" id="date" name="date" required
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                <label for="date" class="form-label"><i class="fas fa-calendar-alt"></i>Date</label>
+                                <input type="date" id="date" name="date" required class="form-input">
                             </div>
                             <div>
-                                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-user text-blue-900 mr-2"></i>Full Nameee
-                                </label>
-                                <input type="text" id="fullName" name="fullName" required
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                <label for="fullName" class="form-label"><i class="fas fa-user"></i>Full Name</label>
+                                <input type="text" id="fullName" name="fullName" required class="form-input">
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="form-row">
                             <div>
-                                <label for="qualification" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-graduation-cap text-blue-900 mr-2"></i>Qualification
-                                </label>
-                                <input type="text" id="qualification" name="qualification" required
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                <label for="qualification" class="form-label"><i class="fas fa-graduation-cap"></i>Qualification</label>
+                                <input type="text" id="qualification" name="qualification" required class="form-input">
                             </div>
                             <div>
-                                <label for="age" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-birthday-cake text-blue-900 mr-2"></i>Age
-                                </label>
-                                <input type="number" id="age" name="age" required
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                <label for="age" class="form-label"><i class="fas fa-birthday-cake"></i>Age</label>
+                                <input type="number" id="age" name="age" required class="form-input">
                             </div>
                         </div>
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h3 class="text-blue-900 font-semibold mb-3 flex items-center">
-                                <i class="fas fa-address-card mr-2"></i>Contact Information
+
+                        <div class="contact-info-box">
+                            <h3 class="contact-info-title">
+                                <i class="fas fa-address-card"></i>Contact Information
                             </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="contact-info-grid">
                                 <div>
-                                    <label for="phoneNo" class="block text-sm font-medium text-gray-700 mb-1">
-                                        <i class="fas fa-mobile-alt text-blue-900 mr-2"></i>Phone
-                                    </label>
-                                    <input type="text" id="phoneNo" name="phoneNo" required
-                                        class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                    <label for="phoneNo" class="form-label"><i class="fas fa-mobile-alt"></i>Phone</label>
+                                    <input type="text" id="phoneNo" name="phoneNo" required class="form-input">
                                 </div>
                                 <div>
-                                    <label for="whatsappNo" class="block text-sm font-medium text-gray-700 mb-1">
-                                        <i class="fab fa-whatsapp text-blue-900 mr-2"></i>WhatsApp
-                                    </label>
-                                    <input type="text" id="whatsappNo" name="whatsappNo" required
-                                        class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                    <label for="whatsappNo" class="form-label"><i class="fab fa-whatsapp"></i>WhatsApp</label>
+                                    <input type="text" id="whatsappNo" name="whatsappNo" required class="form-input">
                                 </div>
                                 <div>
-                                    <label for="parentsNo" class="block text-sm font-medium text-gray-700 mb-1">
-                                        <i class="fas fa-user-friends text-blue-900 mr-2"></i>Parents No
-                                    </label>
-                                    <input type="text" id="parentsNo" name="parentsNo" required
-                                        class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                    <label for="parentsNo" class="form-label"><i class="fas fa-user-friends"></i>Parents No</label>
+                                    <input type="text" id="parentsNo" name="parentsNo" required class="form-input">
                                 </div>
                             </div>
-                            <div class="mt-4">
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-envelope text-blue-900 mr-2"></i>Email
-                                </label>
-                                <input type="email" id="email" name="email"
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                            <div class="email-field">
+                                <label for="email" class="form-label"><i class="fas fa-envelope"></i>Email</label>
+                                <input type="email" id="email" name="email" class="form-input">
                             </div>
                         </div>
+
                         <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">
-                                <i class="fas fa-home text-blue-900 mr-2"></i>Address
-                            </label>
-                            <textarea id="address" name="address" required rows="3"
-                                class="form-input w-full px-4 py-2 rounded-lg border border-gray-300"></textarea>
+                            <label for="address" class="form-label"><i class="fas fa-home"></i>Address</label>
+                            <textarea id="address" name="address" required rows="3" class="form-input"></textarea>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <div class="form-row">
                             <div>
-                                <label for="interestedCourse" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-book text-blue-900 mr-2"></i>Interested Course
-                                </label>
-                                <input type="text" id="interestedCourse" name="interestedCourse" required
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                <label for="interestedCourse" class="form-label"><i class="fas fa-book"></i>Interested Course</label>
+                                <input type="text" id="interestedCourse" name="interestedCourse" required class="form-input">
                             </div>
                             <div>
-                                <label for="inquiryTakenBy" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-user-tie text-blue-900 mr-2"></i>Inquiry Taken By
-                                </label>
-                                <input type="text" id="inquiryTakenBy" name="inquiryTakenBy" required
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300">
+                                <label for="inquiryTakenBy" class="form-label"><i class="fas fa-user-tie"></i>Inquiry Taken By</label>
+                                <input type="text" id="inquiryTakenBy" name="inquiryTakenBy" required class="form-input">
                             </div>
                             <div>
-                                <label for="branch22" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <i class="fas fa-building text-blue-900 mr-2"></i>Branch
-                                </label>
-                                <input type="text" id="branch22" name="branch" readonly
-                                    class="form-input w-full px-4 py-2 rounded-lg border border-gray-300" />
+                                <label for="branch22" class="form-label"><i class="fas fa-building"></i>Branch</label>
+                                <input type="text" id="branch22" name="branch" readonly class="form-input">
                             </div>
                         </div>
-                        <div class="border-t border-dashed border-yellow-500 my-4 pt-4">
-                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                                <div class="mb-4 md:mb-0">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" id="agree1" name="agree" required
-                                            class="h-4 w-4 text-yellow-500">
-                                        <span class="ml-2 text-sm text-gray-700">I agree to the terms</span>
+
+                        <div class="form-footer">
+                            <div class="footer-actions">
+                                <div class="terms-checkbox">
+                                    <label>
+                                        <input type="checkbox" id="agree1" name="agree" required>
+                                        <span>I agree to the terms</span>
                                     </label>
-                                    <div id="agreeError1" class="text-red-500 text-xs italic"></div>
+                                    <div id="agreeError1" class="error-message"></div>
                                 </div>
-                                <div class="flex justify-end space-x-4"> <button type="button" onclick="generatePDFInquire()" id="InquiryButton2"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out">
-                                        <i class="fas fa-file-pdf mr-2"></i>Download PDF
+                                <div class="action-buttons">
+                                    <button type="button" onclick="generatePDFInquire()" id="InquiryButton2" class="btn btn-pdf">
+                                        <i class="fas fa-file-pdf"></i>Download PDF
                                     </button>
-                                    <button type="submit" onclick="copyInquiry()"  id="submitButton2"
-                                        class="submit-btn text-blue-600 px-8 py-2 rounded-lg font-medium">
-                                        <i class="fas fa-paper-plane mr-2"></i>Submit
+                                    <button type="submit" onclick="copyInquiry()" id="submitButton2" class="btn btn-submit">
+                                        <i class="fas fa-paper-plane"></i>Submit
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 p-4 border-t border-gray-200">
-                    <div class="flex justify-end">
-                        <div class="text-center">
-                            <div class="italic text-gray-700">______________________</div>
-                            <div class="text-sm font-medium text-blue-900">AUTHORITY SIGNATURE</div>
-                        </div>
+
+                <div class="signature-section">
+                    <div class="signature-line-container">
+                        <div class="signature-line">______________________</div>
+                        <div class="signature-title">AUTHORITY SIGNATURE</div>
                     </div>
                 </div>
             </div>
