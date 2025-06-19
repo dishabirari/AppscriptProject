@@ -64,20 +64,22 @@
                                         <i class="fas fa-mobile-alt"></i> Phone
                                     </label>
                                     <input type="tel" id="phoneNo" name="phoneNo" class="form-input" required
-                                        autocomplete="tel" pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210"
-                                        list="phoneSuggestions" onblur="onPhoneBlur()">
+                                        autocomplete="tel" pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210"
+                                        maxlength="10" onblur="onPhoneBlur()">
                                     <datalist id="phoneSuggestions"></datalist>
                                 </div>
 
                                 <div>
                                     <label for="whatsappNo" class="form-label"><i
                                             class="fab fa-whatsapp"></i>WhatsApp</label>
-                                    <input type="text" id="whatsappNo" name="whatsappNo" required class="form-input">
+                                    <input type="tel" id="whatsappNo" name="whatsappNo" required class="form-input"
+                                        pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210" maxlength="10">
                                 </div>
                                 <div>
                                     <label for="parentsNo" class="form-label"><i class="fas fa-user-friends"></i>Parents
                                         No</label>
-                                    <input type="text" id="parentsNo" name="parentsNo" required class="form-input">
+                                    <input type="tel" id="parentsNo" name="parentsNo" required class="form-input"
+                                        pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210" maxlength="10">
                                 </div>
                             </div>
                             <div class="email-field">
@@ -93,10 +95,23 @@
 
                         <div class="form-row">
                             <div>
-                                <label for="interestedCourse" class="form-label"><i class="fas fa-book"></i>Interested
+                                <label for="Interested Course" class="form-label"><i class="fas fa-book"></i>Select
                                     Course</label>
-                                <input type="text" id="interestedCourse" name="interestedCourse" required
-                                    class="form-input">
+                                <select id="interestedCourse" name="interestedCourse"
+                                    class="form-select w-full px-4 py-2 rounded-lg border border-gray-300"
+                                    onchange="updateCourseDetails()">
+                                    <option value="" disabled selected>Select Course</option>
+                                    <option value="anm_nursing">ANM Nursing Diploma Course</option>
+                                    <option value="gnm_nursing">GNM Nursing Diploma Course</option>
+                                    <option value="dmlt">DMLT Diploma Course</option>
+                                    <option value="ot_technician">OT Technician</option>
+                                    <option value="general_nursing">General Nursing and Midwifery Assistant</option>
+                                    <option value="beautician">Beautician</option>
+                                    <option value="electrician">Electrician Course</option>
+                                    <option value="mobile_repairing">Mobile Repairing Course</option>
+                                    <option value="ac_refrigerator">AC & Refrigerator</option>
+                                    <option value="automobile">Automobile Course</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="inquiryTakenBy" class="form-label"><i class="fas fa-user-tie"></i>Inquiry
