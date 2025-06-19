@@ -2731,3 +2731,92 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 </script>
+
+<script>
+  /**
+   * Clears all form fields except for the phone number input.
+   * This is used to reset the form when a new, unknown number is entered.
+   */
+  function resetFormFields() {
+    console.log("🔄 Resetting form fields.");
+    // List of all element IDs to be cleared
+    const fieldsToClear = [
+      "date", 
+      "fullName", 
+      "qualification", 
+      "age", 
+      "whatsappNo", 
+      "parentsNo", 
+      "email", 
+      "address", 
+      "interestedCourse", 
+      "inquiryTakenBy", 
+      "branch22"
+    ];
+
+    fieldsToClear.forEach(id => {
+      const field = document.getElementById(id);
+      if (field) {
+        field.value = ""; // Set the value to empty
+      }
+    });
+  }
+
+  // Populate datalist with phone suggestions
+  function loadPhoneSuggestions() {
+    google.script.run.withSuccessHandler(nums => {
+      const dl = document.getElementById("phoneSuggestions");
+      if (!dl) return;
+      dl.innerHTML = "";
+      nums.forEach(n => {
+        const opt = document.createElement("option");
+        opt.value = n;
+        dl.appendChild(opt);
+      });
+    }).getAllPhoneNumbers();
+  }
+
+  function onPhoneBlur() {
+    const rawPhone = document.getElementById("phoneNo").value || "";
+    const cleanedPhone = rawPhone.replace(/\D/g, "").trim();
+
+    console.log("📞 Phone entered:", rawPhone, "→ Cleaned:", cleanedPhone);
+
+    if (cleanedPhone.length === 10) {
+      google.script.run.withSuccessHandler(function(data) {
+        console.log("✅ Data received from Apps Script:", data);
+        if (data) {
+          // Data FOUND: Populate the form fields
+          for (const id in data) {
+            const field = document.getElementById(id);
+            if (field) {
+              field.value = data[id] || ""; // Use empty string as a fallback
+            }
+          }
+        } else {
+          // Data NOT FOUND: Alert the user and reset the form
+          alert("No record found for this phone number.");
+          console.warn("❌ No matching data returned from getStudentData. Clearing form.");
+          resetFormFields(); // Call the reset function
+        }
+      }).getStudentData(cleanedPhone);
+    } else {
+        // Also a good idea to reset if the input is invalid
+        if (rawPhone !== "") { // Only alert if user actually typed something invalid
+           alert("Please enter a valid 10-digit phone number.");
+           console.warn("❌ Invalid input:", rawPhone);
+        }
+        // We also reset here to clear the form on any invalid entry
+        resetFormFields();
+    }
+  }
+
+  // Run initial setup when the page is loaded
+  window.addEventListener("DOMContentLoaded", () => {
+      loadPhoneSuggestions();
+      // This part of your original code might cause an error if it runs before the element exists.
+      // It's safer inside the event listener or just remove it if it's not needed.
+      // const dl = document.getElementById("phoneSuggestions");
+      // if (dl) dl.innerHTML = ""; 
+  });
+</script>
