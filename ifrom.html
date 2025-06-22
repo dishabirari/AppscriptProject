@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -304,6 +304,811 @@ Mumbai, Maharashtra - 400070</div>
                 </div>
 
                 </div>
+        </div>
+    </main>
+
+</body>
+</html> -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiry Details - STI Shelare Training Institute</title>
+    <style>
+        /* General Body and Font Styling */
+        body {
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #eef2f9; /* Lighter, cooler background */
+            color: #333d4f;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Main container for centering content for screen view */
+        .page-container {
+            padding: 2rem;
+        }
+
+        /* The main content block, styled for an A4-like appearance */
+        .content-wrapper {
+            max-width: 21cm; /* A4 width */
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(120deg, #1c3d7e 0%, #2e6cdf 100%);
+            color: #ffffff;
+            padding: 2rem; /* 32px */
+            /* Add padding-bottom to ensure enough space between header and body when printing if needed */
+            padding-bottom: 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .header-main {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem; /* 24px */
+        }
+
+        .logo-container {
+            width: 52px;
+            height: 52px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-right: 1rem; /* 16px */
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+        
+        .institute-title {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .institute-address {
+            font-size: 0.875rem; /* 14px */
+            opacity: 0.9;
+            margin: 0.25rem 0 0;
+        }
+        
+        .header-details {
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+        }
+        
+        .header-details .title {
+            color: #f1c40f; /* Gold color for emphasis */
+            font-weight: 600;
+            font-size: 1.25rem; /* 20px */
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .header-details .contact p {
+            font-size: 0.9rem; /* 14.4px */
+            margin: 0.25rem 0;
+            opacity: 0.95;
+        }
+
+        /* Body/Data Section */
+        .data-body {
+            padding: 2rem; /* 32px */
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.75rem; /* 28px */
+            /* Add page-break-inside to prevent breaking grid across pages */
+            page-break-inside: avoid;
+        }
+
+        .field-group {
+            margin-bottom: 1.75rem;
+            /* Crucial for keeping related fields together */
+            page-break-inside: avoid;
+        }
+        
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            font-size: 0.8rem; /* 12.8px */
+            font-weight: 700;
+            color: #1c3d7e; 
+            margin-bottom: 0.5rem; /* 8px */
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-value {
+            font-size: 1rem; /* 16px */
+            padding-bottom: 0.5rem; /* 8px */
+            border-bottom: 1px solid #e0e0e0;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+        
+        .field-value.address {
+            white-space: pre-wrap; /* To respect newlines in the address */
+            line-height: 1.5;
+        }
+        
+        .contact-section {
+            background-color: #f1f5f9;
+            padding: 1.5rem; /* 24px */
+            border-radius: 8px;
+            border-left: 5px solid #2e6cdf;
+            /* Crucial for keeping contact section together */
+            page-break-inside: avoid;
+            margin-bottom: 1.75rem; /* Ensure consistent spacing with other field groups */
+        }
+        
+        .contact-section-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            color: #1c3d7e;
+            margin: 0 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #d1d9e4;
+        }
+
+        /* Responsive Adjustments for wider screens */
+        @media (min-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .header-main {
+                margin-bottom: 0;
+            }
+            .header-details {
+                text-align: right;
+                border-top: none;
+                padding-top: 0;
+            }
+            .data-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .contact-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Print-specific styles for A4 paper */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0; /* Important: Remove default print margins */
+            }
+            body {
+                background-color: #ffffff;
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                print-color-adjust: exact; /* Firefox, Edge */
+                font-size: 0.95em; /* Slightly reduce overall font size for print to fit more */
+            }
+            .page-container {
+                padding: 0;
+                /* Optional: Set a specific height if you need fine-grained control, but avoid conflicts with page-break-inside */
+                /* height: 29.7cm; /* A4 height, might interfere with content overflow if not handled carefully */
+            }
+            .content-wrapper {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                /* Ensure it takes full print width, no horizontal scroll */
+                width: 100%;
+                /* Add a bit of internal padding to mimic paper margins */
+                padding: 1cm; /* Adjust as needed for effective content margins on A4 */
+                box-sizing: border-box; /* Include padding in the width/height */
+            }
+
+            .header {
+                padding: 0.75cm 0; /* Adjust header padding for print */
+                margin-bottom: 0.5cm; /* Space after header in print */
+            }
+
+            .header-content {
+                flex-direction: row; /* Keep header content in a row for print if space allows */
+                align-items: center; /* Vertically align items in header */
+            }
+
+            .header-main {
+                flex-grow: 1; /* Allow main header content to take available space */
+                margin-bottom: 0; /* Remove margin-bottom */
+            }
+
+            .institute-title {
+                font-size: 1.3rem; /* Slightly smaller for print */
+            }
+            .institute-address {
+                font-size: 0.8rem; /* Slightly smaller for print */
+            }
+
+            .header-details {
+                text-align: right; /* Keep details right aligned */
+                border-top: none; /* Remove border in print */
+                padding-top: 0;
+                flex-shrink: 0; /* Prevent it from shrinking too much */
+            }
+
+            .header-details .title {
+                font-size: 1.1rem; /* Adjust title font size */
+            }
+            .header-details .contact p {
+                font-size: 0.85rem; /* Adjust contact font size */
+            }
+
+            .data-body {
+                padding: 0; /* Remove top/bottom padding as it's now handled by content-wrapper padding */
+                /* page-break-inside: avoid; */ /* Not applying to data-body itself, but its children */
+            }
+
+            .data-grid {
+                gap: 1.25rem; /* Reduce gap slightly for print */
+                /* Ensures grid columns stack if content is too wide, but typically stays 2 columns for A4 */
+                grid-template-columns: repeat(2, 1fr); 
+            }
+
+            .field-group {
+                margin-bottom: 1.25rem; /* Reduce margin-bottom slightly for print */
+                /* This is the most important part to prevent elements from splitting */
+                page-break-inside: avoid; 
+            }
+            
+            .contact-section {
+                padding: 1rem; /* Adjust padding for print */
+                margin-bottom: 1.25rem; /* Ensure consistent spacing */
+                page-break-inside: avoid; /* Keep entire contact section together */
+            }
+
+            .contact-section-title {
+                font-size: 1.1rem; /* Adjust title font size */
+                margin-bottom: 1rem; /* Adjust margin for print */
+            }
+
+            .field-label {
+                font-size: 0.75rem; /* Adjust label font size for print */
+                margin-bottom: 0.3rem;
+            }
+
+            .field-value {
+                font-size: 0.9rem; /* Adjust value font size for print */
+                min-height: 20px; /* Adjust minimum height */
+            }
+            
+            .field-value.address {
+                line-height: 1.4; /* Slightly tighter line height for address in print */
+            }
+
+            /* Ensure elements don't get hidden if they overflow slightly, although `page-break-inside` is better */
+            .content-wrapper > * {
+                overflow: visible !important;
+            }
+
+            /* Hide any elements you explicitly don't want in print */
+            /* .no-print { display: none; } */
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div class="page-container">
+            <div class="content-wrapper">
+                <div class="header">
+                    <div class="header-content">
+                        <div class="header-main">
+                            <div class="logo-container">
+                                <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo" class="logo">
+                            </div>
+                            <div>
+                                <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
+                                <p class="institute-address">C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)</p>
+                            </div>
+                        </div>
+                        <div class="header-details">
+                            <div class="title">INQUIRY DETAILS</div>
+                            <div class="contact">
+                                <p>+91 9967288158</p>
+                                <p>+91 7400406467</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-body">
+                    <div class="field-group-container">
+                        <div class="data-grid">
+                            <div>
+                                <p class="field-label">Date</p>
+                                <div class="field-value" id="date">15-Jun-2025</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Full Name</p>
+                                <div class="field-value" id="fullName">John Doe</div>
+                            </div>
+                        </div>
+
+                        <div class="data-grid">
+                            <div>
+                                <p class="field-label">Qualification</p>
+                                <div class="field-value" id="qualification">Bachelor of Engineering</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Age</p>
+                                <div class="field-value" id="age">23</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-section">
+                        <h3 class="contact-section-title">Contact Information</h3>
+                        <div class="data-grid contact-grid">
+                            <div>
+                                <p class="field-label">Phone</p>
+                                <div class="field-value" id="phoneNo">9876543210</div>
+                            </div>
+                            <div>
+                                <p class="field-label">WhatsApp</p>
+                                <div class="field-value" id="whatsappNo">9876543210</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Parents No</p>
+                                <div class="field-value" id="parentsNo">8765432109</div>
+                            </div>
+                        </div>
+                        <div class="field-group" style="margin-top: 1.75rem;">
+                            <p class="field-label">Email</p>
+                            <div class="field-value" id="email">john.doe@example.com</div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <p class="field-label">Address</p>
+                        <div class="field-value address" id="address">123, ABC Apartments,
+Main Street,
+Mumbai, Maharashtra - 400070</div>
+                    </div>
+
+                    <div class="data-grid field-group">
+                        <div>
+                            <p class="field-label">Interested Course</p>
+                            <div class="field-value" id="interestedCourse">Advanced Diploma in Industrial Safety</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Inquiry Taken By</p>
+                            <div class="field-value" id="inquiryTakenBy">Mr. A. Shelare</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Branch</p>
+                            <div class="field-value" id="branch22">Kurla (East)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiry Details - STI Shelare Training Institute</title>
+    <style>
+        /* General Body and Font Styling */
+        body {
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #eef2f9; /* Lighter, cooler background */
+            color: #333d4f;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Main container for centering content for screen view */
+        .page-container {
+            padding: 2rem;
+        }
+
+        /* The main content block, styled for an A4-like appearance */
+        .content-wrapper {
+            max-width: 21cm; /* A4 width */
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(120deg, #1c3d7e 0%, #2e6cdf 100%);
+            color: #ffffff;
+            padding: 2rem; /* 32px */
+            padding-bottom: 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .header-main {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem; /* 24px */
+        }
+
+        .logo-container {
+            width: 52px;
+            height: 52px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-right: 1rem; /* 16px */
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+        
+        .institute-title {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .institute-address {
+            font-size: 0.875rem; /* 14px */
+            opacity: 0.9;
+            margin: 0.25rem 0 0;
+        }
+        
+        .header-details {
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+        }
+        
+        .header-details .title {
+            color: #f1c40f; /* Gold color for emphasis */
+            font-weight: 600;
+            font-size: 1.25rem; /* 20px */
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .header-details .contact p {
+            font-size: 0.9rem; /* 14.4px */
+            margin: 0.25rem 0;
+            opacity: 0.95;
+        }
+
+        /* Body/Data Section */
+        .data-body {
+            padding: 2rem; /* 32px */
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.75rem; /* 28px */
+            page-break-inside: avoid;
+        }
+
+        .field-group {
+            margin-bottom: 1.75rem;
+            page-break-inside: avoid;
+        }
+        
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            font-size: 0.8rem; /* 12.8px */
+            font-weight: 700;
+            color: #1c3d7e; 
+            margin-bottom: 0.5rem; /* 8px */
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-value {
+            font-size: 1rem; /* 16px */
+            padding-bottom: 0.5rem; /* 8px */
+            border-bottom: 1px solid #e0e0e0;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+        
+        .field-value.address {
+            white-space: pre-wrap; /* To respect newlines in the address */
+            line-height: 1.5;
+        }
+        
+        .contact-section {
+            background-color: #f1f5f9;
+            padding: 1.5rem; /* 24px */
+            border-radius: 8px;
+            border-left: 5px solid #2e6cdf;
+            page-break-inside: avoid;
+            margin-bottom: 1.75rem; /* Ensure consistent spacing with other field groups */
+        }
+        
+        .contact-section-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            color: #1c3d7e;
+            margin: 0 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #d1d9e4;
+        }
+
+        /* Responsive Adjustments for wider screens */
+        @media (min-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .header-main {
+                margin-bottom: 0;
+            }
+            .header-details {
+                text-align: right;
+                border-top: none;
+                padding-top: 0;
+            }
+            .data-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            /* Adjusted for 3 columns for contact details, including email */
+            .contact-grid {
+                grid-template-columns: repeat(3, 1fr); 
+            }
+        }
+        
+        /* Print-specific styles for A4 paper */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0; /* Important: Remove default print margins */
+            }
+            body {
+                background-color: #ffffff;
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                print-color-adjust: exact; /* Firefox, Edge */
+                font-size: 0.92em; /* Slightly reduce overall font size for print to fit more */
+            }
+            .page-container {
+                padding: 0;
+            }
+            /* Make content-wrapper take full width and handle internal margins */
+            .content-wrapper {
+                max-width: 100%; /* Ensure it takes full width */
+                width: 100%; /* Ensure it takes full width */
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                margin: 0; /* No external margins for content-wrapper in print */
+                overflow: visible; /* Ensure content isn't hidden if it slightly overflows */
+            }
+
+            /* Adjust header to span full width of the page */
+            .header {
+                padding: 1.5cm; /* Apply internal padding to header content */
+                margin: 0; /* Remove any external margins */
+            }
+
+            /* Apply consistent side padding to data-body for content alignment */
+            .data-body {
+                padding: 0 1.5cm; /* Only left/right padding for data-body */
+                padding-top: 1cm; /* Add some top padding after header */
+                padding-bottom: 1cm; /* Add some bottom padding before potential footer */
+            }
+
+            .header-content {
+                flex-direction: row; /* Keep header content in a row for print if space allows */
+                align-items: center; /* Vertically align items in header */
+            }
+
+            .header-main {
+                flex-grow: 1; /* Allow main header content to take available space */
+                margin-bottom: 0; /* Remove margin-bottom */
+            }
+
+            .institute-title {
+                font-size: 1.3rem; /* Slightly smaller for print */
+            }
+            .institute-address {
+                font-size: 0.8rem; /* Slightly smaller for print */
+            }
+
+            .header-details {
+                text-align: right; /* Keep details right aligned */
+                border-top: none; /* Remove border in print */
+                padding-top: 0;
+                flex-shrink: 0; /* Prevent it from shrinking too much */
+            }
+
+            .header-details .title {
+                font-size: 1.1rem; /* Adjust title font size */
+            }
+            .header-details .contact p {
+                font-size: 0.85rem; /* Adjust contact font size */
+            }
+
+            .data-grid {
+                gap: 1.25rem; /* Reduce gap slightly for print */
+                grid-template-columns: repeat(2, 1fr); 
+            }
+
+            .field-group {
+                margin-bottom: 1.25rem; /* Reduce margin-bottom slightly for print */
+                page-break-inside: avoid; 
+            }
+            
+            .contact-section {
+                padding: 1rem; /* Adjust padding for print */
+                margin-bottom: 1.25rem; /* Ensure consistent spacing */
+                page-break-inside: avoid; /* Keep entire contact section together */
+            }
+
+            .contact-section-title {
+                font-size: 1.1rem; /* Adjust title font size */
+                margin-bottom: 1rem; /* Adjust margin for print */
+            }
+
+            .field-label {
+                font-size: 0.75rem; /* Adjust label font size for print */
+                margin-bottom: 0.3rem;
+            }
+
+            .field-value {
+                font-size: 0.9rem; /* Adjust value font size for print */
+                min-height: 20px; /* Adjust minimum height */
+            }
+            
+            .field-value.address {
+                line-height: 1.4; /* Slightly tighter line height for address in print */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div class="page-container">
+            <div class="content-wrapper">
+                <div class="header">
+                    <div class="header-content">
+                        <div class="header-main">
+                            <div class="logo-container">
+                                <img src="data:image/jpeg;base64,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" alt="Logo" class="logo">
+                            </div>
+                            <div>
+                                <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
+                                <p class="institute-address">C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)</p>
+                            </div>
+                        </div>
+                        <div class="header-details">
+                            <div class="title">INQUIRY DETAILS</div>
+                            <div class="contact">
+                                <p>+91 9967288158</p>
+                                <p>+91 7400406467</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-body">
+                    <div class="field-group-container">
+                        <div class="data-grid">
+                            <div>
+                                <p class="field-label">Date</p>
+                                <div class="field-value" id="date">15-Jun-2025</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Full Name</p>
+                                <div class="field-value" id="fullName">John Doe</div>
+                            </div>
+                        </div>
+
+                        <div class="data-grid">
+                            <div>
+                                <p class="field-label">Qualification</p>
+                                <div class="field-value" id="qualification">Bachelor of Engineering</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Age</p>
+                                <div class="field-value" id="age">23</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-section">
+                        <h3 class="contact-section-title">Contact Information</h3>
+                        <div class="data-grid contact-grid">
+                            <div>
+                                <p class="field-label">Phone</p>
+                                <div class="field-value" id="phoneNo">9876543210</div>
+                            </div>
+                            <div>
+                                <p class="field-label">WhatsApp</p>
+                                <div class="field-value" id="whatsappNo">9876543210</div>
+                            </div>
+                            <div>
+                                <p class="field-label">Parents No</p>
+                                <div class="field-value" id="parentsNo">8765432109</div>
+                            </div>
+                            <div> 
+                                <p class="field-label">Email</p>
+                                <div class="field-value" id="email">john.doe@example.com</div>
+                            </div>
+                        </div>
+                        </div>
+
+                    <div class="field-group">
+                        <p class="field-label">Address</p>
+                        <div class="field-value address" id="address">123, ABC Apartments,
+Main Street,
+Mumbai, Maharashtra - 400070</div>
+                    </div>
+
+                    <div class="data-grid field-group">
+                        <div>
+                            <p class="field-label">Interested Course</p>
+                            <div class="field-value" id="interestedCourse">Advanced Diploma in Industrial Safety</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Inquiry Taken By</p>
+                            <div class="field-value" id="inquiryTakenBy">Mr. A. Shelare</div>
+                        </div>
+                        <div>
+                            <p class="field-label">Branch</p>
+                            <div class="field-value" id="branch22">Kurla (East)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
