@@ -54,13 +54,13 @@
             <i class="fas fa-user-plus"></i>
             <span>Admission Form</span>
         </button>
-        <button onclick="searchOldFees()"
+        <!-- <button onclick="searchOldFees()"
             class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-white
                    transition duration-300 ease-in-out
                    hover:bg-blue-700 active:scale-95 active:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
             <i class="fas fa-history"></i>
             <span>Old Records</span>
-        </button>
+        </button> -->
         <button id="manageStudentsBtn" onclick="toggleManageStudents()"
             class="hidden w-full flex items-center gap-2 px-3 py-2 rounded-md text-white
                    transition duration-300 ease-in-out
@@ -89,6 +89,13 @@
             <i class="fas fa-hand-holding-usd"></i>
             <span>Due Fees</span>
         </button>
+        <button id ="separateReceipt" onclick="showLatestReceipt()"
+              class=" w-full flex items-center gap-2 px-3 py-2 rounded-md text-white
+                   transition duration-300 ease-in-out
+                   hover:bg-blue-700 active:scale-95 active:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+              <i class="fas fa-receipt"></i>
+              <span>View Receipt</span>
+            </button>
         <button onclick="logout()"
             class="mt-6 w-full flex items-center gap-2 px-3 py-2 rounded-md text-white
                    bg-red-600 hover:bg-red-700 active:scale-95 active:bg-red-800
