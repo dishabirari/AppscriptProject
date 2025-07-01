@@ -65,7 +65,7 @@ function loginUser(loginData) {
       if (username === loginData.username && password === loginData.password) {
         //  Save session data
         PropertiesService.getUserProperties().setProperty("loggedInUser", username);
-
+          createAuditLogEntry("Login Success", username);
         return {
   success: true,
   userName: username,
@@ -1467,6 +1467,16 @@ function createAuditLogEntry(action, userId, additionalDetails = {}) {
     console.error("Error appending to AuditLog:", e);
   }
 }
+function serverSideLogout() {
+  const loggedInUser = PropertiesService.getUserProperties().getProperty("loggedInUser");
+  if (loggedInUser) {
+    createAuditLogEntry("Logout", loggedInUser); // <-- This creates the "Logout" entry!
+    PropertiesService.getUserProperties().deleteProperty("loggedInUser");
+  } else {
+    createAuditLogEntry("Logout Attempt (No User)", "Anonymous"); // Optional: log if someone tries to logout when not logged in
+  }
+  return { success: true }; // Always return a success response to the client
+}
 
 // function getData() {
 //   const spreadsheetId = "1yuXuZP9ItyPPqd-WCFHpROUfWML9NX1jzQafkVZVbXY";
@@ -2498,7 +2508,8 @@ function admissionprocessForm(formData) {
     };
   }
 }
-
+ 
+ 
 
 
 

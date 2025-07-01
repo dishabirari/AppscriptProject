@@ -281,7 +281,7 @@
     document.getElementById("manageStudentSection").classList.add("hidden");
     document.getElementById("classMonthDashboard").classList.add("hidden");
     document.getElementById("dueFeesSection").classList.add("hidden");
-    document.getElementById("separateReceipt").classList.add("hidden");
+    // document.getElementById("separateReceipt").classList.add("hidden");
     document.getElementById("ifId").classList.add("hidden");
     document.getElementById("admissionFormSection").classList.add("hidden");
     document.getElementById("coursePaymentSection").classList.add("hidden");
@@ -501,6 +501,7 @@
 
         // Show Inquiry Form by default after login
         openInquiryForm();
+        populateInquiryTakenBy();
 
         // Admin UI if role = admin
         if (resp.role === "admin") {
@@ -536,24 +537,78 @@
     .loginUser(loginData);
 });
 
+// function logout() {
+//   document.getElementById("appSection").classList.add("hidden");
+//   document.getElementById("loginSection").classList.remove("hidden");
+//   document.getElementById("loginUsername").value = "";
+//   document.getElementById("loginPassword").value = "";
+
+  
+//   document.getElementById("loggedInUserId").value = "";
+
+//   Swal.fire({
+//     icon: "info",
+//     title: "Logged Out",
+//     text: "You have been logged out.",
+//     timer: 1500,
+//     showConfirmButton: false,
+//   });
+// }
 function logout() {
+  // Clear client-side UI immediately for responsiveness
   document.getElementById("appSection").classList.add("hidden");
   document.getElementById("loginSection").classList.remove("hidden");
   document.getElementById("loginUsername").value = "";
   document.getElementById("loginPassword").value = "";
-
-  
   document.getElementById("loggedInUserId").value = "";
+  sessionStorage.removeItem("loggedInUser"); // Clear client-side session storage too
 
+  // Show a "logging out" message immediately
   Swal.fire({
     icon: "info",
-    title: "Logged Out",
-    text: "You have been logged out.",
-    timer: 1500,
+    title: "Logging Out...",
+    text: "Please wait.",
+    allowOutsideClick: false,
     showConfirmButton: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
   });
-}
 
+
+  // ⭐⭐⭐ THIS IS THE CRUCIAL PART: Call the server-side function ⭐⭐⭐
+  google.script.run
+    .withSuccessHandler(function(resp) {
+      // This code runs AFTER the server-side serverSideLogout() finishes successfully
+      // The server-side function handles the actual logging to AuditLog sheet
+      if (resp.success) {
+        Swal.fire({
+          icon: "info",
+          title: "Logged Out",
+          text: "You have been logged out.",
+          timer: 1500, // Show for a short time
+          showConfirmButton: false,
+        });
+      } else {
+        // This case is less likely for logout, but good to have
+        Swal.fire({
+          icon: "error",
+          title: "Logout Failed",
+          text: "An error occurred during server-side logout.",
+        });
+      }
+    })
+    .withFailureHandler(function(error) {
+      // This runs if there's an error calling the server-side function
+      console.error("Error during server-side logout:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Logout Error",
+        text: "Could not complete logout due to a system error. Check console.",
+      });
+    })
+    .serverSideLogout(); // <--- This calls the server-side `serverSideLogout()` function
+}
 
   /******************************************
    * 3) SLIP FORM: SUBMIT / UPDATE
@@ -1526,9 +1581,9 @@ function logout() {
       document.getElementById("receiptReceivedBy").textContent =
         data.userName || "Administrator";
 
-      // Show receipt
-      hideAllSections();
-      document.getElementById("separateReceipt").classList.remove("hidden");
+      // // Show receipt
+      // hideAllSections();
+      // document.getElementById("separateReceipt").classList.remove("hidden");
     } catch (error) {
       console.error("Error showing receipt:", error);
       Swal.fire("Error", "Could not generate receipt", "error");
@@ -1723,10 +1778,28 @@ function logout() {
   //  alert('Data saved successfully!');
   //  }
 
+  // function openInquiryForm() {
+  //   console.log("Inquiry Form button clicked");
+  //   hideAllSections();
+  //   document.getElementById("ifId").classList.remove("hidden");
+
+  //   // 1. Get the stored branch from the hidden input
+  //   const userBranch = document.getElementById("userBranch").value;
+
+  //   // 2. Get the branch input element in your inquiry form
+  //   const branchInput = document.getElementById("branch22");
+
+  //   // 3. Set its value directly
+  //   if (userBranch) {
+  //     branchInput.value = userBranch;
+  //   } else {
+  //     branchInput.value = ""; // Or some default value
+  //   }
+  // }
   function openInquiryForm() {
     console.log("Inquiry Form button clicked");
     hideAllSections();
-    document.getElementById("ifId").classList.remove("hidden");
+    document.getElementById("ifId").classList.remove("hidden"); // Assuming ifId is the inquiry form itself
 
     // 1. Get the stored branch from the hidden input
     const userBranch = document.getElementById("userBranch").value;
@@ -1736,11 +1809,31 @@ function logout() {
 
     // 3. Set its value directly
     if (userBranch) {
-      branchInput.value = userBranch;
+        branchInput.value = userBranch;
     } else {
-      branchInput.value = ""; // Or some default value
+        branchInput.value = ""; // Or some default value
     }
-  }
+
+    // ⭐ START: Add this section for Inquiry Taken By
+    // 4. Get the stored username from the hidden input (loggedInUserId)
+    const loggedInUser = document.getElementById("loggedInUserId").value; // Or document.getElementById("userName").value;
+
+    // 5. Get the Inquiry Taken By input element
+    const inquiryTakenByInput = document.getElementById("inquiryTakenBy");
+
+    // 6. Set its value directly
+    if (loggedInUser) {
+        inquiryTakenByInput.value = loggedInUser;
+    } else {
+        inquiryTakenByInput.value = ""; // Or some default value like "Anonymous"
+    }
+    // ⭐ END: Add this section for Inquiry Taken By
+
+    // Optional: Set current date if you want it to be current date always when form is opened
+    // const today = new Date();
+    // const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+    // document.getElementById("date").value = formattedDate;
+}
 
   const { jsPDF } = window.jspdf;
 
@@ -2355,6 +2448,41 @@ document.addEventListener('DOMContentLoaded', function () {
       submitBtn.disabled = false;
     })
     .processForm(formValues);
+}
+
+
+
+
+// Function to populate the inquiryTakenBy field and optionally the branch field
+function populateInquiryTakenBy() {
+    const inquiryTakenByInput = document.getElementById("inquiryTakenBy");
+    const branchInput = document.getElementById("branch22"); // Get the branch input
+
+    // Get the logged-in username from the hidden input field that was set during login
+    const loggedInUserFromHiddenInput = document.getElementById("loggedInUserId")?.value;
+    // Get the logged-in branch from the hidden input field that was set during login
+    const loggedInBranchFromHiddenInput = document.getElementById("userBranch")?.value;
+
+
+    if (inquiryTakenByInput) {
+        if (loggedInUserFromHiddenInput) {
+            inquiryTakenByInput.value = loggedInUserFromHiddenInput;
+            inquiryTakenByInput.readOnly = true; // Ensure it's readonly
+        } else {
+            inquiryTakenByInput.value = "N/A"; // Or handle anonymous users differently
+            console.warn("Logged-in user ID not found in hidden input.");
+        }
+    }
+
+    if (branchInput) {
+        if (loggedInBranchFromHiddenInput) {
+            branchInput.value = loggedInBranchFromHiddenInput;
+            branchInput.readOnly = true; // Ensure it's readonly
+        } else {
+            branchInput.value = "N/A"; // Or some default
+            console.warn("Logged-in user branch not found in hidden input.");
+        }
+    }
 }
   // Ensure jsPDF is available globally
 
