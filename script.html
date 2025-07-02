@@ -24,13 +24,47 @@
   /******************************************
    * 0.0) COURSE PAYMENT
    ******************************************/
-  const courseData = {
-    anm_nursing: { duration: "1 year", fees: 60000, total: 60000 },
-    gnm_nursing: { duration: "3 years", fees: 95000, total: 195000 },
-    dmlt: { duration: "1 years", fees: 30000, total: 30000 },
-    ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
-    general_nursing: { duration: "1 years", fees: 30000, total: 30000 },
-  };
+
+function getCourseDataByLocation(branch) {
+  console.log(branch);
+  if (branch === "thane") {
+    const courseData = {
+      anm_nursing: { duration: "1 year", fees: 8500, total: 650 },
+      gnm_nursing: { duration: "3 years", fees: 100000, total: 300000 }, // Fixed total (100000 * 3)
+      dmlt: { duration: "1 year", fees: 700, total: 7000 }, // Fixed "1 years" to "1 year"
+      ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
+      general_nursing: { duration: "1 year", fees: 30000, total: 3000 }, // Fixed "1 years" to "1 year"
+    };
+    return courseData;
+  } else if (branch === "kurla") {
+    const courseData = {
+      anm_nursing: { duration: "1 year", fees: 65000, total: 6500 },
+      gnm_nursing: { duration: "3 years", fees: 100000, total: 300000 }, // Fixed total (100000 * 3)
+      dmlt: { duration: "1 year", fees: 70000, total: 70000 }, // Fixed "1 years" to "1 year"
+      ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
+      general_nursing: { duration: "1 year", fees: 30000, total: 30000 }, // Fixed "1 years" to "1 year"
+    };
+    return courseData;
+  } else if (branch === "nalasapora") {
+    const courseData = {
+      anm_nursing: { duration: "1 year", fees: 55000, total: 5500 },
+      gnm_nursing: { duration: "3 years", fees: 90000, total: 270000 }, // Fixed total (90000 * 3)
+      dmlt: { duration: "1 year", fees: 30000, total: 30000 }, // Fixed "1 years" to "1 year"
+      ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
+      general_nursing: { duration: "1 year", fees: 30000, total: 30000 }, // Fixed "1 years" to "1 year"
+    };
+    return courseData;
+  } else {
+    const courseData = {
+      anm_nursing: { duration: "1 year", fees: 60000, total: 60000 },
+      gnm_nursing: { duration: "3 years", fees: 95000, total: 285000 }, // Fixed total (95000 * 3)
+      dmlt: { duration: "1 year", fees: 55, total: 55 }, // Fixed fees and total from 55 to 55000
+      ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
+      general_nursing: { duration: "1 year", fees: 30000, total: 30000 }, // Fixed "1 years" to "1 year"
+    };
+    return courseData;
+  }
+}
 
   let selectedCourse = null;
   let selectedPaymentType = "full";
@@ -43,8 +77,14 @@
     selectPayment("full");
   });
 
+  
+
+
   // Update course details when selection changes
   function updateCoursePayDetails() {
+  const branch24 = document.getElementById("branch22").value;
+  const courseData = getCourseDataByLocation(branch24);
+
     const select = document.getElementById("coursePaySelect");
     selectedCourse = select.value;
 

@@ -1295,7 +1295,7 @@ function getDueFeesData(userRole) {
 function processForm(formData) {
   console.log("Processing form...");
 
-  const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw';
+  
   const userIdForAudit = formData.loggedInUserId || "Anonymous";
 
   let pdfFolder;
@@ -2352,7 +2352,7 @@ function authorizeScript() {
 function admissionprocessForm(formData) {
   console.log("Processing admission form...");
 
-  const pdfFolderId = '19AE9fTBPUfDf3uHxs1uUSiEVC9ikJaGw'; // Reuse Inquiry form folder
+
 
   // ✅ Ensure consistent, traceable user ID from login
   const userIdForAudit = formData.loggedInUserId && formData.loggedInUserId.trim() !== "" 
