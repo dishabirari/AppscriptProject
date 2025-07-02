@@ -58,7 +58,7 @@ function getCourseDataByLocation(branch) {
     const courseData = {
       anm_nursing: { duration: "1 year", fees: 60000, total: 60000 },
       gnm_nursing: { duration: "3 years", fees: 95000, total: 285000 }, // Fixed total (95000 * 3)
-      dmlt: { duration: "1 year", fees: 55, total: 55 }, // Fixed fees and total from 55 to 55000
+      dmlt: { duration: "1 year", fees: 55000, total: 55000 }, // Fixed fees and total from 55 to 55000
       ot_technician: { duration: "1 year", fees: 30000, total: 30000 },
       general_nursing: { duration: "1 year", fees: 30000, total: 30000 }, // Fixed "1 years" to "1 year"
     };
@@ -400,45 +400,13 @@ function getCourseDataByLocation(branch) {
     html2pdf().set(opt).from(tempDiv).save();
   }
 
-  // function copyText() {
-  //   sessionStorage.setItem(
-  //     "tempText",
-  //     document.getElementById("fullName").value
-  //   );
-  //   document.getElementById("Student_namee").value =
-  //     sessionStorage.getItem("tempText");
-
-  //   sessionStorage.setItem(
-  //     "A",
-  //     document.getElementById("coursePaySelect").value
-  //   );
-  //   document.getElementById("courseSelect").value = sessionStorage.getItem("A");
-
-  //   sessionStorage.setItem(
-  //     "Bc",
-  //     document.getElementById("coursePayFees").value
-  //   );
-  //   document.getElementById("courseFees").value = sessionStorage.getItem("Bc");
-  // }
+  
   function copyInquiry() {
     sessionStorage.setItem(
       "tempText",
       document.getElementById("fullName").value
     );
-    // document.getElementById("Student_namee").value =
-    //   sessionStorage.getItem("tempText");
-
-    // sessionStorage.setItem(
-    //   "A",
-    //   document.getElementById("coursePaySelect").value
-    // );
-    // document.getElementById("courseSelect").value = sessionStorage.getItem("A");
-
-    // sessionStorage.setItem(
-    //   "Bc",
-    //   document.getElementById("coursePayFees").value
-    // );
-    // document.getElementById("courseFees").value = sessionStorage.getItem("Bc");
+    
   }
   function copyCoursePay() {
     // Store coursePaySelect value
@@ -468,47 +436,7 @@ function getCourseDataByLocation(branch) {
     storePaymentType();
   }
 
-  /******************************************
-   * 2) LOGIN / LOGOUT
-   ******************************************/
-  //  document.getElementById('loginForm').addEventListener('submit', function(e) {
-  //  e.preventDefault();
-  //  const loginData = {
-  //  username: document.getElementById('loginUsername').value.trim(),
-  //  password: document.getElementById('loginPassword').value.trim()
-  //  };
-  //  google.script.run.withSuccessHandler(function(resp) {
-  //  if (resp.success) {
-  //    Swal.fire({ icon: 'success', title: 'Login Successful', text: 'Welcome, ' + resp.userName, timer: 1500, showConfirmButton: false });
-  //    document.getElementById('loginSection').classList.add('hidden');
-  //    document.getElementById('appSection').classList.remove('hidden');
-  //    document.getElementById('userName').value = resp.userName;
-  //    document.getElementById('userRole').value = resp.role;
-  //    document.getElementById('userRoleDisplay').textContent = resp.role;
-
-  //    // Admin UI if role=admin
-  //    if (resp.role === 'admin') {
-  //      document.getElementById('manageStudentsBtn').classList.remove('hidden');
-  //      document.getElementById('analyticsBtn').classList.remove('hidden');
-  //      document.getElementById('classMonthDashboardBtn').classList.remove('hidden');
-  //      document.getElementById('dueFeesBtn').classList.remove('hidden');
-  //    }
-
-  //    // load dropdown data
-  //    google.script.run.withSuccessHandler(function(dd) {
-  //      if (dd.error) {
-  //        console.log("Dropdown error", dd.error);
-  //        return;
-  //      }
-  //      dropdownData = dd;
-  //      fillDropdowns();
-  //    }).getDropdownData();
-
-  //  } else {
-  //    Swal.fire({ icon: 'error', title: 'Login Failed', text: resp.error });
-  //  }
-  //  }).loginUser(loginData);
-  //  });
+  
   document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
   const loginData = {
@@ -577,23 +505,7 @@ function getCourseDataByLocation(branch) {
     .loginUser(loginData);
 });
 
-// function logout() {
-//   document.getElementById("appSection").classList.add("hidden");
-//   document.getElementById("loginSection").classList.remove("hidden");
-//   document.getElementById("loginUsername").value = "";
-//   document.getElementById("loginPassword").value = "";
 
-  
-//   document.getElementById("loggedInUserId").value = "";
-
-//   Swal.fire({
-//     icon: "info",
-//     title: "Logged Out",
-//     text: "You have been logged out.",
-//     timer: 1500,
-//     showConfirmButton: false,
-//   });
-// }
 function logout() {
   // Clear client-side UI immediately for responsiveness
   document.getElementById("appSection").classList.add("hidden");
@@ -1711,131 +1623,7 @@ function logout() {
     }
   });
 
-  /******************************************
-   * 11) INITIALIZE
-   ******************************************/
-  //  updateGeneratedTime();
-
-  //  // Fill dropdowns function
-  //  function fillDropdowns() {
-  //  // Slip form
-  // //  const sessionEl = document.getElementById('session');
-  // //  sessionEl.innerHTML = '<option value="">Select Session</option>';
-  // //  dropdownData.sessions.forEach(s=>{
-  // //  const opt = document.createElement('option');
-  // //  opt.value=s; opt.textContent=s;
-  // //  sessionEl.appendChild(opt);
-  // //  });
-  //  const tradeEl = document.getElementById('trade');
-  //  tradeEl.innerHTML='<option value="">Select Course</option>';
-  //  dropdownData.trades.forEach(t=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=t; opt.textContent=t;
-  //  tradeEl.appendChild(opt);
-  //  });
-  //  const feesEl=document.getElementById('feesType');
-  //  feesEl.innerHTML='<option value="">Select Branch </option>';
-  //  dropdownData.feesTypes.forEach(f=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=f; opt.textContent=f;
-  //  feesEl.appendChild(opt);
-  //  });
-  //  const payEl=document.getElementById('paymentMode');
-  //  payEl.innerHTML='<option value="">Select Payment Mode</option>';
-  //  dropdownData.paymentModes.forEach(pm=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=pm; opt.textContent=pm;
-  //  payEl.appendChild(opt);
-  //  });
-
-  //  // Student form
-  //  const sessNew=document.getElementById('sessionNew');
-  //  sessNew.innerHTML='<option value="">Select Session</option>';
-  //  dropdownData.sessions.forEach(s=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=s; opt.textContent=s;
-  //  sessNew.appendChild(opt);
-  //  });
-  //  const tradeNew=document.getElementById('tradeNew');
-  //  tradeNew.innerHTML='<option value="">Select Course</option>';
-  //  dropdownData.trades.forEach(t=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=t; opt.textContent=t;
-  //  tradeNew.appendChild(opt);
-  //  });
-
-  //  // analytics
-  //  const aFees=document.getElementById('analyticsFeesTypeFilter');
-  //  aFees.innerHTML='<option value="">Branch </option>';
-  //  dropdownData.feesTypes.forEach(f=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=f; opt.textContent=f;
-  //  aFees.appendChild(opt);
-  //  });
-  //  const aPay=document.getElementById('analyticsPaymentModeFilter');
-  //  aPay.innerHTML='<option value="">All Payment Modes</option>';
-  //  dropdownData.paymentModes.forEach(pm=>{
-  //  const opt=document.createElement('option');
-  //  opt.value=pm; opt.textContent=pm;
-  //  aPay.appendChild(opt);
-  //  });
-  //  }
-  // Show Slip by default on login
-  //  function openSlip(){
-  //  hideAllSections();
-  //  document.getElementById('slipFormSection').classList.remove('hidden');
-  //  }
-  //    function calculateMonthlyFees() {
-  //    // Get the value of admission fees
-  //    const admissionFees = parseFloat(document.getElementById('admission_fees').value) || 0;
-
-  //   // Calculate monthly fees as admission / 12
-  //   const monthlyFees = admissionFees / 12;
-
-  //   document.getElementById('total').value = admissionFees;
-
-  //   // Update the monthly fees input field
-  //   document.getElementById('monthly_fees').value = monthlyFees.toFixed(2); // Format to two decimal places
-  //  }
-  //  function saveDataToSheet() {
-  //  // Collect values from input fields
-  //  const data = [
-  //    document.getElementById("jan_25").value,
-  //    document.getElementById("feb_25").value,
-  //    document.getElementById("mar_25").value,
-  //    document.getElementById("apr_25").value,
-  //    document.getElementById("may_25").value,
-  //    document.getElementById("jun_25").value,
-  //    document.getElementById("jul_25").value,
-  //    document.getElementById("aug_25").value,
-  //    document.getElementById("sep_25").value,
-  //    document.getElementById("oct_25").value,
-  //    document.getElementById("nov_25").value,
-  //    document.getElementById("dec_25").value
-  //  ];
-  //  // Call Apps Script function to save data
-  //  google.script.run.saveData(data);
-  //  alert('Data saved successfully!');
-  //  }
-
-  // function openInquiryForm() {
-  //   console.log("Inquiry Form button clicked");
-  //   hideAllSections();
-  //   document.getElementById("ifId").classList.remove("hidden");
-
-  //   // 1. Get the stored branch from the hidden input
-  //   const userBranch = document.getElementById("userBranch").value;
-
-  //   // 2. Get the branch input element in your inquiry form
-  //   const branchInput = document.getElementById("branch22");
-
-  //   // 3. Set its value directly
-  //   if (userBranch) {
-  //     branchInput.value = userBranch;
-  //   } else {
-  //     branchInput.value = ""; // Or some default value
-  //   }
-  // }
+  
   function openInquiryForm() {
     console.log("Inquiry Form button clicked");
     hideAllSections();
@@ -1867,27 +1655,17 @@ function logout() {
     } else {
         inquiryTakenByInput.value = ""; // Or some default value like "Anonymous"
     }
-    // ⭐ END: Add this section for Inquiry Taken By
-
-    // Optional: Set current date if you want it to be current date always when form is opened
-    // const today = new Date();
-    // const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
-    // document.getElementById("date").value = formattedDate;
+   
 }
 
   const { jsPDF } = window.jspdf;
 
-  // Show admission form
-  // Declare a global variable for the timer to ensure it can be accessed and cleared.
-  // --- Place this script tag in your main HTML file ---
+  
 
   // Declare this variable in the global scope of your script.
   let receiptLockTimer = null;
 
-  /**
-   * Opens the admission form and handles the auto-generation of the receipt number
-   * with a 5-second timer for user override.
-   */
+  
   function openAdmissionForm() {
     window.scrollTo(0, 0);
     console.log("Admission Form button clicked");
@@ -1949,10 +1727,7 @@ function logout() {
     document.getElementById("Student_namee").value =
       sessionStorage.getItem("tempText");
 
-    // updateCourseDetails();
-    // updateYearPaymentOptions();
-    // updatePaymentFields();
-    // storePaymentType();
+    
   }
 
   //Handle admission form submission
@@ -2194,220 +1969,10 @@ console.log("loggedInUser in sessionStorage:", sessionStorage.getItem("loggedInU
       }
     }
 
-    // PDF Generation
-    /*function generatePDFInquire() {
-         const formElement = document.getElementById('ifId');
-         const options = {
-         scale: 2,
-         useCORS: true,
-         allowTaint: true,
-         logging: true,
-         letterRendering: true
-         };
-         
-         html2canvas(formElement, options).then(canvas => {
-         const pdf = new jsPDF('p', 'mm', 'a4');
-         const imgData = canvas.toDataURL('image/png');
-         const imgWidth = 190; // A4 width - margins
-         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-         
-         pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-         
-         const studentName = document.getElementById('fullName').value || 'Student';
-         pdf.save(`${studentName.replace(/\s+/g, '_')}_Inquiry_Form.pdf`);
-         
-         // Switch to invoice view
-         document.getElementById('ifId').classList.add('hidden');
-         document.getElementById('container').classList.remove('hidden');
-         }).catch(err => {
-         console.error('PDF generation error:', err);
-         Swal.fire({
-           icon: 'error',
-           title: 'PDF Error',
-           text: 'Failed to generate PDF',
-           confirmButtonColor: '#1e3a8a',
-         });
-         });
-         }*/
+   
   }
 
-  /*
-document.addEventListener('DOMContentLoaded', function () {
-  const inquiryForm = document.getElementById('ifId'); // Replace with your form's ID
-  if (inquiryForm) {
-    inquiryForm.addEventListener('submit', submitInquiryForm); // Handle form submission
-  }
-}); */
-  // let currentLoggedInUser = sessionStorage.getItem('loggedInUser') || '';
-  //   let currentLoggedInBranch = sessionStorage.getItem('loggedInBranch') || ''; // Store branch too
-
-  //   // Get references to DOM elements
-  //   const loginForm = document.getElementById('loginForm');
-  //   const inquiryFormSection = document.getElementById('inquiryFormSection');
-  //   const inquiryForm = document.getElementById('ifId'); // IMPORTANT: Using your form ID 'ifId'
-  //   const branchInputField = document.getElementById('branch22'); // Reference to your specific branch input
-
-  //   // --- Custom Modal Functions (replaces alert/confirm) ---
-  //   function showCustomAlert(title, message, isSuccess) {
-  //       const modal = document.getElementById('customModal');
-  //       const modalTitle = document.getElementById('modalTitle');
-  //       const modalMessage = document.getElementById('modalMessage');
-  //       const successIcon = document.getElementById('successPath');
-  //       const errorIcon = document.getElementById('errorPath');
-  //       const modalIcon = document.getElementById('modalIcon');
-
-  //       modalTitle.textContent = title;
-  //       modalMessage.textContent = message;
-
-  //       // Reset icon visibility and classes
-  //       successIcon.style.display = 'none';
-  //       errorIcon.style.display = 'none';
-  //       modalIcon.classList.remove('success-icon', 'error-icon');
-
-  //       if (isSuccess) {
-  //           successIcon.style.display = 'block';
-  //           modalIcon.classList.add('success-icon');
-  //       } else {
-  //           errorIcon.style.display = 'block';
-  //           modalIcon.classList.add('error-icon');
-  //       }
-
-  //       modal.style.display = 'flex'; // Show the modal
-  //   }
-
-  //   // Event listener for closing the custom modal
-  //   document.getElementById('modalCloseBtn').addEventListener('click', () => {
-  //       document.getElementById('customModal').style.display = 'none';
-  //   });
-
-  //   // --- UI Update Function ---
-  //   /**
-  //    * Updates the visibility of login and inquiry forms based on login status.
-  //    * Also sets the branch field if a user is logged in.
-  //    */
-  //   function updateUI() {
-  //       if (currentLoggedInUser) {
-  //           loginForm.style.display = 'none';
-  //           inquiryFormSection.style.display = 'block';
-  //           if (branchInputField) { // Set the branch field from session storage
-  //               branchInputField.value = currentLoggedInBranch;
-  //           }
-  //           console.log("UI updated: Showing Inquiry Form. User:", currentLoggedInUser, "Branch:", currentLoggedInBranch);
-  //       } else {
-  //           loginForm.style.display = 'block';
-  //           inquiryFormSection.style.display = 'none';
-  //           console.log("UI updated: Showing Login Form. No user logged in.");
-  //       }
-  //   }
-
-  //   // --- Login Form Handling ---
-  //   loginForm.addEventListener('submit', function(event) {
-  //     event.preventDefault(); // Prevent default form submission
-
-  //     const username = document.getElementById('loginUsername').value;
-  //     const password = document.getElementById('loginPassword').value;
-
-  //     console.log("Login attempt for username:", username);
-
-  //     // Call the server-side loginUser function (from Code.gs)
-  //     google.script.run
-  //       .withSuccessHandler(function(response) {
-  //         console.log("Login Server Response:", response);
-  //         if (response.success) {
-  //           currentLoggedInUser = response.userName; // Store the logged-in user's name
-  //           currentLoggedInBranch = response.branch || ''; // Store the branch
-  //           sessionStorage.setItem('loggedInUser', currentLoggedInUser); // Persist user
-  //           sessionStorage.setItem('loggedInBranch', currentLoggedInBranch); // Persist branch
-  //           showCustomAlert("Login Successful", `Welcome, ${currentLoggedInUser}!`, true);
-  //           updateUI(); // Update UI to show inquiry form
-  //         } else {
-  //           showCustomAlert("Login Failed", response.error, false);
-  //         }
-  //       })
-  //       .withFailureHandler(function(error) {
-  //         console.error("Login Client-side Error:", error);
-  //         showCustomAlert("Error", `An unexpected error occurred during login: ${error.message}`, false);
-  //       })
-  //       .loginUser({ username: username, password: password }); // Pass login data to Apps Script
-  //   });
-
-
-  //   // --- Inquiry Form Submission Handling (using your onsubmit function name) ---
-  //   /**
-  //    * This function is called when your inquiry form (id="ifId") is submitted.
-  //    * It collects form data, adds the logged-in user ID, and sends it to Apps Script.
-  //    */
-  //   function submitInquiryForm(event) {
-  //     event.preventDefault(); // Prevent default form submission
-
-  //     // Collect all form data from the 'ifId' form
-  //     const formData = {};
-  //     new FormData(inquiryForm).forEach((value, key) => { // Use 'inquiryForm' reference (which is 'ifId')
-  //       formData[key] = value;
-  //     });
-
-  //     // --- CRUCIAL: Add the logged-in user ID to the form data object ---
-  //     // This ensures the server-side processForm receives the user's identity.
-  //     formData.loggedInUserId = currentLoggedInUser;
-  //     // Also add the branch from the logged-in user, overriding the form field if necessary
-  //     formData.branch = currentLoggedInBranch; // This ensures 'branch' in formData is the logged-in branch
-
-  //     console.log("Submitting Inquiry Form. Data being sent:", formData);
-  //     console.log("Ensuring loggedInUserId is:", formData.loggedInUserId);
-
-
-  //     // Call the server-side processForm function (from Code.gs)
-  //     google.script.run
-  //       .withSuccessHandler(function(response) {
-  //         console.log("Inquiry Form Server Response:", response);
-  //         if (response.success) {
-  //           showCustomAlert("Success!", `${response.message} Student: ${response.studentName}`, true);
-  //           inquiryForm.reset(); // Clear the form fields
-  //           // Re-populate the date field after reset
-  //           const today = new Date();
-  //           const yyyy = today.getFullYear();
-  //           const mm = String(today.getMonth() + 1).padStart(2, '0');
-  //           const dd = String(today.getDate()).padStart(2, '0');
-  //           document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
-  //           // Re-populate branch field (as it's readonly)
-  //           if (branchInputField) {
-  //               branchInputField.value = currentLoggedInBranch;
-  //           }
-
-  //         } else {
-  //           showCustomAlert("Error", `Error: ${response.message}`, false);
-  //         }
-  //       })
-  //       .withFailureHandler(function(error) {
-  //         console.error("Inquiry Form Client-side Error:", error);
-  //         showCustomAlert("Error", `An unexpected error occurred: ${error.message}`, false);
-  //       })
-  //       .processForm(formData); // Pass all form data, including loggedInUserId and branch
-  //   }
-
-  //   // --- Local PDF Download Button (Client-side Only) ---
-  //   // This uses your generatePDFInquire() function as per your HTML
-  //   function generatePDFInquire() {
-  //     showCustomAlert("Feature Note", "This 'Download PDF' button is for client-side HTML preview and will not save to Google Drive. The 'Submit' button handles PDF generation and saving to Drive.", false);
-  //     // In a real application, if you wanted client-side PDF generation,
-  //     // you would use a library like jsPDF or html2pdf.
-  //     // For this example, it's just a placeholder and reminder.
-  //   }
-
-
-  //   // --- Initialize on Page Load ---
-  //   document.addEventListener('DOMContentLoaded', (event) => {
-  //     // Set today's date as default for the date field
-  //     const today = new Date();
-  //     const yyyy = today.getFullYear();
-  //     const mm = String(today.getMonth() + 1).padStart(2, '0');
-  //     const dd = String(today.getDate()).padStart(2, '0');
-  //     const formattedDate = `${yyyy}-${mm}-${dd}`;
-  //     document.getElementById('date').value = formattedDate;
-
-  //     // Update UI initially based on whether a user is already in sessionStorage
-  //     updateUI();
-  //   });
+  
 
  function submitInquiryForm(e) {
   e.preventDefault();
@@ -2493,7 +2058,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// Function to populate the inquiryTakenBy field and optionally the branch field
+
 function populateInquiryTakenBy() {
     const inquiryTakenByInput = document.getElementById("inquiryTakenBy");
     const branchInput = document.getElementById("branch22"); // Get the branch input
@@ -2982,9 +2547,6 @@ function populateInquiryTakenBy() {
   // Run initial setup when the page is loaded
   window.addEventListener("DOMContentLoaded", () => {
       loadPhoneSuggestions();
-      // This part of your original code might cause an error if it runs before the element exists.
-      // It's safer inside the event listener or just remove it if it's not needed.
-      // const dl = document.getElementById("phoneSuggestions");
-      // if (dl) dl.innerHTML = ""; 
+      
   });
 </script>
