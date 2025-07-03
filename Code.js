@@ -857,7 +857,7 @@ function processForm(formData) {
   }
 
   
-  const dfSheet = ss.getSheetByName("DF");
+  const dfSheet = ss.getSheetByName("INQUIRY");
   if (!dfSheet) {
     console.error("DF sheet not found.");
     createAuditLogEntry("Sheet Not Found Error", userIdForAudit, {
@@ -1098,7 +1098,7 @@ function admissionprocessForm(formData) {
     ? formData.loggedInUserId.trim() 
     : "Anonymous";
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("ADMISSIONS");
 
   if (!sheet) {
     console.error("Admissions sheet not found.");
