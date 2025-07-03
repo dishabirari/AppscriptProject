@@ -1,5 +1,5 @@
 function getAllPhoneNumbers() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("INQUIRY");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("DF");
   const data = sheet.getDataRange().getValues();
 
   const phoneNumbers = data.slice(1)
@@ -45,7 +45,7 @@ function getStudentData(phone) {
   const inputPhone = String(phone).replace(/\D/g, '').trim();
   Logger.log("📩 Input from frontend: " + inputPhone);
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("INQUIRY");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("DF");
   const data = sheet.getDataRange().getValues();
   const headers = data[0];
 

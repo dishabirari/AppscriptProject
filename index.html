@@ -1,160 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Fee Management Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- html2pdf -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!---------------------Admission Form ----------------------------->
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!---------------------Admission Form End ----------------------------->
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enhanced Fee Management Dashboard</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!-- html2pdf -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<?!= include('style'); ?>
 
-  <?!= include('style'); ?>
-</head>
 
-<body class="bg-gray-100">
-  <!-- LOGIN SECTION -->
-  <div id="loginSection" class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 space-y-6">
-      <div class="text-center">
-        <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" class="w-24 mx-auto mb-4 rounded-lg" alt="Institute Logo" />
-        <h2 class="text-3xl font-bold text-gray-800">Shelar Training Institute</h2>
-        <p class="text-gray-500 mt-2">Sign in to continue</p>
-      </div>
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-          <div class="relative">
-            <input type="text" id="loginUsername" class="w-full px-4 py-3 rounded-lg border border-gray-300 
-                        focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter username" required />
-            <i class="fas fa-user absolute right-3 top-3.5 text-gray-400"></i>
-          </div>
+
+
+  </head>
+  <body class="bg-gray-100">
+    <!-- LOGIN SECTION -->
+    <div id="loginSection"
+      class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 space-y-6">
+        <div class="text-center">
+          <img
+            src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png"
+            class="w-24 mx-auto mb-4 rounded-lg" alt="Institute Logo" />
+          <h2 class="text-3xl font-bold text-gray-800">Shelar Training
+            Institute</h2>
+          <p class="text-gray-500 mt-2">Sign in to continue</p>
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <div class="relative">
-            <input type="password" id="loginPassword" class="w-full px-4 py-3 rounded-lg border border-gray-300 
-                        focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="••••••••" required />
-            <i class="fas fa-lock absolute right-3 top-3.5 text-gray-400"></i>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <div class="relative">
+              <input type="text" id="loginUsername"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 
+                        focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter username" required />
+              <i class="fas fa-user absolute right-3 top-3.5 text-gray-400"></i>
+            </div>
           </div>
-        </div>
-        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg 
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="loginPassword"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 
+                        focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="••••••••" required />
+              <i class="fas fa-lock absolute right-3 top-3.5 text-gray-400"></i>
+            </div>
+          </div>
+          <button type="submit"
+            class="w-full bg-blue-600 text-white py-3 rounded-lg 
                   hover:bg-blue-700 transition-colors font-medium">
-          Sign In
-        </button>
-      </form>
+            Sign In
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
+    <!-- MAIN APP SECTION -->
+    <div id="appSection" class="hidden min-h-screen">
+      <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
 
-  <!-- MAIN APP SECTION -->
-  <div id="appSection" class="hidden min-h-screen">
-    <div class="flex min-h-screen">
-      <!-- SIDEBAR -->
-      <?!= include('SideBar'); ?>
+        <?!= include('SideBar'); ?>
 
-      <!-- MAIN CONTENT -->
-      <main class="flex-1 p-4 overflow-y-auto">
-        <div class="ml-64">
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-4 overflow-y-auto">
+          <div class="ml-64">
           <!-- HIDDEN INPUTS -->
           <input type="hidden" id="userName" />
           <input type="hidden" id="userRole" />
           <input type="hidden" id="userBranch">
-          <input type="hidden" id="loggedInUserId" name="loggedInUserId" />
+         <input type="hidden" id="loggedInUserId" name="loggedInUserId" />
 
-          <div id="slipFormSection" class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-            <div class="flex flex-col md:flex-row justify-between items-start mb-6">
+          <div id="slipFormSection"
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div
+              class="flex flex-col md:flex-row justify-between items-start mb-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-1">Student
+                  ID</label>
                 <div class="flex items-center gap-2">
-                  <input type="text" id="studentId" class="w-44 px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
+                  <input type="text" id="studentId"
+                    class="w-44 px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
                   <!-- Button to fetch old slips by typed ID -->
-                  <button type="button" onclick="searchOldFeesFromSlip()" class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300">
+                  <button type="button" onclick="searchOldFeesFromSlip()"
+                    class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300">
                     View Old Slips
                   </button>
                 </div>
               </div>
-              <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" class="w-24 mx-auto mb-4 rounded-lg" alt="Institute Logo" />
+              <img
+                src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png"
+                class="w-24 mx-auto mb-4 rounded-lg" alt="Institute Logo" />
               <div class="text-right">
                 <p class="text-lg font-bold text-red-600">TRAINEE COPY</p>
-                <p class="text-sm text-gray-500">Generated at: <span id="generatedTime"></span></p>
+                <p class="text-sm text-gray-500">Generated at: <span
+                    id="generatedTime"></span></p>
               </div>
             </div>
             <div class="text-center mb-6">
-              <h1 class="text-3xl font-bold text-gray-800 mb-2">Shelar Training Institute</h1>
+              <h1 class="text-3xl font-bold text-gray-800 mb-2">Shelar Training
+                Institute</h1>
             </div>
             <form id="receiptForm" class="space-y-6">
               <input type="hidden" id="recordRowNumber" />
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                  <input type="date" id="date" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" onchange="updateMonthField()" />
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <input type="date" id="date"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none"
+                    onchange="updateMonthField()" />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                  <input type="text" id="monthField" class="w-full px-3 py-2 border-b-2 border-gray-300 bg-gray-50 focus:border-blue-500 outline-none" readonly />
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                  <input type="text" id="monthField"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 bg-gray-50 focus:border-blue-500 outline-none"
+                    readonly />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Session</label>
-                  <select id="session" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Session</label>
+                  <select id="session"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
                     <option value>Loading...</option>
                   </select>
                 </div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Transaction ID</label>
-                  <input type="text" id="transactionId" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Transaction
+                    ID</label>
+                  <input type="text" id="transactionId"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Course</label>
-                  <select id="trade" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                  <select id="trade"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
                     <option value>Loading...</option>
                   </select>
                 </div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
-                  <input type="text" id="studentName" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Student
+                    Name</label>
+                  <input type="text" id="studentName"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Father's Name</label>
-                  <input type="text" id="fatherName" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
-                </div>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Paid Amount ($)</label>
-                  <input type="number" id="paidAmount" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" oninput="convertAmountToWords()" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Amount in Words</label>
-                  <input type="text" id="paidAmountInWord" class="w-full px-3 py-2 border-b-2 border-gray-300 bg-gray-50 focus:border-blue-500 outline-none" readonly />
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Father's
+                    Name</label>
+                  <input type="text" id="fatherName"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none" />
                 </div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <select id="feesType" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Paid
+                    Amount ($)</label>
+                  <input type="number" id="paidAmount"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none"
+                    oninput="convertAmountToWords()" />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Amount
+                    in Words</label>
+                  <input type="text" id="paidAmountInWord"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 bg-gray-50 focus:border-blue-500 outline-none"
+                    readonly />
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                  <select id="feesType"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
                     <option value>Loading...</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Payment Mode</label>
-                  <select id="paymentMode" class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1">Payment
+                    Mode</label>
+                  <select id="paymentMode"
+                    class="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-blue-500 outline-none">
                     <option value>Loading...</option>
                   </select>
                 </div>
@@ -163,31 +226,42 @@
               <div class="mt-12 pt-6 border-t border-gray-200">
                 <div class="flex flex-col md:flex-row justify-between gap-4">
                   <div class="text-sm text-gray-500">
-                    <p>* Fees once paid cannot be refunded under any circumstances</p>
-                    <p class="mt-2"> Gmail: shelartraininginstitute@gmail.com</p>
+                    <p>* Fees once paid cannot be refunded under any
+                      circumstances</p>
+                    <p class="mt-2"> Gmail:
+                      shelartraininginstitute@gmail.com</p>
                   </div>
                   <div class="text-right">
                     <p class="font-medium">Authorized Signature</p>
-                    <div class="mt-2 h-12 w-48 border-b-2 border-gray-300"></div>
+                    <div
+                      class="mt-2 h-12 w-48 border-b-2 border-gray-300"></div>
                   </div>
                 </div>
               </div>
               <div class="no-print mt-8 flex flex-wrap justify-end gap-4">
-                <button type="reset" class="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg">Clear</button>
-                <button id="btnSubmitNew" type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+                <button type="reset"
+                  class="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg">Clear</button>
+                <button id="btnSubmitNew" type="submit"
+                  class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
                   Save Receipt
                 </button>
-                <button id="btnUpdateData" type="button" class="hidden px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium" onclick="updateFeeData()">
+                <button id="btnUpdateData" type="button"
+                  class="hidden px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium"
+                  onclick="updateFeeData()">
                   Update Receipt
                 </button>
               </div>
             </form>
           </div>
           <!-- ADD RECEIPT SECTION -->
-          <div id="separateReceipt" class="hidden printable bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto my-8">
+          <div id="separateReceipt"
+            class="hidden printable bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto my-8">
             <div class="flex items-center mb-4">
-              <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" class="w-24 mx-auto mb-4 rounded-lg" alt="Institute Logo" />
-              <h1 class="text-2xl font-bold text-center">SHELAR TRAINING INSTITUTE</h1>
+              <img
+                src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png"
+                class="w-24 mx-auto mb-4 rounded-lg" alt="Institute Logo" />
+              <h1 class="text-2xl font-bold text-center">SHELAR TRAINING
+                INSTITUTE</h1>
             </div>
             <div class="text-center mb-4">
               <span class="border border-black px-2 py-1">RECEIPT</span>
@@ -204,7 +278,8 @@
             </div>
             <div class="mb-4">
               <span class="font-bold">Full Name :</span>
-              <span id="receiptStudentName">______________________________</span>
+              <span
+                id="receiptStudentName">______________________________</span>
             </div>
             <div class="mb-4">
               <span class="font-bold">Propose to Pay :</span>
@@ -240,25 +315,25 @@
               <span class="font-bold">Authority Signature</span>
             </div>
             <div class="no-print mt-6 text-center">
-              <button onclick="printReceipt()" class="px-6 py-2 bg-blue-600 text-white rounded-lg">
+              <button onclick="printReceipt()"
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg">
                 <i class="fas fa-print mr-2"></i>Print Receipt
               </button>
-              <button onclick="backToSlipForm()" class="px-6 py-2 bg-gray-500 text-white rounded-lg ml-4">
+              <button onclick="backToSlipForm()"
+                class="px-6 py-2 bg-gray-500 text-white rounded-lg ml-4">
                 <i class="fas fa-arrow-left mr-2"></i>Back
               </button>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
-  </div>
+        
+
 
   <?!= include('OldFees'); ?>
   <?!= include('AnalyticsSection'); ?>
   <?!= include('ManageStudentSection'); ?>
   <?!= include('Dashboard'); ?>
   <?!= include('CoursePayment'); ?>
-  <?!= include('DueFees'); ?>
+  <?!= include('DueFees'); ?>      
   <?!= include('Admission'); ?>
   <?!= include('InquiryForm'); ?>
   <?!= include('StudentModal'); ?>
@@ -268,6 +343,6 @@
   <?!= include('installmentdue'); ?>
   <?!= include('payment'); ?>
   <?!= include('generatePDF'); ?>
-</body>
-
-</html>
+<!---------------------------Admission Form End--------------------------->
+    </body>
+  </html>
