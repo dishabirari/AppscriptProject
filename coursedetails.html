@@ -6,6 +6,10 @@
     const feesDiv = document.getElementById("courseFees");
     const yearsSelect = document.getElementById("courseYears");
 
+    const branch24 = document.getElementById("branch22").value;
+  const courseData = getCourseDataByLocation(branch24);
+
+
     if (courseData[value]) {
       durationDiv.textContent = courseData[value].duration;
       feesDiv.textContent = courseData[value].fees;

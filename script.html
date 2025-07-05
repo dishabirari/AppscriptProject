@@ -2118,45 +2118,45 @@ function populateInquiryTakenBy() {
     updateCourseDetails(); // Initialize course details
   });
 
-  const courseData1 = {
-    anm_nursing: { duration: "2 years", fees: "₹50,000" },
-    gnm_nursing: { duration: "3 years", fees: "₹60,000" },
-    dmlt: { duration: "2 years", fees: "₹45,000" },
-    ot_technician: { duration: "1 year", fees: "₹40,000" },
-    general_nursing: { duration: "2 years", fees: "₹55,000" },
-    beautician: { duration: "6 months", fees: "₹25,000" },
-    electrician: { duration: "1 year", fees: "₹30,000" },
-    mobile_repairing: { duration: "3 months", fees: "₹15,000" },
-    ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
-    automobile: { duration: "1 year", fees: "₹35,000" },
-  };
+  // const courseData1 = {
+  //   anm_nursing: { duration: "2 years", fees: "₹50,000" },
+  //   gnm_nursing: { duration: "3 years", fees: "₹60,000" },
+  //   dmlt: { duration: "2 years", fees: "₹45,000" },
+  //   ot_technician: { duration: "1 year", fees: "₹40,000" },
+  //   general_nursing: { duration: "2 years", fees: "₹55,000" },
+  //   beautician: { duration: "6 months", fees: "₹25,000" },
+  //   electrician: { duration: "1 year", fees: "₹30,000" },
+  //   mobile_repairing: { duration: "3 months", fees: "₹15,000" },
+  //   ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
+  //   automobile: { duration: "1 year", fees: "₹35,000" },
+  // };
 
-  function updateCourseDetails() {
-    const select = document.getElementById("courseSelect");
-    const value = select.value;
-    const durationDiv = document.getElementById("courseDuration");
-    const feesDiv = document.getElementById("courseFees");
-    const yearsSelect = document.getElementById("courseYears");
+  // function updateCourseDetails() {
+  //   const select = document.getElementById("courseSelect");
+  //   const value = select.value;
+  //   const durationDiv = document.getElementById("courseDuration");
+  //   const feesDiv = document.getElementById("courseFees");
+  //   const yearsSelect = document.getElementById("courseYears");
 
-    if (courseData1[value]) {
-      durationDiv.textContent = courseData1[value].duration;
-      feesDiv.textContent = courseData1[value].fees;
+  //   if (courseData[value]) {
+  //     durationDiv.textContent = courseData[value].duration;
+  //     feesDiv.textContent = courseData[value].fees;
 
-      // Set course years based on duration
-      if (courseData1[value].duration.includes("2")) {
-        yearsSelect.value = "2";
-      } else if (courseData1[value].duration.includes("3")) {
-        yearsSelect.value = "3";
-      } else {
-        yearsSelect.value = "1";
-      }
-    } else {
-      durationDiv.textContent = "";
-      feesDiv.textContent = "";
-      yearsSelect.value = "1"; // Default to 1 year if no course is selected
-    }
-    updateYearPaymentOptions(); // Recalculate options based on new years
-  }
+  //     // Set course years based on duration
+  //     if (courseData[value].duration.includes("2")) {
+  //       yearsSelect.value = "2";
+  //     } else if (courseData[value].duration.includes("3")) {
+  //       yearsSelect.value = "3";
+  //     } else {
+  //       yearsSelect.value = "1";
+  //     }
+  //   } else {
+  //     durationDiv.textContent = "";
+  //     feesDiv.textContent = "";
+  //     yearsSelect.value = "1"; // Default to 1 year if no course is selected
+  //   }
+  //   updateYearPaymentOptions(); // Recalculate options based on new years
+  // }
 
   function updatePaymentFields() {
     const paymentType = document.querySelector(
