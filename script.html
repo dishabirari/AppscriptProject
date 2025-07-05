@@ -26,7 +26,7 @@
    ******************************************/
 
 function getCourseDataByLocation(branch) {
-  console.log(branch);
+  // console.log(branch);
   if (branch === "thane") {
     const courseData = {
       anm_nursing: { duration: "1 year", fees: 8500, total: 650 },
@@ -82,6 +82,8 @@ function getCourseDataByLocation(branch) {
 
   // Update course details when selection changes
   function updateCoursePayDetails() {
+    
+
   const branch24 = document.getElementById("branch22").value;
   const courseData = getCourseDataByLocation(branch24);
 
@@ -112,6 +114,10 @@ function getCourseDataByLocation(branch) {
 
   // Update all payment options with the current total fees
   function updatePaymentOptions(totalFees) {
+
+        const branch24 = document.getElementById("branch22").value;
+  const courseData = getCourseDataByLocation(branch24);
+
     // Full Payment
     const discount = totalFees * 0.05;
     const fullTotal = totalFees - discount;
@@ -141,6 +147,9 @@ function getCourseDataByLocation(branch) {
 
   // Calculate EMI based on selected tenure
   function calculateEMI() {
+        const branch24 = document.getElementById("branch22").value;
+  const courseData = getCourseDataByLocation(branch24);
+
     if (!selectedCourse) return;
 
     const totalFees = getTotalFees();
@@ -161,6 +170,8 @@ function getCourseDataByLocation(branch) {
 
   // Get total fees for selected course
   function getTotalFees() {
+        const branch24 = document.getElementById("branch22").value;
+  const courseData = getCourseDataByLocation(branch24);
     if (!selectedCourse) return 0;
 
     const course = courseData[selectedCourse];
@@ -258,24 +269,24 @@ function getCourseDataByLocation(branch) {
   }
 
   // Process payment (mock function)
-  function processPayment() {
-    if (!selectedCourse) {
-      alert("Please select a course first");
-      return;
-    }
+  // function processPayment() {
+  //   if (!selectedCourse) {
+  //     alert("Please select a course first");
+  //     return;
+  //   }
 
-    const paymentMethod = document.querySelector(
-      'input[name="payment_method"]:checked'
-    ).value;
-    const amount = getPaymentAmount();
+  //   const paymentMethod = document.querySelector(
+  //     'input[name="payment_method"]:checked'
+  //   ).value;
+  //   const amount = getPaymentAmount();
 
-    alert(
-      `Processing ${paymentMethod} payment of ${formatCurrency(amount)} for ${
-        document.getElementById("coursePaySelect").selectedOptions[0].text
-      }`
-    );
-    // In a real app, you would integrate with a payment gateway here
-  }
+  //   alert(
+  //     `Processing ${paymentMethod} payment of ${formatCurrency(amount)} for ${
+  //       document.getElementById("coursePaySelect").selectedOptions[0].text
+  //     }`
+  //   );
+  //   // In a real app, you would integrate with a payment gateway here
+  // }
 
   // Get payment amount based on selected option
   function getPaymentAmount() {
@@ -415,6 +426,20 @@ function getCourseDataByLocation(branch) {
       document.getElementById("coursePaySelect").value
     );
     document.getElementById("courseSelect").value = sessionStorage.getItem("A");
+
+    // 
+sessionStorage.setItem(
+  "C",
+  document.getElementById("pay-select").value
+);
+console.log("✅ Stored in sessionStorage (C):", sessionStorage.getItem("C"));
+
+
+document.getElementById("payment_method").value = sessionStorage.getItem("C");
+console.log("✅ payment_method set to:", document.getElementById("payment_method").value);
+
+
+
 
     // Get selected payment type
     const selectedRadio = document.querySelector(
