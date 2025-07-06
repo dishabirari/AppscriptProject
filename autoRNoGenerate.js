@@ -49,8 +49,8 @@ function findLastReceiptInSheet(sheetName) {
 function getNextReceiptNumber() {
   try {
     // Find the last receipt number from both sheets.
-    const lastNumAdmissions = findLastReceiptInSheet("Admissions");
-    const lastNumDf = findLastReceiptInSheet("df");
+    const lastNumAdmissions = findLastReceiptInSheet(CONFIG.ADMISSIONS_SHEET_NAME);
+    const lastNumDf = findLastReceiptInSheet(CONFIG.INQUIRY_SHEET_NAME);
 
     console.log(`Last number in 'Admissions' sheet: ${lastNumAdmissions}`);
     console.log(`Last number in 'df' sheet: ${lastNumDf}`);

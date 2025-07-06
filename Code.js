@@ -902,7 +902,7 @@ function processForm(formData) {
 
   let pdfFolder;
   try {
-    pdfFolder = DriveApp.getFolderById(pdfFolderId);
+    pdfFolder = DriveApp.getFolderById(CONFIG.ADMISSIONS_PDF_FOLDER_ID);
   } catch (e) {
     console.error("PDF folder access error:", e);
     createAuditLogEntry("PDF Folder Access Error", userIdForAudit, {
@@ -913,7 +913,7 @@ function processForm(formData) {
   }
 
   
-  const dfSheet = ss.getSheetByName("DF");
+  const dfSheet = ss.getSheetByName(CONFIG.INQUIRY_SHEET_NAME);
   if (!dfSheet) {
     console.error("DF sheet not found.");
     createAuditLogEntry("Sheet Not Found Error", userIdForAudit, {
@@ -1022,7 +1022,7 @@ function processForm(formData) {
 
 
 function createAuditLogEntry(action, userId, additionalDetails = {}) {
-  const auditLogSheet = ss.getSheetByName("AuditLog");
+  const auditLogSheet = ss.getSheetByName(CONFIG.AUDIT_LOG_SHEET_NAME);
   if (!auditLogSheet) {
     console.error("AuditLog sheet not found.");
     return;
@@ -1154,7 +1154,7 @@ function admissionprocessForm(formData) {
     ? formData.loggedInUserId.trim() 
     : "Anonymous";
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Admissions");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.ADMISSIONS_SHEET_NAME);
 
   if (!sheet) {
     console.error("Admissions sheet not found.");
@@ -1238,7 +1238,7 @@ function admissionprocessForm(formData) {
     const pdfBlob = Utilities.newBlob(html, 'text/html', 'Admission.html')
       .getAs('application/pdf')
       .setName(`Admission_Receipt_${formData.student_name.replace(/[^a-zA-Z0-9]/g, '_')}_${userIdForAudit}_${new Date().toLocaleDateString('en-IN').replace(/\//g, '-')}.pdf`);
-    const pdfFolder = DriveApp.getFolderById(pdfFolderId);
+    const pdfFolder = DriveApp.getFolderById(CONFIG.ADMISSIONS_PDF_FOLDER_ID);
     const pdfFile = pdfFolder.createFile(pdfBlob);
 
     
