@@ -14,7 +14,7 @@
   let classMonthPieChartRef = null;
   let classMonthData = [];
 
-  // For Analytics
+  // Fopenr Analytics
   let dateWiseChartRef = null;
   let lineChartRef = null;
   let pieChartRef = null;
@@ -336,6 +336,8 @@ function getCourseDataByLocation(branch) {
     document.getElementById("ifId").classList.add("hidden");
     document.getElementById("admissionFormSection").classList.add("hidden");
     document.getElementById("coursePaymentSection").classList.add("hidden");
+    document.getElementById("receiptReadOnlyForm").classList.add("hidden");
+
   }
   function updateGeneratedTime() {
     const now = new Date();
@@ -1517,6 +1519,159 @@ function logout() {
     renderDueFeesTable(filtered);
   }
 
+
+
+
+
+
+
+
+
+
+
+  /******************************************
+   * 6) admission receipt
+   ******************************************/
+
+// function openReceiptReadOnlyForm() {
+//   hideAllSections(); // Your existing function
+//   const section = document.getElementById("receiptReadOnlyForm");
+//   if (section) section.classList.remove("hidden");
+
+//   // Get auto-generated receipt number from Apps Script
+//   google.script.run.withSuccessHandler(function(receiptNumber) {
+//     document.getElementById("receiptNoForm").value = receiptNumber;
+//   }).generateReceiptNumber();
+// } 
+
+
+
+  // function downloadAdmissionReceiptPDF() {
+  //   // Clone the receipt element twice
+  //   const receipt = document.querySelector(".receipt");
+  //   const clone1 = receipt.cloneNode(true);
+  //   const clone2 = receipt.cloneNode(true);
+
+  //   // Remove button from clones if present
+  //   clone1.querySelector(".no-print")?.remove();
+  //   clone2.querySelector(".no-print")?.remove();
+
+  //   // Create a wrapper for the PDF content
+  //   const container = document.createElement("div");
+  //   container.style.width = "210mm";
+  //   container.style.minHeight = "297mm";
+  //   container.style.padding = "10mm";
+  //   container.style.boxSizing = "border-box";
+  //   container.style.background = "white";
+
+  //   // Style both receipts
+  //   clone1.style.marginBottom = "20px";
+  //   container.appendChild(clone1);
+  //   container.appendChild(clone2);
+
+  //   // Convert to PDF
+  //   html2pdf()
+  //     .from(container)
+  //     .set({
+  //       margin: 0,
+  //       filename: 'Admission_Receipt.pdf',
+  //       image: { type: 'jpeg', quality: 0.98 },
+  //       html2canvas: { scale: 2, useCORS: true },
+  //       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  //     })
+  //     .save();
+  // }
+
+function downloadAdmissionReceiptPDF() {
+  const receipt = document.querySelector(".receipt");
+  const clone1 = receipt.cloneNode(true);
+  const clone2 = receipt.cloneNode(true);
+
+  // Remove download buttons from PDF
+  clone1.querySelector(".no-print")?.remove();
+  clone2.querySelector(".no-print")?.remove();
+
+  // Scale to fit both receipts
+  clone1.style.transform = "scale(0.95)";
+  clone1.style.transformOrigin = "top left";
+  clone2.style.transform = "scale(0.95)";
+  clone2.style.transformOrigin = "top left";
+
+  // Create wrapper
+  const container = document.createElement("div");
+  container.style.width = "210mm";
+  container.style.height = "297mm"; // Use exact A4 height
+  container.style.padding = "10mm";
+  container.style.boxSizing = "border-box";
+  container.style.background = "white";
+  container.style.overflow = "hidden";
+
+  // Add both receipts
+  container.appendChild(clone1);
+  container.appendChild(clone2);
+
+  // Generate PDF
+  html2pdf()
+    .from(container)
+    .set({
+      margin: 0,
+      filename: 'Admission_Receipt.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    })
+    .save();
+}
+
+
+
+function openReceiptReadOnlyForm() {
+   hideAllSections(); // Your existing function
+  const section = document.getElementById("receiptReadOnlyForm");
+  if (section) section.classList.remove("hidden");
+
+  // Get auto-generated receipt number from Apps Script
+  google.script.run.withSuccessHandler(function(receiptNumber) {
+    document.getElementById("receiptNoForm").value = receiptNumber;
+  }).generateReceiptNumber();
+  // Get values from admission form
+  const name = document.getElementById("Student_namee").value || "";
+  const receipt = document.getElementById("receipt_number").value || "";
+  const course = document.getElementById("courseSelect").value || "";
+  const courseText = document.querySelector("#courseSelect option:checked")?.textContent || "";
+  const fees = document.getElementById("courseFeeees").value || "";
+  const paid = getPaidAmount();  // If paid amount is dynamic
+  const balance = parseInt(fees || 0) - parseInt(paid || 0);
+  const duration = document.getElementById("coursePeriod").value || "";
+  const examFees = 6000;
+  const receivedBy = "Admin";
+
+  // Fill into receipt <span> fields
+  document.getElementById("student_name_display").textContent = name;
+  document.getElementById("receipt_no_display").textContent = receipt;
+  document.getElementById("propose_to_pay_display").textContent = courseText + " Admission Fee";
+  document.getElementById("total_amount_display").textContent = fees;
+  document.getElementById("paid_amount_display").textContent = paid;
+  document.getElementById("balance_display").textContent = balance || 0;
+  document.getElementById("exam_fees_display").textContent = examFees;
+  document.getElementById("received_by_display").textContent = receivedBy;
+
+  // Show the receipt section
+  document.getElementById("receiptReadOnlyForm").classList.remove("hidden");
+  document.getElementById("admissionFormSection").classList.add("hidden");
+}
+
+function getPaidAmount() {
+  // Use this if your form allows EMI or partial
+  const yearPayments = document.querySelectorAll(".year-paid-input");
+  let totalPaid = 0;
+  yearPayments.forEach(inp => {
+    const value = parseInt(inp.value || 0);
+    if (!isNaN(value)) totalPaid += value;
+  });
+  return totalPaid;
+}
+
   /******************************************
    * 10) RECEIPT PRINTING
    ******************************************/
@@ -2143,45 +2298,45 @@ function populateInquiryTakenBy() {
     updateCourseDetails(); // Initialize course details
   });
 
-  // const courseData1 = {
-  //   anm_nursing: { duration: "2 years", fees: "₹50,000" },
-  //   gnm_nursing: { duration: "3 years", fees: "₹60,000" },
-  //   dmlt: { duration: "2 years", fees: "₹45,000" },
-  //   ot_technician: { duration: "1 year", fees: "₹40,000" },
-  //   general_nursing: { duration: "2 years", fees: "₹55,000" },
-  //   beautician: { duration: "6 months", fees: "₹25,000" },
-  //   electrician: { duration: "1 year", fees: "₹30,000" },
-  //   mobile_repairing: { duration: "3 months", fees: "₹15,000" },
-  //   ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
-  //   automobile: { duration: "1 year", fees: "₹35,000" },
-  // };
+  const courseData1 = {
+    anm_nursing: { duration: "2 years", fees: "₹50,000" },
+    gnm_nursing: { duration: "3 years", fees: "₹60,000" },
+    dmlt: { duration: "2 years", fees: "₹45,000" },
+    ot_technician: { duration: "1 year", fees: "₹40,000" },
+    general_nursing: { duration: "2 years", fees: "₹55,000" },
+    beautician: { duration: "6 months", fees: "₹25,000" },
+    electrician: { duration: "1 year", fees: "₹30,000" },
+    mobile_repairing: { duration: "3 months", fees: "₹15,000" },
+    ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
+    automobile: { duration: "1 year", fees: "₹35,000" },
+  };
 
-  // function updateCourseDetails() {
-  //   const select = document.getElementById("courseSelect");
-  //   const value = select.value;
-  //   const durationDiv = document.getElementById("courseDuration");
-  //   const feesDiv = document.getElementById("courseFees");
-  //   const yearsSelect = document.getElementById("courseYears");
+  function updateCourseDetails() {
+    const select = document.getElementById("courseSelect");
+    const value = select.value;
+    const durationDiv = document.getElementById("courseDuration");
+    const feesDiv = document.getElementById("courseFees");
+    const yearsSelect = document.getElementById("courseYears");
 
-  //   if (courseData[value]) {
-  //     durationDiv.textContent = courseData[value].duration;
-  //     feesDiv.textContent = courseData[value].fees;
+    if (courseData1[value]) {
+      durationDiv.textContent = courseData1[value].duration;
+      feesDiv.textContent = courseData1[value].fees;
 
-  //     // Set course years based on duration
-  //     if (courseData[value].duration.includes("2")) {
-  //       yearsSelect.value = "2";
-  //     } else if (courseData[value].duration.includes("3")) {
-  //       yearsSelect.value = "3";
-  //     } else {
-  //       yearsSelect.value = "1";
-  //     }
-  //   } else {
-  //     durationDiv.textContent = "";
-  //     feesDiv.textContent = "";
-  //     yearsSelect.value = "1"; // Default to 1 year if no course is selected
-  //   }
-  //   updateYearPaymentOptions(); // Recalculate options based on new years
-  // }
+      // Set course years based on duration
+      if (courseData1[value].duration.includes("2")) {
+        yearsSelect.value = "2";
+      } else if (courseData1[value].duration.includes("3")) {
+        yearsSelect.value = "3";
+      } else {
+        yearsSelect.value = "1";
+      }
+    } else {
+      durationDiv.textContent = "";
+      feesDiv.textContent = "";
+      yearsSelect.value = "1"; // Default to 1 year if no course is selected
+    }
+    updateYearPaymentOptions(); // Recalculate options based on new years
+  }
 
   function updatePaymentFields() {
     const paymentType = document.querySelector(

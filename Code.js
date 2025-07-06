@@ -759,6 +759,62 @@ function getClassMonthDashboard(selectedClass, selectedMonth, userRole) {
   return { students: studentsArray, lineData: finalLineData };
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************************************
+ * receipt
+ ************************************************/
+
+
+
+
+function generateReceiptNumber() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheetName = "Receipts";
+  let sheet = ss.getSheetByName(sheetName);
+
+  // If the sheet doesn't exist, create it with headers
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    sheet.appendRow(["Receipt No", "Date", "Full Name", "Propose to Pay", "Total Amount", "Paid", "Balance", "Exam Fees", "Received By"]);
+  }
+
+  const lastRow = sheet.getLastRow();
+
+  // Determine next receipt number
+  let newReceiptNumber = 1; // Starting number
+  if (lastRow > 1) {
+    const lastReceipt = sheet.getRange(lastRow, 1).getValue(); // Column A
+    if (!isNaN(lastReceipt)) {
+      newReceiptNumber = parseInt(lastReceipt) + 1;
+    }
+  }
+
+  return newReceiptNumber.toString().padStart(4, '0'); // Format: 1001, 1002...
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /************************************************
  * DUE FEES
  ************************************************/

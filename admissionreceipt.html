@@ -1,0 +1,157 @@
+ <!-- <div id="receiptReadOnlyForm" class="hidden">
+  <main class="flex justify-center items-center bg-gray-100 py-10">
+  <form class="max-w-4xl w-full px-4" onsubmit="downloadAdmissionReceiptPDF(event); return false;">
+      <div class="receipt bg-white shadow-xl rounded-xl p-6">
+        <div class="header mb-4 border-b-2 border-black pb-3 flex items-center">
+          <div class="logo text-white bg-black w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">S</div>
+          <div class="institute-name flex-grow text-2xl font-bold text-black text-center">SHELAR TRAINING INSTITUTE</div>
+          <div class="receipt-label bg-black text-white px-4 py-1 rounded-full text-sm font-bold">Admission RECEIPT FORM</div>
+        </div>
+        <div class="receipt-content">
+          <div class="receipt-info flex justify-between mb-5">
+            <div class="receipt-no font-bold">
+              Receipt No.
+              <input type="text" id="receiptNoForm" class="field-value" value=""  />
+            </div>
+            <div class="date font-bold">
+              Date:
+              <input type="date" id="dateForm" class="field-value" value="30/01/2025" />
+            </div>
+          </div>
+          <div class="form-fields flex flex-col gap-4">
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Full Name :</div>
+              <input type="text" id="fullNameForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="Sojal Sunil Sonap" readonly />
+            </div>
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Propose to Pay :</div>
+              <input type="text" id="proposeToPayForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="ANM Nursing Admission Fee" />
+            </div>
+            <div class="amount-fields flex gap-4">
+              <div class="amount-field flex-1">
+                <div class="field-row flex items-center gap-3">
+                  <div class="field-label w-32 font-bold">Total Amount :</div>
+                  <input type="text" id="totalAmountForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="30000" readonly />
+                </div>
+              </div>
+              <div class="amount-field flex-1">
+                <div class="field-row flex items-center gap-3">
+                  <div class="field-label w-20 font-bold">Paid :</div>
+                  <input type="text" id="paidForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="30000" readonly />
+                </div>
+              </div>
+              <div class="amount-field flex-1">
+                <div class="field-row flex items-center gap-3">
+                  <div class="field-label w-32 font-bold">Balance Amount :</div>
+                  <input type="text" id="balanceForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="0" readonly />
+                </div>
+              </div>
+            </div>
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Exam Fees :</div>
+              <input type="text" id="examFeesForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="6000" readonly />
+            </div>
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Received by :</div>
+              <input type="text" id="receivedByForm" class="field-value w-full border-b border-black text-blue-600 px-2 py-1" value="Emai Shah" readonly />
+            </div>
+          </div>
+          <div class="footer mt-8 flex justify-between items-end">
+            <div class="note text-xs font-bold max-w-md">• Once you pay fees for course not refundable.</div>
+            <div class="signature-area text-center min-w-[150px]">
+              <div class="signature-line border-b border-black h-10 mb-1"></div>
+              <div class="signature-label text-xs font-bold">Authority Signature</div>
+            </div>
+          </div>
+       <div class="no-print mt-4 flex justify-end">
+ <button type="button" onclick="downloadAdmissionReceiptPDF()" class="no-print btn-blue">
+  Download PDF
+</button>
+</div>
+      </div>
+    </form>
+  </main>
+</div>  -->
+<div id="receiptReadOnlyForm" class="hidden">
+  <main class="flex justify-center items-center bg-gray-100 py-10">
+    <form class="max-w-4xl w-full px-4" onsubmit="downloadAdmissionReceiptPDF(event); return false;">
+      <div class="receipt bg-white shadow-xl rounded-xl p-6">
+        <div class="header mb-4 border-b-2 border-black pb-3 flex items-center">
+          <div class="logo text-white bg-black w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">S</div>
+          <div class="institute-name flex-grow text-2xl font-bold text-black text-center">SHELAR TRAINING INSTITUTE</div>
+          <div class="receipt-label bg-black text-white px-4 py-1 rounded-full text-sm font-bold">Admission RECEIPT FORM</div>
+        </div>
+
+        <div class="receipt-content">
+          <div class="receipt-info flex justify-between mb-5">
+            <div class="receipt-no font-bold">
+              Receipt No:
+              <span id="receipt_no_display" class="field-value text-blue-600 px-2 py-1"></span>
+            </div>
+             <div class="date font-bold">
+              Date:
+              <input type="date" id="dateForm" class="field-value" value="30/01/2025" />
+            </div>
+          </div>
+
+          <div class="form-fields flex flex-col gap-4">
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Full Name :</div>
+              <span id="student_name_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+            </div>
+
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Propose to Pay :</div>
+              <span id="propose_to_pay_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+            </div>
+
+            <div class="amount-fields flex gap-4">
+              <div class="amount-field flex-1">
+                <div class="field-row flex items-center gap-3">
+                  <div class="field-label w-32 font-bold">Total Amount :</div>
+                  <span id="total_amount_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+                </div>
+              </div>
+              <div class="amount-field flex-1">
+                <div class="field-row flex items-center gap-3">
+                  <div class="field-label w-20 font-bold">Paid :</div>
+                  <span id="paid_amount_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+                </div>
+              </div>
+              <div class="amount-field flex-1">
+                <div class="field-row flex items-center gap-3">
+                  <div class="field-label w-32 font-bold">Balance Amount :</div>
+                  <span id="balance_amount_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Exam Fees :</div>
+              <span id="exam_fees_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+            </div>
+
+            <div class="field-row flex items-center gap-3">
+              <div class="field-label w-40 font-bold">Received by :</div>
+              <span id="received_by_display" class="field-value w-full border-b border-black text-blue-600 px-2 py-1"></span>
+            </div>
+          </div>
+
+          <div class="footer mt-8 flex justify-between items-end">
+            <div class="note text-xs font-bold max-w-md">• Once you pay fees for course not refundable.</div>
+            <div class="signature-area text-center min-w-[150px]">
+              <div class="signature-line border-b border-black h-10 mb-1"></div>
+              <div class="signature-label text-xs font-bold">Authority Signature</div>
+            </div>
+          </div>
+
+          <div class="no-print mt-4 flex justify-end">
+            <button type="button" onclick="downloadAdmissionReceiptPDF()" class="no-print btn-blue">
+              Download PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </main>
+</div>
