@@ -78,45 +78,7 @@ function generatePDF() {
          
 
 
-         function generatePDFAdmission() {
-         const element = document.getElementById('admissionFormSection'); // or 'slipFormSection' if needed
-         const options = {
-         scale: 3,
-         useCORS: true,
-         letterRendering: true,
-         onclone: (clonedDoc) => {
-         clonedDoc.querySelectorAll('input, select').forEach(el => {
-           el.style.paddingTop = '2px';
-           el.style.paddingBottom = '2px';
-         });
-         }
-         };
          
-         html2canvas(element, options).then(canvas => {
-         const pdf = new jsPDF('p', 'mm', 'a4');
-         const imgWidth = 210;
-         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-         
-         if (imgHeight > 297) {
-         const pageHeight = 297;
-         let position = 0;
-         
-         while (position < imgHeight) {
-           pdf.addImage(canvas, 'PNG', 0, position === 0 ? 0 : -position, imgWidth, imgHeight);
-           position += pageHeight;
-           if (position < imgHeight) pdf.addPage();
-         }
-         } else {
-         pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
-         }
-         
-         const studentName = document.querySelector('input[name="student_name"]').value || 'Student';
-         pdf.save(`${studentName}_AdmissionForm.pdf`);
-         });
-         
-         
-         
-        // Initialize jsPDF
          const { jsPDF } = window.jspdf;
          
          // Data management variables
@@ -126,7 +88,7 @@ function generatePDF() {
          // DOM Ready Handler
          
          // Fetch data from Google Sheets
-        }
+       
          
       function generatePDFInquire() {
     const formElement = document.getElementById('ifId');

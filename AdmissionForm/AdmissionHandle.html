@@ -1,0 +1,58 @@
+<script>    
+    function AdmissionHandle(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+      const formObject = {};
+
+      formData.forEach((value, key) => {
+        if (key === 'agree') {
+          formObject[key] = document.getElementById('agree').checked;
+        } else {
+          formObject[key] = value;
+        }
+      });
+
+      // Add course details
+      formObject.courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      formObject.courseFees = document.getElementById('courseFees').textContent.trim();
+      formObject.courseDuration = document.getElementById('courseDuration').textContent.trim();
+
+      // Add year-specific payment data
+      const courseYears = formObject.courseYears;
+      const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+
+      for (let i = 1; i <= courseYears; i++) {
+        if (paymentType === 'emi') {
+          formObject[`year${i}_installments`] = getValue(`year${i}_installments`);
+          formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
+          formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
+        } else {
+          formObject[`year${i}_total`] = getValue(`year${i}_total`);
+          formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
+          formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
+        }
+      }
+
+// ✅ Add logged-in user ID
+formObject.loggedInUserId =
+  sessionStorage.getItem("loggedInUser") ||
+  document.getElementById("loggedInUserId")?.value ||
+  "Anonymous";
+// ✅ Debug log
+console.log("Submitting Admission Form with User ID:", formObject.loggedInUserId);
+
+// Submit to Google Apps Script
+google.script.run
+  .withSuccessHandler(onSuccess)
+  .withFailureHandler(onFailure)
+  .AdmissionProcessForm(formObject);
+    }
+
+
+ 
+  
+</script>
+
+

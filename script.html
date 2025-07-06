@@ -1918,30 +1918,9 @@ function getPaidAmount() {
   } else {
     console.error("Admission button not found!");
   }
-
-  const form = document.getElementById("admissionForm");
-  const submitBtn = document.getElementById("submitButton");
-
-  if (submitBtn && form) {
-    submitBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-      const data = {};
-      formData.forEach((value, key) => {
-        if (!data[key]) data[key] = [];
-        data[key].push(value);
-      });
-console.log("loggedInUser in sessionStorage:", sessionStorage.getItem("loggedInUser"));
-      // ✅ Inject logged-in user ID
-     data.loggedInUserId = sessionStorage.getItem("loggedInUser") || document.getElementById("loggedInUserId").value || "Anonymous";
-
-
-      console.log("Submitting data:", data);
-      google.script.run.withSuccessHandler(onSuccess).submitForm(data);
     });
-  }
-});
+  
+
 
   function storePaymentType() {
     const saved = sessionStorage.getItem("paytype");
@@ -1961,279 +1940,11 @@ console.log("loggedInUser in sessionStorage:", sessionStorage.getItem("loggedInU
   }
 
   // Handle success
-  function onSuccess() {
-    alert("Form submitted successfully!");
-    generatePDFAdmission();
-  }
-
-  // Generate PDF
-  function generatePDFAdmission() {
-    const element = document.getElementById("admissionFormSection"); // or 'slipFormSection' if needed
-    const options = {
-      scale: 3,
-      useCORS: true,
-      letterRendering: true,
-      onclone: (clonedDoc) => {
-        clonedDoc.querySelectorAll("input, select").forEach((el) => {
-          el.style.paddingTop = "2px";
-          el.style.paddingBottom = "2px";
-        });
-      },
-    };
-
-    html2canvas(element, options).then((canvas) => {
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      if (imgHeight > 297) {
-        const pageHeight = 297;
-        let position = 0;
-
-        while (position < imgHeight) {
-          pdf.addImage(
-            canvas,
-            "PNG",
-            0,
-            position === 0 ? 0 : -position,
-            imgWidth,
-            imgHeight
-          );
-          position += pageHeight;
-          if (position < imgHeight) pdf.addPage();
-        }
-      } else {
-        pdf.addImage(canvas, "PNG", 0, 0, imgWidth, imgHeight);
-      }
-
-      const studentName =
-        document.querySelector('input[name="student_name"]').value || "Student";
-      pdf.save(`${studentName}_AdmissionForm.pdf`);
-    });
-
-    // Initialize jsPDF
-    const { jsPDF } = window.jspdf;
-
-    // Data management variables
-    let formData = [];
-    let currentRecordIndex = 0;
-
-    // DOM Ready Handler
-
-    // Fetch data from Google Sheets
-    function fetchData() {
-      const detailsDiv = document.getElementById("details");
-      detailsDiv.innerHTML = '<p class="text-center py-4">Loading data...</p>';
-
-      if (typeof google === "undefined" || !google.script.run) {
-        showError({ message: "Google Apps Script not available" });
-        return;
-      }
-
-      google.script.run
-        .withSuccessHandler(displayFetchedData)
-        .withFailureHandler(showError)
-        .getData();
-    }
-
-    function showError(error) {
-      document.getElementById("details").innerHTML = `
-         <p class="text-red-500 text-center py-4">
-           Error: ${error.message || "Failed to load data"}
-         </p>`;
-    }
-
-    function displayFetchedData(fetchedData) {
-      if (!fetchedData || fetchedData.length < 2) {
-        document.getElementById("details").innerHTML = `
-           <p class="text-center py-4">No data available</p>`;
-        return;
-      }
-
-      formData = fetchedData;
-      currentRecordIndex = 1; // Skip header row
-      displayCurrentRecord();
-
-      // Show the container if hidden
-      document.getElementById("ifId").classList.add("hidden");
-      document.getElementById("container").classList.remove("hidden");
-    }
-
-    function displayCurrentRecord() {
-      const outputDiv = document.getElementById("output");
-      const detailsDiv = document.getElementById("details");
-      const emiDiv = document.getElementById("emiOutput");
-
-      // Clear previous content
-      outputDiv.innerHTML = "";
-      detailsDiv.innerHTML = "";
-      emiDiv.innerHTML = "";
-
-      if (formData.length > 1 && currentRecordIndex < formData.length) {
-        const record = formData[currentRecordIndex];
-        const headers = formData[0];
-
-        // Display basic details
-        const detailFields = [
-          { label: "Serial no", index: 0 },
-          { label: "Name", index: 1 },
-          { label: "Email", index: 2 },
-          { label: "Phone", index: 3 },
-          { label: "Address", index: 4 },
-        ];
-
-        detailFields.forEach((field) => {
-          if (record[field.index] !== undefined) {
-            const div = document.createElement("div");
-            div.className = "py-2 border-b border-gray-100";
-            div.textContent = `${field.label}: ${record[field.index] || "-"}`;
-            detailsDiv.appendChild(div);
-          }
-        });
-
-        // Add payable information
-        const payableDiv = document.createElement("div");
-        payableDiv.className = "py-3 mt-3 font-bold border-t border-gray-200";
-        payableDiv.textContent = "Payable to: Shelar Training Institute";
-        detailsDiv.appendChild(payableDiv);
-
-        // Create main fees table (columns 5-8)
-        createDataTable(outputDiv, headers.slice(5, 9), record.slice(5, 9));
-
-        // Create EMI table if data exists (columns 9+)
-        if (record.length > 9) {
-          createDataTable(emiDiv, headers.slice(9), record.slice(9));
-        }
-      }
-
-      // Update navigation buttons
-      document.getElementById("prevButton").style.display =
-        currentRecordIndex <= 1 ? "none" : "block";
-      document.getElementById("nextButton").style.display =
-        currentRecordIndex >= formData.length - 1 ? "none" : "block";
-    }
-
-    function createDataTable(container, headers, data) {
-      const table = document.createElement("table");
-      const headerRow = document.createElement("tr");
-
-      headers.forEach((header) => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-      });
-      table.appendChild(headerRow);
-
-      const dataRow = document.createElement("tr");
-      data.forEach((cell) => {
-        const td = document.createElement("td");
-        td.textContent = cell || "-";
-        dataRow.appendChild(td);
-      });
-      table.appendChild(dataRow);
-
-      container.appendChild(table);
-    }
-
-    function nextPage() {
-      if (currentRecordIndex < formData.length - 1) {
-        currentRecordIndex++;
-        displayCurrentRecord();
-      }
-    }
-
-    function prevPage() {
-      if (currentRecordIndex > 1) {
-        currentRecordIndex--;
-        displayCurrentRecord();
-      }
-    }
-
-   
-  }
+ 
 
   
 
- function submitInquiryForm(e) {
-  e.preventDefault();
-
-  // Validate terms checkbox
-  const agreeCheckbox = document.getElementById("agree1");
-  if (!agreeCheckbox?.checked) {
-    document.getElementById("agreeError1").textContent =
-      "Please agree to the terms";
-    return;
-  } else {
-    document.getElementById("agreeError1").textContent = "";
-  }
-
-  const submitBtn = document.getElementById("submitButton2");
-  submitBtn.innerHTML =
-    '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-  submitBtn.disabled = true;
-
-  // Collect form data
-  const formValues = {
-    date:
-      document.getElementById("date")?.value ||
-      new Date().toISOString().split("T")[0],
-    fullName: document.getElementById("fullName")?.value.trim() || "",
-    qualification: document.getElementById("qualification")?.value.trim() || "",
-    phoneNo: document.getElementById("phoneNo")?.value.trim() || "",
-    whatsappNo: document.getElementById("whatsappNo")?.value.trim() || "",
-    parentsNo: document.getElementById("parentsNo")?.value.trim() || "",
-    email: document.getElementById("email")?.value.trim() || "",
-    age: document.getElementById("age")?.value.trim() || "",
-    address: document.getElementById("address")?.value.trim() || "",
-    interestedCourse:
-      document.getElementById("interestedCourse")?.value.trim() || "",
-    inquiryTakenBy:
-      document.getElementById("inquiryTakenBy")?.value.trim() || "",
-    branch: document.getElementById("branch22")?.value.trim() || "",
-
-    // ✅ Include logged-in user ID from hidden field
-    loggedInUserId: document.getElementById("loggedInUserId")?.value.trim() || "Anonymous"
-  };
-
-  console.log("Form Values:", formValues);
-
-  // Send to Apps Script
-  google.script.run
-    .withSuccessHandler((response) => {
-      console.log("Server Response:", response);
-      if (response.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: response.message,
-          confirmButtonColor: "#1e3a8a",
-        }).then(() => {
-          document.getElementById("ifId")?.reset();
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Validation Error",
-          text: response.message,
-          confirmButtonColor: "#1e3a8a",
-        });
-      }
-      submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit';
-      submitBtn.disabled = false;
-    })
-    .withFailureHandler((error) => {
-      console.error("Script Error:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Script Error",
-        text: error.message || "An unexpected error occurred.",
-        confirmButtonColor: "#1e3a8a",
-      });
-      submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit';
-      submitBtn.disabled = false;
-    })
-    .processForm(formValues);
-}
+ 
 
 
 
@@ -2298,19 +2009,7 @@ function populateInquiryTakenBy() {
     updateCourseDetails(); // Initialize course details
   });
 
-  const courseData1 = {
-    anm_nursing: { duration: "2 years", fees: "₹50,000" },
-    gnm_nursing: { duration: "3 years", fees: "₹60,000" },
-    dmlt: { duration: "2 years", fees: "₹45,000" },
-    ot_technician: { duration: "1 year", fees: "₹40,000" },
-    general_nursing: { duration: "2 years", fees: "₹55,000" },
-    beautician: { duration: "6 months", fees: "₹25,000" },
-    electrician: { duration: "1 year", fees: "₹30,000" },
-    mobile_repairing: { duration: "3 months", fees: "₹15,000" },
-    ac_refrigerator: { duration: "6 months", fees: "₹20,000" },
-    automobile: { duration: "1 year", fees: "₹35,000" },
-  };
-
+  
   function updateCourseDetails() {
     const select = document.getElementById("courseSelect");
     const value = select.value;
@@ -2318,14 +2017,14 @@ function populateInquiryTakenBy() {
     const feesDiv = document.getElementById("courseFees");
     const yearsSelect = document.getElementById("courseYears");
 
-    if (courseData1[value]) {
-      durationDiv.textContent = courseData1[value].duration;
-      feesDiv.textContent = courseData1[value].fees;
+    if (courseData[value]) {
+      durationDiv.textContent = courseData[value].duration;
+      feesDiv.textContent = courseData[value].fees;
 
       // Set course years based on duration
-      if (courseData1[value].duration.includes("2")) {
+      if (courseData[value].duration.includes("2")) {
         yearsSelect.value = "2";
-      } else if (courseData1[value].duration.includes("3")) {
+      } else if (courseData[value].duration.includes("3")) {
         yearsSelect.value = "3";
       } else {
         yearsSelect.value = "1";
@@ -2478,55 +2177,7 @@ function populateInquiryTakenBy() {
     }
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    const formData = new FormData(form);
-    const formObject = {};
-
-    formData.forEach((value, key) => {
-      if (key === "agree") {
-        formObject[key] = document.getElementById("agree").checked;
-      } else {
-        formObject[key] = value;
-      }
-    });
-
-    // Add course details
-    formObject.courseYears =
-      parseInt(document.getElementById("courseYears").value) || 0;
-    formObject.courseFees = document
-      .getElementById("courseFees")
-      .textContent.trim();
-    formObject.courseDuration = document
-      .getElementById("courseDuration")
-      .textContent.trim();
-
-    // Add year-specific payment data
-    const courseYears = formObject.courseYears;
-    const paymentType = document.querySelector(
-      'input[name="payment_type"]:checked'
-    ).value;
-
-    for (let i = 1; i <= courseYears; i++) {
-      if (paymentType === "emi") {
-        formObject[`year${i}_installments`] = getValue(`year${i}_installments`);
-        formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
-        formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
-      } else {
-        formObject[`year${i}_total`] = getValue(`year${i}_total`);
-        formObject[`year${i}_paid`] = getValue(`year${i}_paid`);
-        formObject[`year${i}_due`] = getDueValue(`year${i}_due`);
-      }
-    }
-
-    // Submit to Google Apps Script
-    google.script.run
-      .withSuccessHandler(onSuccess)
-      .withFailureHandler(onFailure)
-      .submitForm(formObject);
-  }
+  
 
   // Helper functions
   function getValue(id) {
@@ -2729,4 +2380,39 @@ function populateInquiryTakenBy() {
       loadPhoneSuggestions();
       
   });
+
+
+
+ // --- Login Form Handling ---
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      console.log("Attempting login for:", username); // Debugging: log username
+
+      // Call the server-side loginUser function
+      google.script.run
+        .withSuccessHandler(function(response) {
+          console.log("Login Response (from server):", response); // Debugging: log server response
+          if (response.success) {
+            currentLoggedInUser = response.userName; // Store the logged-in user's name
+            sessionStorage.setItem('loggedInUser', currentLoggedInUser); // Store in session storage
+            console.log("Current Logged In User (after setting):", currentLoggedInUser); // Debugging
+            showCustomAlert("Login Successful", `Welcome, ${currentLoggedInUser}!`, true);
+            updateUI(); // Update UI after successful login
+          } else {
+            showCustomAlert("Login Failed", response.error, false);
+          }
+        })
+        .withFailureHandler(function(error) {
+          console.error("Login server error:", error);
+          showCustomAlert("Error", `An unexpected error occurred during login: ${error.message}`, false);
+        })
+        .loginUser({ username: username, password: password });
+    });
+
+
+
 </script>

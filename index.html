@@ -334,12 +334,14 @@
   <?!= include('Dashboard'); ?>
   <?!= include('CoursePayment'); ?>
   <?!= include('DueFees'); ?>      
-  <?!= include('Admission'); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('AdmissionForm/Admission').getContent(); ?>
   <?!= include('admissionreceipt'); ?> 
-  <?!= include('InquiryForm'); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('InquiryForm/Inquiry').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('InquiryForm/InquiryHandle').getContent(); ?>
   <?!= include('StudentModal'); ?>
   <?!= include('script'); ?>
-  <?!= include('handlesubmit'); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('AdmissionForm/AdmissionHandle').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('AdmissionForm/AdmissionPDF').getContent(); ?>
   <?!= include('coursedetails'); ?>
   <?!= include('installmentdue'); ?>
   <?!= include('payment'); ?>
