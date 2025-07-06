@@ -170,10 +170,27 @@
                     name="payment_method"
                     class="form-select w-full px-4 py-2 rounded-lg border border-gray-300"
                   >
-                    <option value="cash">Cash</option>
-                    <option value="check">Check</option>
-                    <option value="bank_transfer">Bank Transfer</option>
-                    <option value="online_payment">Online Payment</option>
+                    <!-- <option value="cash">Cash</option> -->
+                    <option value="Cash">
+        <span class="icon" aria-hidden="true">💵</span
+        ><span class="option-label">Cash</span>
+      </option>
+                    <!-- <option value="check">Check</option> -->
+                    <option value="cheque">
+  <span class="icon text-lg" aria-hidden="true">✍️</span>
+  <span class="option-label">Bank Check</span>
+</option>
+                    <!-- <option value="bank_transfer">Bank Transfer</option> -->
+                     <option value="Bank">
+        <span class="icon" aria-hidden="true">🏦</span
+        ><span class="option-label">Bank</span>
+      </option>
+                    <!-- <option value="online_payment">Online Payment</option> -->
+                     <option value="UPI">
+        <span class="icon" aria-hidden="true">📱</span
+        ><span class="option-label">UPI</span>
+      </option>
+                     
                   </select>
                 </div>
                 <div>
