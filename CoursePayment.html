@@ -291,7 +291,7 @@
       <option value="cheque">
   <span class="icon text-lg" aria-hidden="true">✍️</span>
   <span class="option-label">Bank Check</span>
-</option>
+ </option>
     </select>
 
     <!-- Submit Button -->
@@ -311,5 +311,20 @@
         Proceed to Admission Form
       </button>
     </div>
+ <!-- Replace your old button with this: -->
+<!-- <button 
+  id="generateReceiptBtn" 
+  s=type="button" 
+  clas"w-full bg-blue-600 text-white py-3 rounded-lg"
+>
+  Save & Generate Receipt
+</button> --><button onclick="generateReceipt()"
+ class="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105"
+      >Save & Generate Receipt</button>
+
+
+<!-- Add this receipt container (if missing) -->
   </div>
+  <div id="receiptContainer" class="hidden p-6 bg-white rounded-lg shadow-md"></div>
+
 </div>
