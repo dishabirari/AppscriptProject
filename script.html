@@ -461,6 +461,8 @@ console.log("✅ payment_method set to:", document.getElementById("payment_metho
     updateYearPaymentOptions();
     updatePaymentFields();
     storePaymentType();
+      const branch24 = document.getElementById("branch22").value;
+  const courseData = getCourseDataByLocation(branch24);
   }
 function formatCurrency(amount) {
     return '₹' + parseFloat(amount).toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -2480,32 +2482,32 @@ function populateInquiryTakenBy() {
   });
 
   
-  function updateCourseDetails() {
-    const select = document.getElementById("courseSelect");
-    const value = select.value;
-    const durationDiv = document.getElementById("courseDuration");
-    const feesDiv = document.getElementById("courseFees");
-    const yearsSelect = document.getElementById("courseYears");
+  // function updateCourseDetails() {
+  //   const select = document.getElementById("courseSelect");
+  //   const value = select.value;
+  //   const durationDiv = document.getElementById("courseDuration");
+  //   const feesDiv = document.getElementById("courseFees");
+  //   const yearsSelect = document.getElementById("courseYears");
 
-    if (courseData[value]) {
-      durationDiv.textContent = courseData[value].duration;
-      feesDiv.textContent = courseData[value].fees;
+  //   if (courseData[value]) {
+  //     durationDiv.textContent = courseData[value].duration;
+  //     feesDiv.textContent = courseData[value].fees;
 
-      // Set course years based on duration
-      if (courseData[value].duration.includes("2")) {
-        yearsSelect.value = "2";
-      } else if (courseData[value].duration.includes("3")) {
-        yearsSelect.value = "3";
-      } else {
-        yearsSelect.value = "1";
-      }
-    } else {
-      durationDiv.textContent = "";
-      feesDiv.textContent = "";
-      yearsSelect.value = "1"; // Default to 1 year if no course is selected
-    }
-    updateYearPaymentOptions(); // Recalculate options based on new years
-  }
+  //     // Set course years based on duration
+  //     if (courseData[value].duration.includes("2")) {
+  //       yearsSelect.value = "2";
+  //     } else if (courseData[value].duration.includes("3")) {
+  //       yearsSelect.value = "3";
+  //     } else {
+  //       yearsSelect.value = "1";
+  //     }
+  //   } else {
+  //     durationDiv.textContent = "";
+  //     feesDiv.textContent = "";
+  //     yearsSelect.value = "1"; // Default to 1 year if no course is selected
+  //   }
+  //   updateYearPaymentOptions(); // Recalculate options based on new years
+  // }
 
   function updatePaymentFields() {
     const paymentType = document.querySelector(
