@@ -1,4 +1,4 @@
-<script>    
+<!-- <script>    
     function AdmissionHandle(event) {
       event.preventDefault();
 
@@ -41,6 +41,7 @@ formObject.loggedInUserId =
   document.getElementById("loggedInUserId")?.value ||
   "Anonymous";
 // ✅ Debug log
+
 console.log("Submitting Admission Form with User ID:", formObject.loggedInUserId);
 
 // Submit to Google Apps Script
@@ -51,8 +52,80 @@ google.script.run
     }
 
 
- 
-  
+
+
+
 </script>
 
+ -->
+<script>
+function previewPhoto(event) {
+  const photoPreview = document.getElementById('photo_preview');
+  const noPhotoText = document.getElementById('no_photo_text');
+  const file = event.target.files[0];
 
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      photoPreview.src = e.target.result;
+      photoPreview.style.display = 'block';
+      noPhotoText.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    photoPreview.src = '#';
+    photoPreview.style.display = 'none';
+    noPhotoText.style.display = 'block';
+  }
+}
+
+function AdmissionHandle(event) {
+  event.preventDefault();
+  console.log("Form submission started");
+
+  const submitButton = document.getElementById('submitButton');
+  submitButton.disabled = true;
+  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+
+  // Collect form data
+  const formData = new FormData(event.target);
+  const formObject = {};
+  formData.forEach((value, key) => {
+    console.log(`${key}: ${value}`);
+    if(key != "student_photo")
+    {
+    formObject[key] = value;
+    }
+  });
+
+  // Debug: Print form data before sending
+  console.log("Form data to submit:", formObject);
+
+  // Submit to Google Apps Script
+  google.script.run
+    .withSuccessHandler((response) => {
+      console.log("Server response:", response);
+      submitButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Submit';
+      submitButton.disabled = false;
+      
+      if (response.success) {
+        alert("Submission successful!");
+        event.target.reset();
+      } else {
+        alert("Error: " + response.message);
+      }
+    })
+    .withFailureHandler((error) => {
+      console.error("Submission failed:", error);
+      alert("Submission failed: " + error.message);
+      submitButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Submit';
+      submitButton.disabled = false;
+    })
+    .saveToSheet(formObject);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // updateCourseDetails();
+  document.getElementById('student_photo')?.addEventListener('change', previewPhoto);
+});
+</script>
