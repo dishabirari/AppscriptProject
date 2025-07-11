@@ -13,7 +13,7 @@
       <div>
         <h2 class="text-xl font-semibold text-gray-800">Student Information</h2>
         <br />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- <div class="grid grid-cols-2 gap-4">
           <div class="max-w-md mx-auto mt-6">
             <label for="ID" class="block text-sm font-medium text-gray-700 mb-1"
               >General ID</label
@@ -39,7 +39,17 @@
               class="w-full px-4 py-2 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-        </div>
+        </div> -->
+        <div class="form-row">
+             <div>
+               <label for="ID" class="form-label"><i class="fas fa-calendar-alt"></i>Receipt No.</label>
+               <input type="text" placeholder="Enter Receipt no." id="ID" name="ID" required class="form-input">
+              </div>
+              <div>
+               <label for="std_Coursepayname" class="form-label"><i class="fas fa-user"></i>Student Name</label>
+               <input type="text" id="std_Coursepayname" placeholder="Enter name" name="std_Coursepayname" required class="form-input">
+              </div>
+         </div>
       </div>
 
       <h2 class="text-xl font-semibold text-gray-800">Course Information</h2>
