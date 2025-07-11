@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STI Admission Receipt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .receipt-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #2c3e50;
+            padding: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 15px 20px;
+            position: relative;
+            height: 120px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #f39c12;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .institute-info h1 {
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+
+        .institute-info p {
+            font-size: 11px;
+            opacity: 0.9;
+            line-height: 1.3;
+        }
+
+        .contact-info {
+            text-align: right;
+            font-size: 11px;
+        }
+
+        .photo-section {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            width: 100px;
+            height: 120px;
+            border: 2px solid white;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-section:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .photo-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+
+        .photo-placeholder {
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .receipt-title {
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .form-content {
+            padding: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #2c3e50;
+            font-size: 12px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #bdc3c7;
+            border-radius: 3px;
+            font-size: 12px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .installment-section {
+            margin: 20px 0;
+        }
+
+        .installment-header {
+            background: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+            border-left: 3px solid #3498db;
+        }
+
+        .installment-header h3 {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .installment-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .installment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 10px;
+            border: 1px solid #34495e;
+        }
+
+        .installment-table th {
+            background: #34495e;
+            color: white;
+            padding: 6px 4px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            border: 1px solid #34495e;
+        }
+
+        .installment-table td {
+            padding: 6px 4px;
+            border: 1px solid #bdc3c7;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .installment-table .date-row {
+            background: #ecf0f1;
+            font-weight: bold;
+        }
+
+        .installment-table .amount-row {
+            background: #f8f9fa;
+        }
+
+        .installment-table .status-row {
+            background: #ffffff;
+        }
+
+        .installment-table select {
+            width: 100%;
+            padding: 2px;
+            font-size: 9px;
+            border: 1px solid #bdc3c7;
+        }
+
+        .total-section {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 3px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .year-section {
+            margin-top: 30px;
+        }
+
+        .year-header {
+            background: #3498db;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .year-content {
+            border: 1px solid #bdc3c7;
+            border-top: none;
+            padding: 15px;
+            border-radius: 0 0 3px 3px;
+        }
+
+        .agreement-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 3px;
+            border-left: 3px solid #e74c3c;
+            font-size: 12px;
+        }
+
+        .agreement-section input {
+            border: none;
+            border-bottom: 1px solid #2c3e50;
+            background: transparent;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .signature-box {
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #2c3e50;
+            margin-bottom: 8px;
+            height: 40px;
+        }
+
+        .signature-box p {
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .download-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .scrollable-table {
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .receipt-container {
+                width: 210mm;
+                min-height: 297mm;
+                border: 2px solid #000;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .btn, .download-section {
+                display: none !important;
+            }
+            
+            .installment-controls {
+                display: none !important;
+            }
+            
+            .photo-section {
+                cursor: default;
+            }
+            
+            .installment-table select {
+                border: none;
+                background: transparent;
+                font-size: 9px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            
+            .agreement-section input {
+                border: none;
+                border-bottom: 1px solid #000;
+                background: transparent;
+            }
+            
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">STI</div>
+                    <div class="institute-info">
+                        <h1>Shelar Training Institute</h1>
+                        <p>SHELAR TRAINING INSTITUTE C/34,<br>
+                        BUNGLOW, NEAR NANDIKESHWAR MANDIR,<br>
+                        KAMGAR NAGAR, KURLA (E)</p>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <p>Mob: +91 9967288158<br>
+                    +91 7400406467</p>
+                </div>
+            </div>
+            <div class="photo-section" onclick="document.getElementById('photoInput').click()">
+                <div class="photo-placeholder" id="photoPlaceholder">
+                    Click to Upload<br>Passport Photo
+                </div>
+                <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+            </div>
+        </div>
+
+        <div class="receipt-title">ADMISSION RECEIPT</div>
+
+        <div class="form-content">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Receipt No.</label>
+                    <input type="text" id="receiptNo" placeholder="Enter receipt number">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="receiptDate">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter student name">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Course Name</label>
+                    <input type="text" id="courseName" placeholder="Enter course name">
+                </div>
+                <div class="form-group">
+                    <label>Course Year</label>
+                    <select id="courseYear" onchange="generateInstallmentTables()">
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Course Duration</label>
+                    <input type="text" id="courseDuration" placeholder="Enter course duration">
+                </div>
+            </div>
+
+            <div class="installment-section">
+                <div class="installment-header">
+                    <h3>Fee Installment Details</h3>
+                </div>
+                
+                <div class="installment-controls">
+                    <div class="form-group">
+                        <label>Number of Installments (per year)</label>
+                        <select id="installmentCount" onchange="generateInstallmentTables()">
+                            <option value="1">1 Installment</option>
+                            <option value="2">2 Installments</option>
+                            <option value="3">3 Installments</option>
+                            <option value="4">4 Installments</option>
+                            <option value="6">6 Installments</option>
+                            <option value="12">12 Installments</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Course Fee</label>
+                        <input type="number" id="totalFee" placeholder="Enter total fee" onchange="generateInstallmentTables()">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate" onchange="generateInstallmentTables()">
+                    </div>
+                </div>
+
+                <div id="installmentTablesContainer"></div>
+            </div>
+
+            <div class="agreement-section">
+                <p style="font-size: 12px;"><strong>I Am Mr./Ms.</strong> <input type="text" id="guardianName" placeholder="Enter guardian name" style="display: inline; width: 250px; margin: 0 5px; font-size: 12px;"> <strong>Mother / Father / Husband / Sister / Brother of</strong></p>
+                <p style="margin-top: 10px; font-size: 12px;"><input type="text" id="studentRelation" placeholder="Enter student name" style="display: inline; width: 250px; margin: 0 5px; font-size: 12px;"> <strong>I Am Agree with Terms And Condition.</strong></p>
+                <p style="margin-top: 10px; text-align: center; font-style: italic; font-size: 11px;">मी/आम्ही................................................. आई / वडील / पती / बहीण / भाऊ,<br>
+                यांना खरी सहानु आणे.</p>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Parent Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Student Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Manager Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Director Signature</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="download-section">
+        <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn" onclick="window.print()">Print Receipt</button>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('receiptDate').valueAsDate = new Date();
+        document.getElementById('startDate').valueAsDate = new Date();
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoSection = document.querySelector('.photo-section');
+                    photoSection.innerHTML = `<img src="${e.target.result}" alt="Student Photo">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function generateInstallmentTables() {
+            const installmentCount = parseInt(document.getElementById('installmentCount').value);
+            const totalFee = parseFloat(document.getElementById('totalFee').value) || 0;
+            const startDate = new Date(document.getElementById('startDate').value);
+            const courseYears = parseInt(document.getElementById('courseYear').value);
+            
+            if (!startDate || totalFee <= 0) return;
+
+            const container = document.getElementById('installmentTablesContainer');
+            container.innerHTML = '';
+
+            // Calculate fee per year (equal distribution)
+            const feePerYear = Math.round(totalFee / courseYears);
+            let remainingFee = totalFee;
+            
+            for (let year = 1; year <= courseYears; year++) {
+                // Adjust last year's fee to account for rounding
+                const yearFee = (year === courseYears) ? remainingFee : feePerYear;
+                remainingFee -= yearFee;
+                
+                // Create year section
+                const yearSection = document.createElement('div');
+                yearSection.className = 'year-section';
+                
+                // Year header
+                const yearHeader = document.createElement('div');
+                yearHeader.className = 'year-header';
+                yearHeader.textContent = getYearName(year) + ' Fee Installments';
+                yearSection.appendChild(yearHeader);
+                
+                // Year content
+                const yearContent = document.createElement('div');
+                yearContent.className = 'year-content';
+                
+                // Generate installment table for this year
+                const tableHTML = generateYearInstallmentTable(year, installmentCount, yearFee, startDate, year);
+                yearContent.innerHTML = tableHTML;
+                
+                yearSection.appendChild(yearContent);
+                container.appendChild(yearSection);
+            }
+            
+            // Add total section
+            const totalSection = document.createElement('div');
+            totalSection.className = 'total-section';
+            totalSection.textContent = `Total Course Fee: ₹${totalFee.toLocaleString()}`;
+            container.appendChild(totalSection);
+        }
+        
+        function generateYearInstallmentTable(year, installmentCount, yearFee, startDate, yearOffset) {
+            const installmentAmount = Math.round(yearFee / installmentCount);
+            
+            // Generate horizontal table structure
+            let tableHTML = `
+                <div class="scrollable-table">
+                <table class="installment-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Details</th>
+            `;
+
+            // Add columns for each installment
+            for (let i = 0; i < installmentCount; i++) {
+                tableHTML += `<th>Installment ${i + 1}</th>`;
+            }
+
+            tableHTML += `
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="date-row">
+                            <td style="font-weight: bold; background: #ecf0f1;">Due Date</td>
+            `;
+
+            // Add due dates (offset by year)
+            for (let i = 0; i < installmentCount; i++) {
+                const dueDate = new Date(startDate);
+                dueDate.setFullYear(startDate.getFullYear() + (yearOffset - 1));
+                dueDate.setMonth(startDate.getMonth() + i);
+                
+                const formattedDate = dueDate.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                tableHTML += `<td>${formattedDate}</td>`;
+            }
+
+            tableHTML += `
+                        </tr>
+                        <tr class="amount-row">
+                            <td style="font-weight: bold; background: #ecf0f1;">Amount (₹)</td>
+            `;
+
+            // Add amounts
+            for (let i = 0; i < installmentCount; i++) {
+                // Adjust last installment to account for rounding
+                const amount = (i === installmentCount - 1) ? 
+                    yearFee - (installmentAmount * (installmentCount - 1)) : 
+                    installmentAmount;
+
+                tableHTML += `<td>₹${amount.toLocaleString()}</td>`;
+            }
+
+            tableHTML += `
+                        </tr>
+                        <tr class="status-row">
+                            <td style="font-weight: bold; background: #ecf0f1;">Status</td>
+            `;
+
+            // Add status dropdowns
+            for (let i = 0; i < installmentCount; i++) {
+                tableHTML += `
+                    <td>
+                        <select>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                        </select>
+                    </td>
+                `;
+            }
+
+            tableHTML += `
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="total-section">
+                    ${getYearName(year)} Total: ₹${yearFee.toLocaleString()}
+                </div>
+            `;
+
+            return tableHTML;
+        }
+        
+        function getYearName(yearNumber) {
+            switch(yearNumber) {
+                case 1: return '1st Year';
+                case 2: return '2nd Year';
+                case 3: return '3rd Year';
+                default: return yearNumber + 'th Year';
+            }
+        }
+
+        function downloadPDF() {
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+            
+            // Get the current document content
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Write the content to the new window
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            
+            // Wait for the content to load, then print
+            printWindow.onload = function() {
+                // Hide interactive elements in print window
+                const printDoc = printWindow.document;
+                const buttons = printDoc.querySelectorAll('.btn, .download-section, .installment-controls');
+                buttons.forEach(btn => btn.style.display = 'none');
+                
+                // Set print styles
+                printDoc.body.style.backgroundColor = 'white';
+                printDoc.body.style.margin = '0';
+                printDoc.body.style.padding = '0';
+                
+                // Focus the print window and print
+                printWindow.focus();
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            };
+        }
+
+        // Initialize with default values
+        document.addEventListener('DOMContentLoaded', function() {
+            generateInstallmentTables();
+        });
+    </script>
+</body>
+</html>
