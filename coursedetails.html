@@ -2,8 +2,8 @@
   function updateCourseDetails() {
     const select = document.getElementById("courseSelect");
     const value = select.value;
-    const durationDiv = document.getElementById("courseDuration");
-    const feesDiv = document.getElementById("courseFees");
+    const durationDiv = document.getElementById("courseDurationText");
+    const feesDiv = document.getElementById("totalCourseFees");
     const yearsSelect = document.getElementById("courseYears");
 
       const branch24 = document.getElementById("branch22").value;
@@ -12,9 +12,9 @@
     if (courseData[value]) {
       durationDiv.textContent = courseData[value].duration;
       feesDiv.textContent = courseData[value].fees;
-      document.getElementById("coursePeriod").value =
+      document.getElementById("courseDurationText").value =
         courseData[value].duration;
-      document.getElementById("courseFeeees").value = courseData[value].total;
+      document.getElementById("totalCourseFees").value = courseData[value].total;
 
       // Set course years based on duration
       if (courseData[value].duration.includes("2")) {
