@@ -1,10 +1,17 @@
 <div
   id="coursePaymentSection"
-  class="hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200"
+  class="bg-white rounded-xl shadow-xl overflow-hidden"
 >
-  <div class="bg-gradient-to-r from-blue-200 to-blue-800 p-6 text-white">
-    <h1 class="text-2xl font-bold">Course Enrollment</h1>
-    <p class="opacity-90">Select your course and payment option</p>
+  <div class="header-bg text-white p-6 bg-blue-800">
+    <img
+                  src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png"
+                  alt="Logo"
+                  class="w-10 h-10 object-contain"
+    />
+    <h1 class="text-2xl font-bold">STI SHELAR TRAINING INSTITUTE</h1>
+    <p class="opacity-90">C/34, Bunglow, Near
+                  Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)
+    </p>
   </div>
 
   <div class="p-6 space-y-8">
@@ -315,14 +322,37 @@
         Proceed to Admission Form
       </button>
     </div> -->
- 
-    <button onclick="generateReceipt()"
- class="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105"
+ <div class="flex justify-end">
+<button onclick="generateReceipt() "
+ class="text-align:right bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-2 rounded-lg font-medium transition duration-200 ease-in-out shadow-md"
       >Save & Generate Receipt</button>
-
-
+&nbsp;&nbsp;
+<button onclick="submitCoursePayment() "
+ class="text-align:right bg-green-500 hover:bg-green-600 text-white px-8 py-2 rounded-lg font-medium transition duration-200 ease-in-out shadow-md"
+      >Submit to sheet</button>
+ </div>
 <!-- Add this receipt container (if missing) -->
   </div>
   <div id="receiptContainer" class="hidden p-6 bg-white rounded-lg shadow-md"></div>
 
 </div>
+<script>
+  function submitCoursePayment() {
+  const formData = {
+    ID: document.getElementById("ID").value,
+    Coursepayname: document.getElementById("std_Coursepayname").value,
+    coursePaySelect: document.getElementById("coursePaySelect").value,
+    courseDuration: document.getElementById("courseDuration").innerText,
+    coursePayFees: document.getElementById("coursePayFees").innerText,
+    totalFees: document.getElementById("totalFees").innerText,
+    paySelect: document.getElementById("pay-select").value
+  };
+
+  google.script.run
+    .withSuccessHandler(() => {
+      alert("Course payment saved successfully!");
+    })
+    .saveCoursePayment(formData); // Backend function
+}
+
+</script>

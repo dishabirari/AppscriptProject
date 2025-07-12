@@ -924,6 +924,23 @@ function serverSideLogout() {
   return { success: true }; // Always return a success response to the client
 }
 
+/************************************************
+ * COURSE PAYMENT
+ ************************************************/
+function saveCoursePayment(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("FeeStructure");
+
+  sheet.appendRow([
+    data.ID,
+    data.Coursepayname,
+    data.coursePaySelect,
+    data.courseDuration,
+    data.coursePayFees,
+    data.totalFees,
+    data.paySelect
+  ]);
+}
+
 
 
 
