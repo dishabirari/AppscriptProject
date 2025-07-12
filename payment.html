@@ -7,10 +7,10 @@
     }
 
     function updateYearPaymentOptions() {
-      const courseYears = parseInt(document.getElementById('courseYears').value) || 0;
+      const courseYears = parseInt(document.getElementById('courseDurationText').value) || 0;
       const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
       const yearPaymentsDiv = document.getElementById('yearPayments');
-      const courseFeesText = document.getElementById('courseFees').textContent;
+      const courseFeesText = document.getElementById('totalCourseFees').textContent;
       const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, '')) || 0;
 
       yearPaymentsDiv.innerHTML = ''; // Clear previous year inputs

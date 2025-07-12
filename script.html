@@ -419,51 +419,47 @@ function getCourseDataByLocation(branch) {
       "tempText",
       document.getElementById("fullName").value
     );
-    
-  }
-  function copyCoursePay() {
-    // Store coursePaySelect value
+    document.getElementById("student_name").value=sessionStorage.getItem("tempText");
+
     sessionStorage.setItem(
-      "A",
-      document.getElementById("coursePaySelect").value
+      "tempText2",
+      document.getElementById("interestedCourse").value
     );
-    document.getElementById("courseSelect").value = sessionStorage.getItem("A");
+    document.getElementById("courseSelect").value=sessionStorage.getItem("tempText2");
 
-    // 
-sessionStorage.setItem(
-  "C",
-  document.getElementById("pay-select").value
-);
-console.log("✅ Stored in sessionStorage (C):", sessionStorage.getItem("C"));
-
-
-document.getElementById("payment_method").value = sessionStorage.getItem("C");
-console.log("✅ payment_method set to:", document.getElementById("payment_method").value);
-
-
-
-
-    // Get selected payment type
-    const selectedRadio = document.querySelector(
-      'input[name="Coursepayment_type"]:checked'
-    );
-
-    if (!selectedRadio) {
-      alert("Please select a payment type.");
-      return;
-    }
-
-    sessionStorage.setItem("paytype", selectedRadio.value);
-    console.log("Payment type selected:", selectedRadio.value);
-
-    // Call the rest
     updateCourseDetails();
     updateYearPaymentOptions();
     updatePaymentFields();
     storePaymentType();
-      const branch24 = document.getElementById("branch22").value;
-  const courseData = getCourseDataByLocation(branch24);
   }
+
+  function copyAdmission(){
+    // Name
+        sessionStorage.setItem(
+      "tempText3",
+      document.getElementById("student_name").value
+    );
+    document.getElementById("std_Coursepayname").value=sessionStorage.getItem("tempText3");
+
+    //ID
+            sessionStorage.setItem(
+      "tempText4",
+      document.getElementById("receipt_number").value
+    );
+    document.getElementById("ID").value=sessionStorage.getItem("tempText4");
+
+    //Courseselect
+                sessionStorage.setItem(
+      "tempText5",
+      document.getElementById("courseSelect").value
+    );
+    document.getElementById("coursePaySelect").value=sessionStorage.getItem("tempText5");
+
+    updateCoursePayDetails();
+    updatePaymentOptions();
+
+  }
+
 function formatCurrency(amount) {
     return '₹' + parseFloat(amount).toLocaleString('en-IN', { minimumFractionDigits: 2 });
 }
@@ -2518,59 +2514,59 @@ function populateInquiryTakenBy() {
     updateYearPaymentOptions();
   }
 
-  function updateYearPaymentOptions() {
-    const courseYears =
-      parseInt(document.getElementById("courseYears").value) || 0;
-    const paymentType = document.querySelector(
-      'input[name="payment_type"]:checked'
-    ).value;
-    const yearPaymentsDiv = document.getElementById("yearPayments");
-    const courseFeesText = document.getElementById("courseFees").textContent;
-    const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
+  // function updateYearPaymentOptions() {
+  //   const courseYears =
+  //     parseInt(document.getElementById("courseYears").value) || 0;
+  //   const paymentType = document.querySelector(
+  //     'input[name="payment_type"]:checked'
+  //   ).value;
+  //   const yearPaymentsDiv = document.getElementById("yearPayments");
+  //   const courseFeesText = document.getElementById("totalCourseFees").textContent;
+  //   const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
 
-    yearPaymentsDiv.innerHTML = ""; // Clear previous year inputs
+  //   yearPaymentsDiv.innerHTML = ""; // Clear previous year inputs
 
-    if (courseYears > 0) {
-      for (let i = 1; i <= courseYears; i++) {
-        const yearDiv = document.createElement("div");
-        yearDiv.className = "flex items-center mb-2";
+  //   if (courseYears > 0) {
+  //     for (let i = 1; i <= courseYears; i++) {
+  //       const yearDiv = document.createElement("div");
+  //       yearDiv.className = "flex items-center mb-2";
 
-        if (paymentType === "emi") {
-          yearDiv.innerHTML = `
-              <label class="w-1/4">Year ${i} EMI:</label>
-              <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
-                <option value="0">Select Installment</option>
-                <option value="6">6 Installments</option>
-                <option value="12">12 Installments</option>
-              </select>
-              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
-              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
-            2
-          )}</span>
-            `;
-        } else {
-          yearDiv.innerHTML = `
-              <label class="w-1/4">Year ${i} Fees:</label>
-              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
-              <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${
-            i > 1 ? "disabled" : ""
-          } value="0">
-              <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
-            2
-          )}</span>
-            `;
-        }
-        yearPaymentsDiv.appendChild(yearDiv);
-      }
-    }
-    calculateDueFees();
-  }
+  //       if (paymentType === "emi") {
+  //         yearDiv.innerHTML = `
+  //             <label class="w-1/4">Year ${i} EMI:</label>
+  //             <select class="border border-gray-300 rounded px-2 py-1 ml-2" id="year${i}_installments" onchange="calculateInstallment(${i})">
+  //               <option value="0">Select Installment</option>
+  //               <option value="6">6 Installments</option>
+  //               <option value="12">12 Installments</option>
+  //             </select>
+  //             <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" value="0">
+  //             <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
+  //           2
+  //         )}</span>
+  //           `;
+  //       } else {
+  //         yearDiv.innerHTML = `
+  //             <label class="w-1/4">Year ${i} Fees:</label>
+  //             <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_total" type="number" placeholder="Total Fees" value="${courseFees}" readonly>
+  //             <input class="border border-gray-300 rounded px-2 py-1 ml-2 w-1/4" id="year${i}_paid" type="number" placeholder="Paid Amount" oninput="calculateDueFees()" ${
+  //           i > 1 ? "disabled" : ""
+  //         } value="0">
+  //             <span class="ml-2" id="year${i}_due">Due: ₹${courseFees.toFixed(
+  //           2
+  //         )}</span>
+  //           `;
+  //       }
+  //       yearPaymentsDiv.appendChild(yearDiv);
+  //     }
+  //   }
+  //   calculateDueFees();
+  // }
 
   function calculateInstallment(year) {
     const installments = parseInt(
       document.getElementById(`year${year}_installments`).value
     );
-    const courseFeesText = document.getElementById("courseFees").textContent;
+    const courseFeesText = document.getElementById("totalcourseFees").textContent;
     const totalFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
     let installmentAmount = 0;
 
@@ -2588,7 +2584,7 @@ function populateInquiryTakenBy() {
     const paymentType = document.querySelector(
       'input[name="payment_type"]:checked'
     ).value;
-    const courseFeesText = document.getElementById("courseFees").textContent;
+    const courseFeesText = document.getElementById("totalcourseFees").textContent;
     const courseFees = parseInt(courseFeesText.replace(/[^0-9]/g, "")) || 0;
 
     for (let i = 1; i <= courseYears; i++) {

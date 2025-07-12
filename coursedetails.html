@@ -4,7 +4,7 @@
     const value = select.value;
     const durationDiv = document.getElementById("courseDurationText");
     const feesDiv = document.getElementById("totalCourseFees");
-    const yearsSelect = document.getElementById("courseYears");
+    // const yearsSelect = document.getElementById("courseYears");
 
       const branch24 = document.getElementById("branch22").value;
   const courseData = getCourseDataByLocation(branch24);
@@ -16,18 +16,18 @@
         courseData[value].duration;
       document.getElementById("totalCourseFees").value = courseData[value].total;
 
-      // Set course years based on duration
-      if (courseData[value].duration.includes("2")) {
-        yearsSelect.value = "2";
-      } else if (courseData[value].duration.includes("3")) {
-        yearsSelect.value = "3";
-      } else {
-        yearsSelect.value = "1";
-      }
+      // // Set course years based on duration
+      // if (courseData[value].duration.includes("2")) {
+      //   durationDiv.value = "2";
+      // } else if (courseData[value].duration.includes("3")) {
+      //   durationDiv.value = "3";
+      // } else {
+      //   durationDiv.value = "1";
+      // }
     } else {
-      durationDiv.textContent = "";
+      
       feesDiv.textContent = "";
-      yearsSelect.value = "1"; // Default to 1 year if no course is selected
+      durationDiv.value = "1"; // Default to 1 year if no course is selected
     }
     updateYearPaymentOptions(); // Recalculate options based on new years
   }
