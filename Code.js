@@ -939,13 +939,19 @@ function saveCoursePayment(data) {
     data.totalFees,
     data.paySelect
   ]);
-
-  
 }
 
 
 
 
+
+
+
+
+
+
+
+ 
 
 
 

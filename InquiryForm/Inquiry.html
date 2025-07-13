@@ -1,34 +1,34 @@
 <div class="flex items-center justify-center bg-gray-100 p-4">
 
-<form id="ifId" class="inquiry-form-container" onsubmit="InquiryFormHandle(event)">
-    <div class="form-wrapper">
-        <div class="form-card">
-            <div class="form-header">
-                <div class="header-main-content">
-                    <div class="header-logo-title">
-                        <div class="logo-container">
-                            <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo"
-                                class="logo-image">
+    <form id="ifId" class="inquiry-form-container" onsubmit="InquiryFormHandle(event)">
+        <div class="form-wrapper">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="header-main-content">
+                        <div class="header-logo-title">
+                            <div class="logo-container">
+                                <img src="https://i.postimg.cc/DZFDcqP8/IMG-20250320-WA0023-1-modified-3.png" alt="Logo"
+                                    class="logo-image">
+                            </div>
+                            <div>
+                                <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
+                                <p class="institute-address">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 class="institute-title">STI SHELAR TRAINING INSTITUTE</h1>
-                            <p class="institute-address">
-                                <i class="fas fa-map-marker-alt"></i>
-                                C/34, Bunglow, Near Nandikeshwar Mandir, Kamgar Nagar, Kurla(E)
+                        <div class="header-contact-info">
+                            <p class="inquiry-label">
+                                <i class="fas fa-file-alt"></i> INQUIRY FORM
                             </p>
-                        </div>
-                    </div>
-                    <div class="header-contact-info">
-                        <p class="inquiry-label">
-                            <i class="fas fa-file-alt"></i> INQUIRY FORM
-                        </p>
-                        <div class="contact-numbers">
-                            <p><i class="fas fa-phone-alt"></i> +91 9967288158</p>
-                            <p><i class="fas fa-phone-alt"></i> +91 7400406467</p>
+                            <div class="contact-numbers">
+                                <p><i class="fas fa-phone-alt"></i> +91 9967288158</p>
+                                <p><i class="fas fa-phone-alt"></i> +91 7400406467</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="form-body">
                     <div id="InquiryForm" class="form-fields-grid">
@@ -56,11 +56,6 @@
                                         class="fas fa-graduation-cap"></i>Qualification</label>
                                 <input type="text" id="qualification" name="qualification" required class="form-input">
                             </div>
-                        <div>
-                            <label for="aadhaar" class="form-label"><i class="fas fa-id-card"></i>Aadhaar Number</label>
-                            <input type="text" id="aadhaar" name="aadhaar" pattern="[0-9]{12}" maxlength="12" required class="form-input">
-                            <span id="aadhaarStatus" class="aadhaar-status"></span>
-                        </div>
                             <div>
                                 <label for="age" class="form-label"><i class="fas fa-birthday-cake"></i>Age</label>
                                 <input type="number" id="age" name="age" required class="form-input">
@@ -77,39 +72,39 @@
     </div>
                          </div>
 
-                    <div class="contact-info-box">
-                        <h3 class="contact-info-title">
-                            <i class="fas fa-address-card"></i>Contact Information
-                        </h3>
-                        <div class="contact-info-grid">
-                            <div>
-                                <label for="phoneNo" class="form-label">
-                                    <i class="fas fa-mobile-alt"></i> Phone
-                                </label>
-                                <input type="tel" id="phoneNo" name="phoneNo" class="form-input" required
-                                    autocomplete="tel" pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210"
-                                    maxlength="10" onblur="onPhoneBlur()">
-                                <datalist id="phoneSuggestions"></datalist>
-                            </div>
+                        <div class="contact-info-box">
+                            <h3 class="contact-info-title">
+                                <i class="fas fa-address-card"></i>Contact Information
+                            </h3>
+                            <div class="contact-info-grid">
+                                <div>
+                                    <label for="phoneNo" class="form-label">
+                                        <i class="fas fa-mobile-alt"></i> Phone
+                                    </label>
+                                    <input type="tel" id="phoneNo" name="phoneNo" class="form-input" required
+                                        autocomplete="tel" pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210"
+                                        maxlength="10" onblur="onPhoneBlur()">
+                                    <datalist id="phoneSuggestions"></datalist>
+                                </div>
 
-                            <div>
-                                <label for="whatsappNo" class="form-label"><i
-                                        class="fab fa-whatsapp"></i>WhatsApp</label>
-                                <input type="tel" id="whatsappNo" name="whatsappNo" required class="form-input"
-                                    pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210" maxlength="10">
+                                <div>
+                                    <label for="whatsappNo" class="form-label"><i
+                                            class="fab fa-whatsapp"></i>WhatsApp</label>
+                                    <input type="tel" id="whatsappNo" name="whatsappNo" required class="form-input"
+                                        pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210" maxlength="10">
+                                </div>
+                                <div>
+                                    <label for="parentsNo" class="form-label"><i class="fas fa-user-friends"></i>Parents
+                                        No</label>
+                                    <input type="tel" id="parentsNo" name="parentsNo" required class="form-input"
+                                        pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210" maxlength="10">
+                                </div>
                             </div>
-                            <div>
-                                <label for="parentsNo" class="form-label"><i class="fas fa-user-friends"></i>Parents
-                                    No</label>
-                                <input type="tel" id="parentsNo" name="parentsNo" required class="form-input"
-                                    pattern="[7-9][0-9]{9}" placeholder="e.g. 9876543210" maxlength="10">
+                            <div class="email-field">
+                                <label for="email" class="form-label"><i class="fas fa-envelope"></i>Email</label>
+                                <input type="email" id="email" name="email" class="form-input">
                             </div>
                         </div>
-                        <div class="email-field">
-                            <label for="email" class="form-label"><i class="fas fa-envelope"></i>Email</label>
-                            <input type="email" id="email" name="email" class="form-input">
-                        </div>
-                    </div>
 
 <div class="address-section">
                          <label class="form-label"><i class="fas fa-home"></i>Address</label>
@@ -135,65 +130,74 @@
 </div>
 
 
-                    <div class="form-row">
-                        <div>
-                            <label for="Interested Course" class="form-label"><i class="fas fa-book"></i>Select
-                                Course</label>
-                            <select id="interestedCourse" name="interestedCourse"
-                                class="form-select w-full px-4 py-2 rounded-lg border border-gray-300"
-                                onchange="updateCourseDetails()">
-                                <option value="" disabled selected>Select Course</option>
-                                <option value="anm_nursing">ANM Nursing Diploma Course</option>
-                                <option value="gnm_nursing">GNM Nursing Diploma Course</option>
-                                <option value="dmlt">DMLT Diploma Course</option>
-                                <option value="ot_technician">OT Technician</option>
-                                <option value="general_nursing">General Nursing and Midwifery Assistant</option>
+                        <div class="form-row">
+                            <div>
+                                <label for="Interested Course" class="form-label"><i class="fas fa-book"></i>Select
+                                    Course</label>
+                                <select id="interestedCourse" name="interestedCourse"
+                                    class="form-select w-full px-4 py-2 rounded-lg border border-gray-300"
+                                    onchange="updateCourseDetails()">
+                                    <option value="" disabled selected>Select Course</option>
+                                    <option value="anm_nursing">ANM Nursing Diploma Course</option>
+                                    <option value="gnm_nursing">GNM Nursing Diploma Course</option>
+                                    <option value="dmlt">DMLT Diploma Course</option>
+                                    <option value="ot_technician">OT Technician</option>
+                                    <option value="general_nursing">General Nursing and Midwifery Assistant</option>
 
-                            </select>
-                        </div>
-                        <div>
-                            <label for="inquiryTakenBy" class="form-label"><i class="fas fa-user-tie"></i>Inquiry
-                                Taken By</label>
-                            <input type="text" id="inquiryTakenBy" name="inquiryTakenBy" required
-                                class="form-input">
-                        </div>
-                        <div>
-                            <label for="branch22" class="form-label"><i class="fas fa-building"></i>Branch</label>
-                            <input type="text" id="branch22" name="branch" readonly class="form-input">
-                        </div>
-                    </div>
-
-                    <div class="form-footer">
-                        <div class="footer-actions">
-                            <div class="terms-checkbox">
-                                <label>
-                                    <input type="checkbox" id="agree1" name="agree" required>
-                                    <span>I agree to the terms</span>
-                                </label>
-                                <div id="agreeError1" class="error-message"></div>
+                                </select>
                             </div>
+                            <div>
+                                <label for="inquiryTakenBy" class="form-label"><i class="fas fa-user-tie"></i>Inquiry
+                                    Taken By</label>
+                                <input type="text" id="inquiryTakenBy" name="inquiryTakenBy" required
+                                    class="form-input">
+                            </div>
+                            <div>
+                                <label for="branch22" class="form-label"><i class="fas fa-building"></i>Branch</label>
+                                <input type="text" id="branch22" name="branch" readonly class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <div class="footer-actions">
+                                <div class="terms-checkbox">
+                                    <label>
+                                        <input type="checkbox" id="agree1" name="agree" required>
+                                        <span>I agree to the terms</span>
+                                    </label>
+                                    <div id="agreeError1" class="error-message"></div>
+ 
+ 
+                                </div>
+ 
+ 
+                                <div class="flex justify-end space-x-4">
+                                     <!-- <button type="button" onclick="generatePDFInquire()" id="InquiryButton2"
+                                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out">
+                                        <i class="fas fa-file-pdf mr-2"></i>Download PDF
+                                    </button> -->
+                                    <button type="submit" onclick="copyInquiry()"  id="submitButton2"
+                                        class="submit-btn text-blue-600 px-8 py-2 rounded-lg font-medium">
+                                        <i class="fas fa-paper-plane mr-2"></i>Submit
 
 
-                            <div class="flex justify-end space-x-4">
-                                <button type="submit" onclick="copyInquiry()" id="submitButton2"
-                                    class="submit-btn text-blue-600 px-8 py-2 rounded-lg font-medium">
-                                    <i class="fas fa-paper-plane mr-2"></i>Submit
-                                </button>
-                                <button onclick="openAdmissionForm()" onmouseover="copyInquiry()" class="small-blue-btn">Admission form</button>
+                                    
+                                    </button>
+                                    <button onclick="openAdmissionForm()" onmouseover="copyInquiry()" class="small-blue-btn">Admission form</button>
 
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="signature-section">
-                <div class="signature-line-container">
-                    <div class="signature-line">______________________</div>
-                    <div class="signature-title">AUTHORITY SIGNATURE</div>
+                <div class="signature-section">
+                    <div class="signature-line-container">
+                        <div class="signature-line">______________________</div>
+                        <div class="signature-title">AUTHORITY SIGNATURE</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
     </main>
