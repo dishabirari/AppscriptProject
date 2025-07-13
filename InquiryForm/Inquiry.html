@@ -30,36 +30,52 @@
                 </div>
             </div>
 
-            <div class="form-body">
-                <div id="InquiryForm" class="form-fields-grid">
-                    <div class="form-row">
-                        <div>
-                            <label for="date" class="form-label"><i class="fas fa-calendar-alt"></i>Date</label>
-                            <input type="date" id="date" name="date" required class="form-input">
+                <div class="form-body">
+                    <div id="InquiryForm" class="form-fields-grid">
+                        <div class="form-row">
+                            <div>
+                                <label for="date" class="form-label"><i class="fas fa-calendar-alt"></i>Date</label>
+                                <input type="date" id="date" name="date" required class="form-input">
+                            </div>
+                            <div>
+        <label for="firstName" class="form-label"><i class="fas fa-user"></i>First Name</label>
+        <input type="text" id="firstName" name="firstName" required class="form-input">
+    </div>
+    <div>
+        <label for="middleName" class="form-label"><i class="fas fa-user"></i>Middle Name</label>
+        <input type="text" id="middleName" name="middleName" class="form-input">
+    </div>
+    <div>
+        <label for="lastName" class="form-label"><i class="fas fa-user"></i>Last Name</label>
+        <input type="text" id="lastName" name="lastName" required class="form-input">
+    </div>
                         </div>
-                        <div>
-                            <label for="fullName" class="form-label"><i class="fas fa-user"></i>Full Name</label>
-                            <input type="text" id="fullName" name="fullName" required class="form-input">
-                        </div>
-                    </div>
-                    <div class="form-row">
+                        <div class="form-row">
+                            <div>
+                                <label for="qualification" class="form-label"><i
+                                        class="fas fa-graduation-cap"></i>Qualification</label>
+                                <input type="text" id="qualification" name="qualification" required class="form-input">
+                            </div>
                         <div>
                             <label for="aadhaar" class="form-label"><i class="fas fa-id-card"></i>Aadhaar Number</label>
                             <input type="text" id="aadhaar" name="aadhaar" pattern="[0-9]{12}" maxlength="12" required class="form-input">
                             <span id="aadhaarStatus" class="aadhaar-status"></span>
                         </div>
-                        <div>
-                            <label for="qualification" class="form-label"><i
-                                    class="fas fa-graduation-cap"></i>Qualification</label>
-                            <input type="text" id="qualification" name="qualification" required class="form-input">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label for="age" class="form-label"><i class="fas fa-birthday-cake"></i>Age</label>
-                            <input type="number" id="age" name="age" required class="form-input">
-                        </div>
-                        </div>
+                            <div>
+                                <label for="age" class="form-label"><i class="fas fa-birthday-cake"></i>Age</label>
+                                <input type="number" id="age" name="age" required class="form-input">
+                            </div>
+                            <div>
+        <label for="gender" class="form-label"><i class="fas fa-venus-mars"></i>Gender</label>
+        <select id="gender" name="gender" required class="form-select">
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+    </div>
+                         </div>
 
                     <div class="contact-info-box">
                         <h3 class="contact-info-title">
@@ -95,10 +111,29 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="address" class="form-label"><i class="fas fa-home"></i>Address</label>
-                        <textarea id="address" name="address" required rows="3" class="form-input"></textarea>
-                    </div>
+<div class="address-section">
+                         <label class="form-label"><i class="fas fa-home"></i>Address</label>
+       <div class="address-grid">
+        <div>
+            <label for="addressLine1" class="form-label">Address Line 1</label>
+            <input type="text" id="addressLine1" name="addressLine1" required class="form-input">
+        </div>
+        <div>
+            <label for="addressLine2" class="form-label">Address Line 2</label>
+            <input type="text" id="addressLine2" name="addressLine2" class="form-input">
+        </div>
+        <div>
+            <label for="addressLine3" class="form-label">Address Line 3</label>
+            <input type="text" id="addressLine3" name="addressLine3" class="form-input">
+        </div>
+        <div>
+            <label for="pincode" class="form-label">Pincode</label>
+            <input type="text" id="pincode" name="pincode" required class="form-input" 
+                   pattern="[0-9]{6}" title="6-digit pincode" maxlength="6">
+        </div>
+    </div>
+</div>
+
 
                     <div class="form-row">
                         <div>
