@@ -293,7 +293,8 @@ function getCourseDataByLocation(branch) {
       ${
         number === 0
           ? ""
-          : `<input type="checkbox" onchange="markAsPaid('${statusId}', '${receiptBtnId}', this)">`
+          : `<input type="checkbox" onchange="markAsPaid('${statusId}', '${receiptBtnId}', this, ${number},${amount})">`
+
       }
     </td>
     <td class="px-4 py-2 whitespace-nowrap text-center">
@@ -310,7 +311,7 @@ function getCourseDataByLocation(branch) {
   table.appendChild(row);
 }
 
- function markAsPaid(statusId, receiptBtnId, checkbox) {
+ function markAsPaid(statusId, receiptBtnId, checkbox,number,amount) {
   const statusSpan = document.getElementById(statusId);
   const receiptButton = document.getElementById(receiptBtnId);
 
@@ -325,7 +326,7 @@ function getCourseDataByLocation(branch) {
   }
 
   if(receiptButton.onclick){
-    
+    // generateInstallmentReceipt(number,amount);
   }
 }
 
@@ -481,12 +482,24 @@ function getCourseDataByLocation(branch) {
 
   
   function copyInquiry() {
+    //firstname
     sessionStorage.setItem(
       "tempText",
       document.getElementById("firstName").value
     );
-    document.getElementById("student_name").value=sessionStorage.getItem("tempText");
-
+    document.getElementById("first_name").value=sessionStorage.getItem("tempText");
+    //middlename
+    sessionStorage.setItem(
+      "tempTextMiddle",
+      document.getElementById("middleName").value
+    );
+    document.getElementById("middle_name").value=sessionStorage.getItem("tempTextMiddle");
+    //lastname
+    sessionStorage.setItem(
+      "tempTextLast",
+      document.getElementById("lastName").value
+    );
+    document.getElementById("last_name").value=sessionStorage.getItem("tempTextLast");
     sessionStorage.setItem(
       "tempText2",
       document.getElementById("interestedCourse").value
@@ -530,7 +543,466 @@ function getCourseDataByLocation(branch) {
 function formatCurrency(amount) {
     return '₹' + parseFloat(amount).toLocaleString('en-IN', { minimumFractionDigits: 2 });
 }
+function generateInstallmentReceipt(number,amount){
+    try {
+        const receiptNo = "REC" + Math.floor(1000 + Math.random() * 9000);
+        const date = new Date().toLocaleDateString('en-GB');
+        const installmentno = number; // From the parameter
+        const Amount= amount;
 
+        const studentName = document.getElementById('std_Coursepayname')?.value || "N/A";
+        const courseSelect = document.getElementById('coursePaySelect');
+        const courseName = courseSelect?.options[courseSelect.selectedIndex]?.text || "N/A";
+        const totalAmountText = document.getElementById('totalFees')?.textContent || "₹0";
+        const totalAmount = parseFloat(totalAmountText.replace(/[^0-9.]/g, ''));
+
+        const paymentTypeEl = document.querySelector('input[name="Coursepayment_type"]:checked');
+        const paymentType = paymentTypeEl?.value || "full";
+
+        let paidAmount = 0;
+        let balanceAmount = 0;
+
+        if (paymentType === 'full') {
+            const fullTotalText = document.getElementById('fullTotal')?.textContent || totalAmountText;
+            paidAmount = parseFloat(fullTotalText.replace(/[^0-9.]/g, ''));
+        } else if (paymentType === 'partial') {
+            const partialInitialText = document.getElementById('partialInitial')?.textContent || (totalAmount * 0.5).toString();
+            paidAmount = parseFloat(partialInitialText.replace(/[^0-9.]/g, ''));
+        } else if (paymentType === 'emi') {
+            const emiDownPaymentText = document.getElementById('emiDownPayment')?.textContent || (totalAmount * 0.1).toString();
+            paidAmount = parseFloat(emiDownPaymentText.replace(/[^0-9.]/g, ''));
+        }
+
+        balanceAmount = totalAmount - paidAmount;
+        // The paymentMethod field is not explicitly used in the new HTML structure, but kept for completeness if needed elsewhere.
+        // const paymentMethod = document.getElementById('pay-select')?.value || "Cash";
+
+        // Prepare data for the new HTML structure
+        const receiptData = {
+            receiptNo: receiptNo.replace('REC', ''), // Remove 'REC' prefix as per the target image
+            date: date,
+            fullName: studentName,
+            proposeToPay: courseName,
+            totalAmount: formatCurrency(totalAmount),
+            paid: formatCurrency(paidAmount),
+            balance: formatCurrency(balanceAmount),
+            examFees: "-", // Hardcoded as per the provided HTML
+            receivedBy: "Admin" // Hardcoded as per the provided HTML
+        };
+
+        // The entire HTML structure for the receipt, including internal CSS
+        const receiptPageHTML = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Shelar Training Institute Receipt</title>
+                <style>
+                    @page {
+                        size: A4;
+                        margin: 0.5in;
+                    }
+
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 0;
+                        background: white;
+                    }
+
+                    .page-container {
+                        width: 210mm; /* A4 width */
+                        height: 297mm; /* A4 height */
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        padding: 10mm;
+                        box-sizing: border-box;
+                    }
+
+                    .receipt {
+                        width: 100%;
+                        height: 45%; /* Approximately half the page height for two receipts */
+                        border: 3px solid #000;
+                        border-radius: 15px;
+                        padding: 15px;
+                        box-sizing: border-box;
+                        background: white;
+                        margin-bottom: 10mm; /* Space between two receipts */
+                    }
+
+                    .header {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 15px;
+                        border-bottom: 2px solid #000;
+                        padding-bottom: 10px;
+                    }
+
+                    .logo {
+                        width: 60px;
+                        height: 60px;
+                        background: #333;
+                        border-radius: 50%;
+                        margin-right: 15px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 24px;
+                        font-weight: bold;
+                    }
+
+                    .institute-name {
+                        font-size: 28px;
+                        font-weight: bold;
+                        color: #000;
+                        flex-grow: 1;
+                        letter-spacing: 1px;
+                    }
+
+                    .receipt-label {
+                        background: #333;
+                        color: white;
+                        padding: 5px 15px;
+                        border-radius: 20px;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+
+                    .receipt-content {
+                        display: flex;
+                        flex-direction: column;
+                        height: calc(100% - 100px); /* Adjust height based on header/footer */
+                    }
+
+                    .receipt-info {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+                    }
+
+                    .receipt-no {
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+
+                    .date {
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+
+                    .form-fields {
+                        flex-grow: 1;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                    }
+
+                    .field-row {
+                        display: flex;
+                        align-items: center;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+
+                    .field-label {
+                        min-width: 140px;
+                        color: #000;
+                    }
+
+                    .field-value {
+                        flex-grow: 1;
+                        border-bottom: 1px solid #000;
+                        padding: 2px 5px;
+                        min-height: 20px;
+                        color: #0066cc; /* Color for dynamic values, adjust if needed */
+                        /* Added styles for value overflow fix */
+                        white-space: nowrap; /* Prevent text from wrapping by default */
+                        overflow: hidden; /* Hide overflow content */
+                        text-overflow: ellipsis; /* Add ellipsis for overflow */
+                        max-width: calc(100% - 140px); /* Ensure it doesn't push the label too much */
+                    }
+
+                    .amount-fields {
+                        display: flex;
+                        gap: 20px;
+                    }
+
+                    .amount-field {
+                        flex: 1;
+                        /* Added min-width to ensure fields don't shrink too much */
+                        min-width: 30%;
+                    }
+                    /* Adjust field-value specifically within amount-fields for better distribution */
+                    .amount-fields .field-value {
+                        max-width: none; /* Remove the general max-width constraint */
+                        white-space: normal; /* Allow wrapping within amount fields */
+                        word-break: break-all; /* Break long words if necessary */
+                        flex-grow: 1;
+                    }
+                    .amount-fields .field-label {
+                        min-width: 80px; /* Adjust label width for amount fields */
+                    }
+
+                    .footer {
+                        margin-top: 15px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                    }
+
+                    .note {
+                        font-size: 12px;
+                        font-weight: bold;
+                        max-width: 60%;
+                    }
+
+                    .signature-area {
+                        text-align: center;
+                        min-width: 150px;
+                    }
+
+                    .signature-line {
+                        border-bottom: 1px solid #000;
+                        height: 40px;
+                        margin-bottom: 5px;
+                    }
+
+                    .signature-label {
+                        font-size: 12px;
+                        font-weight: bold;
+                    }
+                    /* Adjust for printing to ensure two receipts fit nicely */
+                    @media print {
+                        .page-container {
+                            height: 297mm; /* Full A4 height */
+                            padding: 0.5in; /* Match @page margin */
+                        }
+                        .receipt {
+                            margin-bottom: 5mm; /* Slightly less margin for print */
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="page-container">
+                    <!-- First Receipt -->
+                    <div class="receipt">
+                        <div class="header">
+                            <div class="logo">S</div>
+                            <div class="institute-name">SHELAR TRAINING INSTITUTE</div>
+                            <div class="receipt-label">RECEIPT</div>
+                        </div>
+
+                        <div class="receipt-content">
+                            <div class="receipt-info">
+                                <div class="receipt-no">Receipt No. ${receiptData.receiptNo}</div>
+                                <div class="date">Date: ${receiptData.date}</div>
+                            </div>
+                            <div class="receipt-no">
+                              Installment No. ${installmentno}
+                            </div>
+
+                            <br>
+
+                            <div class="form-fields">
+                                <div class="field-row">
+                                    <div class="field-label">Full Name :</div>
+                                    <div class="field-value">${receiptData.fullName}</div>
+                                </div>
+
+                                <div class="field-row">
+                                    <div class="field-label">Propose to Pay :</div>
+                                    <div class="field-value">${receiptData.proposeToPay}</div>
+                                </div>
+
+                                <div class="field-row amount-fields">
+                                    <!-- <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Total Amount :</div>
+                                            <div class="field-value">${receiptData.totalAmount}</div>
+                                        </div>
+                                    </div>
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Paid :</div>
+                                            <div class="field-value">${receiptData.paid}</div>
+                                        </div>
+                                    </div>
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Balance Amount :</div>
+                                            <div class="field-value">${receiptData.balance}</div>
+                                        </div>
+                                    </div> -->
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Installment Amount :</div>
+                                            <div class="field-value">${Amount}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field-row">
+                                    <div class="field-label">Exam Fees :</div>
+                                    <div class="field-value">${receiptData.examFees}</div>
+                                </div>
+
+                                <div class="field-row">
+                                    <div class="field-label">Received by :</div>
+                                    <div class="field-value">${receiptData.receivedBy}</div>
+                                </div>
+                            </div>
+
+                            <div class="footer">
+                                <div class="note">• Once you pay fees for course not refundable.</div>
+                                <div class="signature-area">
+                                    <div class="signature-line"></div>
+                                    <div class="signature-label">Authority Signature</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Second Receipt (Copy) -->
+                    <div class="receipt">
+                        <div class="header">
+                            <div class="logo">S</div>
+                            <div class="institute-name">SHELAR TRAINING INSTITUTE</div>
+                            <div class="receipt-label">RECEIPT</div>
+                        </div>
+
+                        <div class="receipt-content">
+                            <div class="receipt-info">
+                                <div class="receipt-no">Receipt No. ${receiptData.receiptNo}</div>
+                                <div class="date">Date: ${receiptData.date}</div>
+                            </div>
+                            <div class="receipt-no">
+                              Installment No. ${installmentno}
+                            </div>
+                            <br>
+                            <div class="form-fields">
+                                <div class="field-row">
+                                    <div class="field-label">Full Name :</div>
+                                    <div class="field-value">${receiptData.fullName}</div>
+                                </div>
+
+                                <div class="field-row">
+                                    <div class="field-label">Propose to Pay :</div>
+                                    <div class="field-value">${receiptData.proposeToPay}</div>
+                                </div>
+
+                                <!-- <div class="field-row amount-fields">
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Total Amount :</div>
+                                            <div class="field-value">${receiptData.totalAmount}</div>
+                                        </div>
+                                    </div>
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Paid :</div>
+                                            <div class="field-value">${receiptData.paid}</div>
+                                        </div>
+                                    </div>
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Balance Amount :</div>
+                                            <div class="field-value">${receiptData.balance}</div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                                                <div class="field-row amount-fields">
+                                    <!-- <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Total Amount :</div>
+                                            <div class="field-value">${receiptData.totalAmount}</div>
+                                        </div>
+                                    </div>
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Paid :</div>
+                                            <div class="field-value">${receiptData.paid}</div>
+                                        </div>
+                                    </div>
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Balance Amount :</div>
+                                            <div class="field-value">${receiptData.balance}</div>
+                                        </div>
+                                    </div> -->
+                                    <div class="amount-field">
+                                        <div class="field-row">
+                                            <div class="field-label">Installment Amount :</div>
+                                            <div class="field-value">${Amount}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field-row">
+                                    <div class="field-label">Exam Fees :</div>
+                                    <div class="field-value">${receiptData.examFees}</div>
+                                </div>
+
+                                <div class="field-row">
+                                    <div class="field-label">Received by :</div>
+                                    <div class="field-value">${receiptData.receivedBy}</div>
+                                </div>
+                            </div>
+
+                            <div class="footer">
+                                <div class="note">• Once you pay fees for course not refundable.</div>
+                                <div class="signature-area">
+                                    <div class="signature-line"></div>
+                                    <div class="signature-label">Authority Signature</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                </scr` + `ipt>
+            </body>
+            </html>
+        `;
+
+        // Open a new tab and write the receipt
+        const printWindow = window.open('', '_blank', 'width=800,height=1000');
+        printWindow.document.write(receiptPageHTML); // Write the entire HTML string
+        printWindow.document.close();
+
+    } catch (error) {
+        console.error("Error generating receipt:", error);
+        // Using a custom message box instead of alert() for better user experience in an iframe environment
+        const errorMessage = "Something went wrong. Please check the browser console for details.";
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffe0e0;
+            border: 1px solid #ff0000;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            color: #cc0000;
+            font-family: sans-serif;
+            text-align: center;
+        `;
+        errorDiv.innerHTML = `
+            <p>${errorMessage}</p>
+            <button onclick="this.parentNode.remove()" style="margin-top: 15px; padding: 8px 15px; background-color: #ff0000; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+        `;
+        document.body.appendChild(errorDiv);
+    }
+}
 function generateReceipt() {
     try {
         const receiptNo = "REC" + Math.floor(1000 + Math.random() * 9000);
