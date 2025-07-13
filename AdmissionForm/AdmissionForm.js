@@ -174,7 +174,9 @@ function saveToSheet(formData) {
     const rowData = [
       new Date(),
       formData.receipt_number || "",
-      formData.student_name || "",
+      formData.first_name || "",
+      formData.middle_name || "",
+      formData.last_name || "",
       formData.courseSelect || "",
       formData.courseDurationText || "",
       formData.totalCourseFees || "",
