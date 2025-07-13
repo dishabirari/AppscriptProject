@@ -244,29 +244,92 @@ function getCourseDataByLocation(branch) {
   }
 
   // Add row to installment table
-  function addInstallmentRow(table, number, date, amount, type) {
-    const row = document.createElement("tr");
-    row.className = number % 2 === 0 ? "bg-gray-50" : "bg-white";
+  // function addInstallmentRow(table, number, date, amount, type) {
+  //   const row = document.createElement("tr");
+  //   row.className = number % 2 === 0 ? "bg-gray-50" : "bg-white";
 
-    row.innerHTML = `
-          <td class="px-4 py-2 whitespace-nowrap">${
-            number === 0 ? type : `Installment ${number}`
-          }</td>
-          <td class="px-4 py-2 whitespace-nowrap">${date}</td>
-          <td class="px-4 py-2 whitespace-nowrap">${formatCurrency(amount)}</td>
-          <td class="px-4 py-2 whitespace-nowrap">
-            <span class="px-2 py-1 text-xs rounded-full ${
-              number === 0
-                ? "bg-blue-100 text-blue-800"
-                : "bg-blue-50 text-blue-800"
-            }">
-              ${number === 0 ? "Due Now" : "Pending"}
-            </span>
-          </td>
-        `;
+  //   row.innerHTML = `
+  //         <td class="px-4 py-2 whitespace-nowrap">${
+  //           number === 0 ? type : `Installment ${number}`
+  //         }</td>
+  //         <td class="px-4 py-2 whitespace-nowrap">${date}</td>
+  //         <td class="px-4 py-2 whitespace-nowrap">${formatCurrency(amount)}</td>
+  //         <td class="px-4 py-2 whitespace-nowrap">
+  //           <span class="px-2 py-1 text-xs rounded-full ${
+  //             number === 0
+  //               ? "bg-blue-100 text-blue-800"
+  //               : "bg-blue-50 text-blue-800"
+  //           }">
+  //             ${number === 0 ? "Due Now" : "Pending"}
+  //           </span>
+  //         </td>
+  //       `;
 
-    table.appendChild(row);
+  //   table.appendChild(row);
+  // }
+ function addInstallmentRow(table, number, date, amount, type) {
+  const row = document.createElement("tr");
+  row.className = number % 2 === 0 ? "bg-gray-50" : "bg-white";
+
+  const statusId = `status-${number}`;
+  const receiptBtnId = `receiptBtn-${number}`;
+
+  row.innerHTML = `
+    <td class="px-4 py-2 whitespace-nowrap">${
+      number === 0 ? type : `Installment ${number}`
+    }</td>
+    <td class="px-4 py-2 whitespace-nowrap">${date}</td>
+    <td class="px-4 py-2 whitespace-nowrap">${formatCurrency(amount)}</td>
+    <td class="px-4 py-2 whitespace-nowrap">
+      <span id="${statusId}" class="px-2 py-1 text-xs rounded-full ${
+        number === 0
+          ? "bg-blue-100 text-blue-800"
+          : "bg-blue-50 text-blue-800"
+      }">
+        ${number === 0 ? "Due Now" : "Pending"}
+      </span>
+    </td>
+    <td class="px-4 py-2 whitespace-nowrap text-center">
+      ${
+        number === 0
+          ? ""
+          : `<input type="checkbox" onchange="markAsPaid('${statusId}', '${receiptBtnId}', this)">`
+      }
+    </td>
+    <td class="px-4 py-2 whitespace-nowrap text-center">
+      ${
+        number === 0
+          ? ""
+          : `<button id="${receiptBtnId}" class="text-sm px-3 py-1 bg-green-600 text-white rounded hidden" onclick="downloadReceipt(${number}, '${date}', ${amount})">
+               Receipt
+             </button>`
+      }
+    </td>
+  `;
+
+  table.appendChild(row);
+}
+
+ function markAsPaid(statusId, receiptBtnId, checkbox) {
+  const statusSpan = document.getElementById(statusId);
+  const receiptButton = document.getElementById(receiptBtnId);
+
+  if (checkbox.checked) {
+    statusSpan.textContent = "Paid";
+    statusSpan.className = "px-2 py-1 text-xs rounded-full bg-green-100 text-green-800";
+    receiptButton.classList.remove("hidden");
+  } else {
+    statusSpan.textContent = "Pending";
+    statusSpan.className = "px-2 py-1 text-xs rounded-full bg-blue-50 text-blue-800";
+    receiptButton.classList.add("hidden");
   }
+
+  if(receiptButton.onclick){
+    
+  }
+}
+
+
 
   // Process payment (mock function)
   // function processPayment() {
@@ -420,7 +483,7 @@ function getCourseDataByLocation(branch) {
   function copyInquiry() {
     sessionStorage.setItem(
       "tempText",
-      document.getElementById("fullName").value
+      document.getElementById("firstName").value
     );
     document.getElementById("student_name").value=sessionStorage.getItem("tempText");
 
@@ -429,6 +492,7 @@ function getCourseDataByLocation(branch) {
       document.getElementById("interestedCourse").value
     );
     document.getElementById("courseSelect").value=sessionStorage.getItem("tempText2");
+    console.log(sessionStorage.getItem("tempText2"));
 
     updateCourseDetails();
     updateYearPaymentOptions();
