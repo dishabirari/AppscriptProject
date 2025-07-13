@@ -1,0 +1,332 @@
+
+
+
+    <div class="receipt-container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">STI</div>
+                    <div class="institute-info">
+                        <h1>Shelar Training Institute</h1>
+                        <p>SHELAR TRAINING INSTITUTE C/34,<br>
+                        BUNGLOW, NEAR NANDIKESHWAR MANDIR,<br>
+                        KAMGAR NAGAR, KURLA (E)</p>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <p>Mob: +91 9967288158<br>
+                    +91 7400406467</p>
+                </div>
+            </div>
+            <div class="photo-section" onclick="document.getElementById('photoInput').click()">
+                <div class="photo-placeholder" id="photoPlaceholder">
+                    Click to Upload<br>Passport Photo
+                </div>
+                <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+            </div>
+        </div>
+
+        <div class="receipt-title">ADMISSION RECEIPT</div>
+
+        <div class="form-content">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Receipt No.</label>
+                    <input type="text" id="receiptNo" placeholder="Enter receipt number">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="receiptDate">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter student name">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Course Name</label>
+                    <input type="text" id="courseName" placeholder="Enter course name">
+                </div>
+                <div class="form-group">
+                    <label>Course Year</label>
+                    <select id="courseYear" onchange="generateInstallmentTables()">
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Course Duration</label>
+                    <input type="text" id="courseDuration" placeholder="Enter course duration">
+                </div>
+            </div>
+
+            <div class="installment-section">
+                <div class="installment-header">
+                    <h3>Fee Installment Details</h3>
+                </div>
+                
+                <div class="installment-controls">
+                    <div class="form-group">
+                        <label>Number of Installments (per year)</label>
+                        <select id="installmentCount" onchange="generateInstallmentTables()">
+                            <option value="1">1 Installment</option>
+                            <option value="2">2 Installments</option>
+                            <option value="3">3 Installments</option>
+                            <option value="4">4 Installments</option>
+                            <option value="6">6 Installments</option>
+                            <option value="12">12 Installments</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Course Fee</label>
+                        <input type="number" id="totalFee" placeholder="Enter total fee" onchange="generateInstallmentTables()">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate" onchange="generateInstallmentTables()">
+                    </div>
+                </div>
+
+                <div id="installmentTablesContainer"></div>
+            </div>
+
+            <div class="agreement-section">
+                <p style="font-size: 12px;"><strong>I Am Mr./Ms.</strong> <input type="text" id="guardianName" placeholder="Enter guardian name" style="display: inline; width: 250px; margin: 0 5px; font-size: 12px;"> <strong>Mother / Father / Husband / Sister / Brother of</strong></p>
+                <p style="margin-top: 10px; font-size: 12px;"><input type="text" id="studentRelation" placeholder="Enter student name" style="display: inline; width: 250px; margin: 0 5px; font-size: 12px;"> <strong>I Am Agree with Terms And Condition.</strong></p>
+                <p style="margin-top: 10px; text-align: center; font-style: italic; font-size: 11px;">मी/आम्ही................................................. आई / वडील / पती / बहीण / भाऊ,<br>
+                यांना खरी सहानु आणे.</p>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Parent Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Student Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Manager Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Director Signature</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="download-section">
+        <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn" onclick="window.print()">Print Receipt</button>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('receiptDate').valueAsDate = new Date();
+        document.getElementById('startDate').valueAsDate = new Date();
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoSection = document.querySelector('.photo-section');
+                    photoSection.innerHTML = `<img src="${e.target.result}" alt="Student Photo">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function generateInstallmentTables() {
+            const installmentCount = parseInt(document.getElementById('installmentCount').value);
+            const totalFee = parseFloat(document.getElementById('totalFee').value) || 0;
+            const startDate = new Date(document.getElementById('startDate').value);
+            const courseYears = parseInt(document.getElementById('courseYear').value);
+            
+            if (!startDate || totalFee <= 0) return;
+
+            const container = document.getElementById('installmentTablesContainer');
+            container.innerHTML = '';
+
+            // Calculate fee per year (equal distribution)
+            const feePerYear = Math.round(totalFee / courseYears);
+            let remainingFee = totalFee;
+            
+            for (let year = 1; year <= courseYears; year++) {
+                // Adjust last year's fee to account for rounding
+                const yearFee = (year === courseYears) ? remainingFee : feePerYear;
+                remainingFee -= yearFee;
+                
+                // Create year section
+                const yearSection = document.createElement('div');
+                yearSection.className = 'year-section';
+                
+                // Year header
+                const yearHeader = document.createElement('div');
+                yearHeader.className = 'year-header';
+                yearHeader.textContent = getYearName(year) + ' Fee Installments';
+                yearSection.appendChild(yearHeader);
+                
+                // Year content
+                const yearContent = document.createElement('div');
+                yearContent.className = 'year-content';
+                
+                // Generate installment table for this year
+                const tableHTML = generateYearInstallmentTable(year, installmentCount, yearFee, startDate, year);
+                yearContent.innerHTML = tableHTML;
+                
+                yearSection.appendChild(yearContent);
+                container.appendChild(yearSection);
+            }
+            
+            // Add total section
+            const totalSection = document.createElement('div');
+            totalSection.className = 'total-section';
+            totalSection.textContent = `Total Course Fee: ₹${totalFee.toLocaleString()}`;
+            container.appendChild(totalSection);
+        }
+        
+        function generateYearInstallmentTable(year, installmentCount, yearFee, startDate, yearOffset) {
+            const installmentAmount = Math.round(yearFee / installmentCount);
+            
+            // Generate horizontal table structure
+            let tableHTML = `
+                <div class="scrollable-table">
+                <table class="installment-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Details</th>
+            `;
+
+            // Add columns for each installment
+            for (let i = 0; i < installmentCount; i++) {
+                tableHTML += `<th>Installment ${i + 1}</th>`;
+            }
+
+            tableHTML += `
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="date-row">
+                            <td style="font-weight: bold; background: #ecf0f1;">Due Date</td>
+            `;
+
+            // Add due dates (offset by year)
+            for (let i = 0; i < installmentCount; i++) {
+                const dueDate = new Date(startDate);
+                dueDate.setFullYear(startDate.getFullYear() + (yearOffset - 1));
+                dueDate.setMonth(startDate.getMonth() + i);
+                
+                const formattedDate = dueDate.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                tableHTML += `<td>${formattedDate}</td>`;
+            }
+
+            tableHTML += `
+                        </tr>
+                        <tr class="amount-row">
+                            <td style="font-weight: bold; background: #ecf0f1;">Amount (₹)</td>
+            `;
+
+            // Add amounts
+            for (let i = 0; i < installmentCount; i++) {
+                // Adjust last installment to account for rounding
+                const amount = (i === installmentCount - 1) ? 
+                    yearFee - (installmentAmount * (installmentCount - 1)) : 
+                    installmentAmount;
+
+                tableHTML += `<td>₹${amount.toLocaleString()}</td>`;
+            }
+
+            tableHTML += `
+                        </tr>
+                        <tr class="status-row">
+                            <td style="font-weight: bold; background: #ecf0f1;">Status</td>
+            `;
+
+            // Add status dropdowns
+            for (let i = 0; i < installmentCount; i++) {
+                tableHTML += `
+                    <td>
+                        <select>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                        </select>
+                    </td>
+                `;
+            }
+
+            tableHTML += `
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="total-section">
+                    ${getYearName(year)} Total: ₹${yearFee.toLocaleString()}
+                </div>
+            `;
+
+            return tableHTML;
+        }
+        
+        function getYearName(yearNumber) {
+            switch(yearNumber) {
+                case 1: return '1st Year';
+                case 2: return '2nd Year';
+                case 3: return '3rd Year';
+                default: return yearNumber + 'th Year';
+            }
+        }
+
+        function downloadPDF() {
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+            
+            // Get the current document content
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Write the content to the new window
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            
+            // Wait for the content to load, then print
+            printWindow.onload = function() {
+                // Hide interactive elements in print window
+                const printDoc = printWindow.document;
+                const buttons = printDoc.querySelectorAll('.btn, .download-section, .installment-controls');
+                buttons.forEach(btn => btn.style.display = 'none');
+                
+                // Set print styles
+                printDoc.body.style.backgroundColor = 'white';
+                printDoc.body.style.margin = '0';
+                printDoc.body.style.padding = '0';
+                
+                // Focus the print window and print
+                printWindow.focus();
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            };
+        }
+
+        // Initialize with default values
+        document.addEventListener('DOMContentLoaded', function() {
+            generateInstallmentTables();
+        });
+    </script>
+
