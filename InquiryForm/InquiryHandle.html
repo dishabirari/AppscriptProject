@@ -23,14 +23,20 @@ function InquiryFormHandle(e) {
     date:
       document.getElementById("date")?.value ||
       new Date().toISOString().split("T")[0],
-    fullName: document.getElementById("fullName")?.value.trim() || "",
+    firstName: document.getElementById("firstName")?.value.trim() || "",
+    middleName: document.getElementById("middleName")?.value.trim() || "",
+    lastName: document.getElementById("lastName")?.value.trim() || "",
+     gender: document.getElementById("gender")?.value.trim() || "",
     qualification: document.getElementById("qualification")?.value.trim() || "",
     phoneNo: document.getElementById("phoneNo")?.value.trim() || "",
     whatsappNo: document.getElementById("whatsappNo")?.value.trim() || "",
     parentsNo: document.getElementById("parentsNo")?.value.trim() || "",
     email: document.getElementById("email")?.value.trim() || "",
     age: document.getElementById("age")?.value.trim() || "",
-    address: document.getElementById("address")?.value.trim() || "",
+   addressLine1: document.getElementById("addressLine1")?.value.trim() || "",
+    addressLine2: document.getElementById("addressLine2")?.value.trim() || "",
+    addressLine3: document.getElementById("addressLine3")?.value.trim() || "",
+    pincode: document.getElementById("pincode")?.value.trim() || "",
     interestedCourse:
       document.getElementById("interestedCourse")?.value.trim() || "",
     inquiryTakenBy:
@@ -40,7 +46,19 @@ function InquiryFormHandle(e) {
     // ✅ Include logged-in user ID from hidden field
     loggedInUserId: document.getElementById("loggedInUserId")?.value.trim() || "Anonymous"
   };
+formValues.address = [
+    formValues.addressLine1,
+    formValues.addressLine2,
+    formValues.addressLine3,
+    `Pincode: ${formValues.pincode}`
+  ].filter(Boolean).join(", ");
 
+  // Combine names for fullName (to maintain backward compatibility)
+  formValues.fullName = [
+    formValues.firstName,
+    formValues.middleName,
+    formValues.lastName
+  ].filter(Boolean).join(" ");
   console.log("Form Values:", formValues);
 
   // Send to Apps Script
@@ -80,18 +98,6 @@ function InquiryFormHandle(e) {
     })
     .InquiryProcessForm(formValues);
 }
-
-
-
-
-
-
-
-
-
-
-
-
     // --- Inquiry Form Handling ---
     inquiryForm.addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent default form submission
