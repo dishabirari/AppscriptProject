@@ -98,6 +98,12 @@ function AdmissionHandle(event) {
     }
   });
 
+  formObject.student_name = [
+    formObject.first_name,
+    formObject.middle_name,
+    formObject.last_name
+  ].filter(Boolean).join(" ");
+  
   // Debug: Print form data before sending
   console.log("Form data to submit:", formObject);
 
