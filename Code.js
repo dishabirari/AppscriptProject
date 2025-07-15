@@ -762,15 +762,75 @@ function getClassMonthDashboard(selectedClass, selectedMonth, userRole) {
 
 
 
-
-
-
-
-
-
-
-
-
+// function saveEnrollment(data) {
+//   try {
+//     const ss = SpreadsheetApp.getActiveSpreadsheet();
+//     const sheet = ss.getSheetByName("Enrollments");
+    
+//     // Get current date and format as dd/mm/yyyy
+//     const today = new Date();
+//     const session = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}`;
+    
+//     // Ensure we have required fields
+//     if (!data.enrollmentID || !data.studentName) {
+//       throw new Error("Missing required enrollment data");
+//     }
+    
+//     sheet.appendRow([
+//       data.enrollmentID,  // EnrollmentID (PK)
+//       data.studentName,   // StudentID (FK)
+//       data.course,  // CounselD (FK) with fallback
+//       session,            // Session
+//       "Active"            // Status
+//     ]);
+    
+//     return {success: true, message: "Enrollment saved successfully"};
+//   } catch (e) {
+//     console.error("Save enrollment error:", e);
+//     throw new Error("Failed to save enrollment: " + e.toString());
+//   }
+// }
+function saveEnrollment(data) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName("Enrollments");
+    
+    // Validate data
+    if (!data.enrollmentID || !data.studentName) {
+      throw new Error("Missing required enrollment data");
+    }
+    
+    // Check for duplicate enrollment ID
+    const existingIds = sheet.getRange(2, 1, sheet.getLastRow()-1, 1).getValues().flat();
+    if (existingIds.includes(data.enrollmentID)) {
+      throw new Error("Enrollment ID already exists: " + data.enrollmentID);
+    }
+    
+    // Format date as dd/mm/yyyy
+    const today = new Date();
+    const formattedDate = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}`;
+    
+    // Append to sheet
+    sheet.appendRow([
+      data.enrollmentID,
+      data.studentName,
+      data.course || "Not Specified",
+      formattedDate,
+      "Active"
+    ]);
+    
+    // Return success with the enrollment ID
+    return {
+      success: true,
+      message: "Enrollment saved successfully",
+      enrollmentID: data.enrollmentID
+    };
+    
+  } catch (e) {
+    console.error("Save enrollment error:", e);
+    throw new Error("Failed to save enrollment: " + e.message);
+  }
+}
 
 /************************************************
  * receipt
