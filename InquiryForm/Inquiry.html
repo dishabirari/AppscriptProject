@@ -38,17 +38,18 @@
                                 <input type="date" id="date" name="date" required class="form-input">
                             </div>
                             <div>
-        <label for="firstName" class="form-label"><i class="fas fa-user"></i>First Name</label>
-        <input type="text" id="firstName" name="firstName" required class="form-input">
-    </div>
-    <div>
-        <label for="middleName" class="form-label"><i class="fas fa-user"></i>Middle Name</label>
-        <input type="text" id="middleName" name="middleName" class="form-input">
-    </div>
-    <div>
-        <label for="lastName" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-        <input type="text" id="lastName" name="lastName" required class="form-input">
-    </div>
+                                <label for="firstName" class="form-label"><i class="fas fa-user"></i>First Name</label>
+                                <input type="text" id="firstName" name="firstName" required class="form-input">
+                            </div>
+                            <div>
+                                <label for="middleName" class="form-label"><i class="fas fa-user"></i>Middle
+                                    Name</label>
+                                <input type="text" id="middleName" name="middleName" class="form-input">
+                            </div>
+                            <div>
+                                <label for="lastName" class="form-label"><i class="fas fa-user"></i>Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required class="form-input">
+                            </div>
                         </div>
                         <div class="form-row">
                             <div>
@@ -61,16 +62,16 @@
                                 <input type="number" id="age" name="age" required class="form-input">
                             </div>
                             <div>
-        <label for="gender" class="form-label"><i class="fas fa-venus-mars"></i>Gender</label>
-        <select id="gender" name="gender" required class="form-select">
-            <option value="" disabled selected>Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-            <option value="Prefer not to say">Prefer not to say</option>
-        </select>
-    </div>
-                         </div>
+                                <label for="gender" class="form-label"><i class="fas fa-venus-mars"></i>Gender</label>
+                                <select id="gender" name="gender" required class="form-select">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="contact-info-box">
                             <h3 class="contact-info-title">
@@ -106,28 +107,29 @@
                             </div>
                         </div>
 
-<div class="address-section">
-                         <label class="form-label"><i class="fas fa-home"></i>Address</label>
-       <div class="address-grid">
-        <div>
-            <label for="addressLine1" class="form-label">Address Line 1</label>
-            <input type="text" id="addressLine1" name="addressLine1" required class="form-input">
-        </div>
-        <div>
-            <label for="addressLine2" class="form-label">Address Line 2</label>
-            <input type="text" id="addressLine2" name="addressLine2" class="form-input">
-        </div>
-        <div>
-            <label for="addressLine3" class="form-label">Address Line 3</label>
-            <input type="text" id="addressLine3" name="addressLine3" class="form-input">
-        </div>
-        <div>
-            <label for="pincode" class="form-label">Pincode</label>
-            <input type="text" id="pincode" name="pincode" required class="form-input" 
-                   pattern="[0-9]{6}" title="6-digit pincode" maxlength="6">
-        </div>
-    </div>
-</div>
+                        <div class="address-section">
+                            <label class="form-label"><i class="fas fa-home"></i>Address</label>
+                            <div class="address-grid">
+                                <div>
+                                    <label for="addressLine1" class="form-label">Address Line 1</label>
+                                    <input type="text" id="addressLine1" name="addressLine1" required
+                                        class="form-input">
+                                </div>
+                                <div>
+                                    <label for="addressLine2" class="form-label">Address Line 2</label>
+                                    <input type="text" id="addressLine2" name="addressLine2" class="form-input">
+                                </div>
+                                <div>
+                                    <label for="addressLine3" class="form-label">Address Line 3</label>
+                                    <input type="text" id="addressLine3" name="addressLine3" class="form-input">
+                                </div>
+                                <div>
+                                    <label for="pincode" class="form-label">Pincode</label>
+                                    <input type="text" id="pincode" name="pincode" required class="form-input"
+                                        pattern="[0-9]{6}" title="6-digit pincode" maxlength="6">
+                                </div>
+                            </div>
+                        </div>
 
 
                         <div class="form-row">
@@ -157,47 +159,41 @@
                                 <input type="text" id="branch22" name="branch" readonly class="form-input">
                             </div>
                         </div>
+                        <div class="footer-actions">
+                            <div class="terms-checkbox mb-4">
+                                <label>
+                                    <input type="checkbox" id="agree1" name="agree" required>
+                                    <span>I agree to the terms</span>
+                                </label>
+                                <div id="agreeError1" class="error-message"></div>
+                            </div>
 
-                        <div class="form-footer">
-                            <div class="footer-actions">
-                                <div class="terms-checkbox">
-                                    <label>
-                                        <input type="checkbox" id="agree1" name="agree" required>
-                                        <span>I agree to the terms</span>
-                                    </label>
-                                    <div id="agreeError1" class="error-message"></div>
- 
- 
-                                </div>
- 
- 
-                                <div class="flex justify-end space-x-4">
-                                     <!-- <button type="button" onclick="generatePDFInquire()" id="InquiryButton2"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out">
-                                        <i class="fas fa-file-pdf mr-2"></i>Download PDF
-                                    </button> -->
-                                    <button type="submit" onclick="copyInquiry()"  id="submitButton2"
-                                        class="submit-btn text-blue-600 px-8 py-2 rounded-lg font-medium">
-                                        <i class="fas fa-paper-plane mr-2"></i>Submit
-
-
-                                    
-                                    </button>
-                                    <button onclick="openAdmissionForm()" onmouseover="copyInquiry()" class="small-blue-btn">Admission form</button>
-
-                                </div>
+                            <!-- Move buttons below the checkbox -->
+                            <div class="flex justify-end space-x-4 mt-4">
+                                <button type="submit" onclick="copyInquiry()" id="submitButton2"
+                                    class="submit-btn text-blue-600 px-8 py-2 rounded-lg font-medium">
+                                    <i class="fas fa-paper-plane mr-2"></i>Submit
+                                </button>
+                                <button onclick="openAdmissionForm()" onmouseover="copyInquiry()"
+                                    class="small-blue-btn">
+                                    Admission form
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="signature-section">
-                    <div class="signature-line-container">
-                        <div class="signature-line">______________________</div>
-                        <div class="signature-title">AUTHORITY SIGNATURE</div>
+
+
                     </div>
                 </div>
             </div>
+
+            <div class="signature-section">
+                <div class="signature-line-container">
+                    <div class="signature-line">______________________</div>
+                    <div class="signature-title">AUTHORITY SIGNATURE</div>
+                </div>
+            </div>
         </div>
-    </form>
-    </main>
+</div>
+</form>
+</main>
