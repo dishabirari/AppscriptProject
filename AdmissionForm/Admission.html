@@ -914,13 +914,17 @@
                     class="text-red-500 text-xs italic mt-1"
                   ></div>
                 </div>
-                <div class="flex justify-end space-x-4 mt-4 md:mt-0"> <button
+                <div class="flex justify-end space-x-4 mt-4 md:mt-0"> 
+                  <!-- <button
                     type="button"
                     onclick="openReceiptReadOnlyForm()"
                     class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out shadow-md"
                   >
                     <i class="fas fa-file-pdf mr-2"></i> Admission Receipt
-                  </button>
+                  </button> -->
+                  <button onclick="generateAndSaveEnrollment() "
+ class="text-align:right bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-2 rounded-lg font-medium transition duration-200 ease-in-out shadow-md"
+      >Save & Generate Receipt</button>
                   <button
                     type="submit"
                     id="submitButton"

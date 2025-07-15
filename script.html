@@ -400,8 +400,8 @@ function getCourseDataByLocation(branch) {
     document.getElementById("ifId").classList.add("hidden");
     document.getElementById("admissionFormSection").classList.add("hidden");
     document.getElementById("coursePaymentSection").classList.add("hidden");
-    document.getElementById("receiptReadOnlyForm").classList.add("hidden");
-    document.getElementById("receiptReadOnlyForm").classList.add("hidden");
+    // document.getElementById("receiptReadOnlyForm").classList.add("hidden");
+    // document.getElementById("receiptReadOnlyForm").classList.add("hidden");
     document.getElementById("receiptFormSection").classList.add("hidden");
     
 
@@ -2632,52 +2632,52 @@ html2pdf()
 
 
  
-function openReceiptReadOnlyForm() {
-   hideAllSections(); // Your existing function
-  const section = document.getElementById("receiptReadOnlyForm");
-  if (section) section.classList.remove("hidden");
+// function openReceiptReadOnlyForm() {
+//    hideAllSections(); // Your existing function
+//   const section = document.getElementById("receiptReadOnlyForm");
+//   if (section) section.classList.remove("hidden");
 
-  // Get auto-generated receipt number from Apps Script
-  google.script.run.withSuccessHandler(function(receiptNumber) {
-    document.getElementById("receiptNoForm").value = receiptNumber;
-  }).generateReceiptNumber();
-  // Get values from admission form
-  const name = document.getElementById("Student_namee").value || "";
-  const receipt = document.getElementById("receipt_number").value || "";
-  const course = document.getElementById("courseSelect").value || "";
-  const courseText = document.querySelector("#courseSelect option:checked")?.textContent || "";
-  const fees = document.getElementById("courseFeeees").value || "";
-  const paid = getPaidAmount();  // If paid amount is dynamic
-  const balance = parseInt(fees || 0) - parseInt(paid || 0);
-  const duration = document.getElementById("coursePeriod").value || "";
-  const examFees = 6000;
-  const receivedBy = "Admin";
+//   // Get auto-generated receipt number from Apps Script
+//   google.script.run.withSuccessHandler(function(receiptNumber) {
+//     document.getElementById("receiptNoForm").value = receiptNumber;
+//   }).generateReceiptNumber();
+//   // Get values from admission form
+//   const name = document.getElementById("Student_namee").value || "";
+//   const receipt = document.getElementById("receipt_number").value || "";
+//   const course = document.getElementById("courseSelect").value || "";
+//   const courseText = document.querySelector("#courseSelect option:checked")?.textContent || "";
+//   const fees = document.getElementById("courseFeeees").value || "";
+//   const paid = getPaidAmount();  // If paid amount is dynamic
+//   const balance = parseInt(fees || 0) - parseInt(paid || 0);
+//   const duration = document.getElementById("coursePeriod").value || "";
+//   const examFees = 6000;
+//   const receivedBy = "Admin";
 
-  // Fill into receipt <span> fields
-  document.getElementById("student_name_display").textContent = name;
-  document.getElementById("receipt_no_display").textContent = receipt;
-  document.getElementById("propose_to_pay_display").textContent = courseText + " Admission Fee";
-  document.getElementById("total_amount_display").textContent = fees;
-  document.getElementById("paid_amount_display").textContent = paid;
-  document.getElementById("balance_display").textContent = balance || 0;
-  document.getElementById("exam_fees_display").textContent = examFees;
-  document.getElementById("received_by_display").textContent = receivedBy;
+//   // Fill into receipt <span> fields
+//   document.getElementById("student_name_display").textContent = name;
+//   document.getElementById("receipt_no_display").textContent = receipt;
+//   document.getElementById("propose_to_pay_display").textContent = courseText + " Admission Fee";
+//   document.getElementById("total_amount_display").textContent = fees;
+//   document.getElementById("paid_amount_display").textContent = paid;
+//   document.getElementById("balance_display").textContent = balance || 0;
+//   document.getElementById("exam_fees_display").textContent = examFees;
+//   document.getElementById("received_by_display").textContent = receivedBy;
 
-  // Show the receipt section
-  document.getElementById("receiptReadOnlyForm").classList.remove("hidden");
-  document.getElementById("admissionFormSection").classList.add("hidden");
-}
+//   // Show the receipt section
+//   document.getElementById("receiptReadOnlyForm").classList.remove("hidden");
+//   document.getElementById("admissionFormSection").classList.add("hidden");
+// }
 
-function getPaidAmount() {
-  // Use this if your form allows EMI or partial
-  const yearPayments = document.querySelectorAll(".year-paid-input");
-  let totalPaid = 0;
-  yearPayments.forEach(inp => {
-    const value = parseInt(inp.value || 0);
-    if (!isNaN(value)) totalPaid += value;
-  });
-  return totalPaid;
-}
+// function getPaidAmount() {
+//   // Use this if your form allows EMI or partial
+//   const yearPayments = document.querySelectorAll(".year-paid-input");
+//   let totalPaid = 0;
+//   yearPayments.forEach(inp => {
+//     const value = parseInt(inp.value || 0);
+//     if (!isNaN(value)) totalPaid += value;
+//   });
+//   return totalPaid;
+// }
 
   /******************************************
    * 10) RECEIPT PRINTING
